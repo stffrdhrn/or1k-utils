@@ -1,0 +1,44 @@
+#! /bin/sh
+
+mount -a
+
+# set hostname
+#echo "Setting hostname" &
+hostname openrisc &
+
+#remount everything, read/write
+#echo "Remounting root" &
+mount -o remount,rw /
+
+# clear ethernet's IP
+#echo "Bringing up eth0"
+#ifconfig eth0 10.1.1.3
+#ifconfig eth0 up
+
+#setup dhcp
+#echo "Launching udhcpc"
+#/sbin/udhcpc -n -q -s /usr/share/udhcpc/default.script
+
+# create some dirs to avoid warning messages
+mkdir -p /var/run && \
+ mkdir -p /etc/network/if-up.d && \
+ mkdir -p /etc/network/if-pre-up.d &
+
+# make home directory for root user
+mkdir -p /root &
+
+# telnetd requires this
+mkdir -p /dev/pts && \
+ mount -t devpts none /dev/pts &
+
+mkdir -p /dev/shm && \
+ mount -t tmpfs none /dev/shm &
+
+echo "Configuring loopback device"
+#ifconfig lo 127.0.0.1
+ifup lo &
+ifconfig eth0 192.168.1.100 &
+
+# inetd startup
+inetd &
+
