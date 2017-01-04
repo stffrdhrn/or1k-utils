@@ -34,9 +34,11 @@ else
 fi
 
 if [ -f $LIBC ] ; then
- echo "Installing libc"
+ echo "Installing lib"
  mkdir -p initramfs/lib
  cp $LIBC initramfs/lib
+ ln -s libc.so initramfs/lib/ld-musl-or1k.so.1
+
 else
  echo "Cannot find libc at '$LIBC' install not completed"
  exit 1
