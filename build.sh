@@ -5,6 +5,7 @@
 
 BUSYBOX=$HOME/work/openrisc/busybox/_install
 LIBC=/opt/shorne/software/or1k-musl/or1k-linux-musl/or1k-linux-musl/lib/libc.so
+KSELFTESTS=/home/shorne/work/linux/tools/testing/selftests/install
 
 # clean
 if [ "$1" = 'clean' ] ; then
@@ -14,6 +15,7 @@ if [ "$1" = 'clean' ] ; then
   rm -rf initramfs/usr/bin
   rm -rf initramfs/usr/sbin
   rm -rf initramfs/lib
+  rm -rf initramfs/kselftests
   rm initramfs/init
 
   exit 0
@@ -23,7 +25,7 @@ fi
 if [ -d $BUSYBOX ] ; then
  echo "Installing busybox"
  cp -a $BUSYBOX/* initramfs/
- 
+
  # Init just drops us to the shell
  echo "Installing init"
  ln -s sbin/init initramfs/init
@@ -42,6 +44,13 @@ if [ -f $LIBC ] ; then
 else
  echo "Cannot find libc at '$LIBC' install not completed"
  exit 1
+fi
+
+# Optional Kernel self tests
+if [ -d $KSELFTESTS ] ; then
+ echo "Installing kselftests"
+ mkdir -p initramfs/kselftests
+ cp -a $KSELFTESTS/* initramfs/kselftests/
 fi
 
 exit 0
