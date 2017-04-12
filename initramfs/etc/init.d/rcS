@@ -37,7 +37,7 @@ mkdir -p /dev/shm && \
 echo "Configuring loopback device"
 #ifconfig lo 127.0.0.1
 ifup lo &
-ifconfig eth0 192.168.1.100 &
+#ifconfig eth0 192.168.1.100 &
 
 # inetd startup
 inetd &

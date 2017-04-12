@@ -3,9 +3,10 @@
 # Script for building the intiramfs
 #  user arg: clean to clean anything this does
 
-BUSYBOX=$HOME/work/openrisc/busybox/_install
-LIBC=/opt/shorne/software/or1k-musl/or1k-linux-musl/or1k-linux-musl/lib/libc.so
-KSELFTESTS=/home/shorne/work/linux/tools/testing/selftests/install
+BINDIR=$(dirname $0)
+. $BINDIR/config
+
+KSELFTESTS=$LINUX/tools/testing/selftests/install
 
 # clean
 if [ "$1" = 'clean' ] ; then
@@ -28,7 +29,7 @@ if [ -d $BUSYBOX ] ; then
 
  # Init just drops us to the shell
  echo "Installing init"
- ln -s sbin/init initramfs/init
+ ln -sf sbin/init initramfs/init
 
 else
  echo "Cannot find busybox install in '$BUSYBOX', aborting"
@@ -39,7 +40,7 @@ if [ -f $LIBC ] ; then
  echo "Installing lib"
  mkdir -p initramfs/lib
  cp $LIBC initramfs/lib
- ln -s libc.so initramfs/lib/ld-musl-or1k.so.1
+ ln -sf libc.so initramfs/lib/ld-musl-or1k.so.1
 
 else
  echo "Cannot find libc at '$LIBC' install not completed"
@@ -52,5 +53,11 @@ if [ -d $KSELFTESTS ] ; then
  mkdir -p initramfs/kselftests
  cp -a $KSELFTESTS/* initramfs/kselftests/
 fi
+
+# Build initramfs
+DIR=$PWD
+pushd $LINUX
+ ./scripts/gen_initramfs_list.sh -o $DIR/initramfs.cpio $DIR/initramfs $DIR/initramfs.devnodes
+popd
 
 exit 0

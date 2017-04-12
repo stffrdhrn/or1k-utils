@@ -1,0 +1,16 @@
+# Config for tests and build
+
+# Location of linux kernel, used for sourcing vmlinux
+# and kselftests
+LINUX=$HOME/work/linux
+
+# Cross compile prefix used to build kselftests (which doesnt support, pulling
+# from kernel config because its a separate makefile)
+CROSS_COMPILE=or1k-musl-linux-
+
+# Location where you installed busybox openrisc binary
+BUSYBOX=$HOME/work/openrisc/busybox/_install
+
+# Location of your libc (if you want dynamic executables)
+LIBC=/opt/shorne/software/or1k-musl/or1k-linux-musl/or1k-linux-musl/lib/libc.so
+
