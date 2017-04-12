@@ -8,8 +8,9 @@ if [ ! -f "$TEST" ] ; then
 fi
 
 BINDIR=$(dirname $0)
+
+. $BINDIR/../config
 OPENRISC_OS=$BINDIR/..
-LINUX=$HOME/work/linux
 
 # Start sim in the background
 sim -f $OPENRISC_OS/or1ksim.cfg $LINUX/vmlinux --nosrv &

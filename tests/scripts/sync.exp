@@ -1,0 +1,21 @@
+#!/usr/bin/expect
+# This is an expect script to test openrisc via telnet
+
+set or1k_port 10084
+
+spawn telnet localhost $or1k_port
+
+expect "Please press Enter to activate this console."
+
+send "\r"
+expect "/ #"
+#expect "/ #"
+
+send "cd kselftests/sync\r"
+expect "/kselftests/sync #"
+#expect "/kselftests/futex #"
+
+send "./run.sh\r"
+expect "bun of stuff?"
+expect "/kselftests/sync #"
+

@@ -6,11 +6,15 @@
 #  - build kernel (initramfs)
 #  - start target and run the tests
 
-LINUX=$HOME/work/linux
-CROSS_COMPILE=or1k-musl-linux-
-TARGETS="futex sync timers"
+# Exit on failure
+set -e
 
 BINDIR=$(dirname $0)
+
+# Source in LINUX and CROSS_COMPILE env
+. $BINDIR/../config
+
+TARGETS="futex sync"
 
 # Build self tests
 pushd $LINUX
