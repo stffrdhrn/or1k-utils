@@ -1,14 +1,1 @@
-
-
-# files installed by busybox
-initramfs/bin
-initramfs/sbin
-initramfs/usr/bin
-initramfs/usr/sbin
-initramfs/init
-
-# files installed from libc
-initramfs/lib
-
-# Linux selftests
-initramfs/kselftests
+# Whats ignored?
