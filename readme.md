@@ -1,4 +1,4 @@
-# Openrisc OS
+# Openrisc OS Utilities
 This is a simple tool for building a linux initramfs  image that can
 boot on openrisc systems.
 
@@ -11,6 +11,25 @@ resources to build the initramfs.
 
 Then inside linux config point your initramfs to this repo.
 
+## Using
+
+When building linux you can make using the following
+
+```
+export OR1K_UTILS=../openrisc/or1k-utils
+
+make -j5 \
+  ARCH=openrisc \
+  CROSS_COMPILE=or1k-linux- \
+  CONFIG_INITRAMFS_SOURCE="$OR1K_UTILS/initramfs \
+    $OR1K_UTILS/initramfs.devnodes"
+```
+
+This tells the linux build to pull int the initramfs from the sources in
+the `or1k-utils` project.
+
 ## See also
 
- - [buildtoot](https://buildroot.org/) - for much more advanced initramfs creation
+ - [buildroot](https://buildroot.org/) - for much more advanced initramfs creation
+ - [openadk](https://openadk.org/) - support for openrisc, uclibc,
+   musl-cross
