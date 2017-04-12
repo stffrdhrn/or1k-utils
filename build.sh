@@ -54,10 +54,10 @@ if [ -d $KSELFTESTS ] ; then
  cp -a $KSELFTESTS/* initramfs/kselftests/
 fi
 
-# Build initramfs
-DIR=$PWD
-pushd $LINUX
- ./scripts/gen_initramfs_list.sh -o $DIR/initramfs.cpio $DIR/initramfs $DIR/initramfs.devnodes
-popd
+# Build initramfs, currently openrisc cannot use this
+#DIR=$PWD
+#pushd $LINUX
+# ./scripts/gen_initramfs_list.sh -o $DIR/initramfs.cpio $DIR/initramfs $DIR/initramfs.devnodes
+#popd
 
 exit 0
