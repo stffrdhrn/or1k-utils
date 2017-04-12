@@ -28,6 +28,25 @@ make -j5 \
 This tells the linux build to pull int the initramfs from the sources in
 the `or1k-utils` project.
 
+## Dejagnu Testing
+
+Also available here is the `site.exp` and `boards` files used for dejagnu
+testing of gnu projects like gdb.
+
+To use this run something like the following, this tells gdb to use or1ksim
+as the target for running tests:
+
+```
+export DEJAGNU=$HOME/openrisc/or1k-utils/site.exp
+
+cd build-gdb/gdb
+# Run tests
+make check
+
+# or to just run a single test
+make check RUNTESTFLAGS='gdb.xml/tdesc-regs.exp'
+```
+
 ## See also
 
  - [buildroot](https://buildroot.org/) - for much more advanced initramfs creation
