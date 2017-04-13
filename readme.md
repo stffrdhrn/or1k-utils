@@ -19,6 +19,11 @@ Currently this contains:
 This is a simple tool for building a linux initramfs  image that can
 boot on openrisc systems.
 
+Currently this contains binaries built with or1k-gcc 5.4.0 for:
+ - BusyBox 1.26.0
+ - musl libc 1.1.16
+ - strace 4.13
+
 ### Building
 Just run the `build.sh` script.  The script will pull in a few
 resources to build the initramfs.
