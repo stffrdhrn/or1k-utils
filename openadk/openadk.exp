@@ -1,0 +1,22 @@
+#!/usr/bin/expect -f
+# This is an expect script to test openrisc via telnet
+
+set timeout -1
+log_file -noappend openadk.log
+
+#Start the guest VM
+spawn qemu-system-or1k -kernel /home/shorne/work/openrisc/openadk/firmware/qemu-or1k_uclibc-ng/qemu-or1k-initramfspiggyback-kernel  -nographic
+
+expect "openadk login:"
+send "root\r"
+
+expect "Password:"
+send "stafford\r"
+
+expect "root@openadk:~ # $"
+
+send "cd /usr/lib/uclibc-ng-test/test/ ; chmod 755 uclibcng-testrunner.sh ; ./uclibcng-testrunner.sh\r"
+expect " # $"
+
+send "\x01"; send "c"
+send "quit"
