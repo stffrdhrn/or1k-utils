@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# command for programming de0 nano with openrisc soc
+
+fusesoc pgm de0_nano
+#quartus_pgm --mode=jtag -o p\;build/de0_nano/bld-quartus/de0_nano.sof

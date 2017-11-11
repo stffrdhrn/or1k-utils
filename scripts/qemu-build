@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# quick wrapper for openrisc qemu build
+
+SCRIPT_PATH=`dirname $0`
+
+QEMU=$HOME/work/openrisc/qemu
+
+pushd $QEMU/build
+  # If we need to configure use
+  # ../configure --target-list='or1k-softmmu or1k-linux-user'
+  make -j5
+  ret=$?
+popd
+
+# If make failed return false we we can string this command in bash
+[[ $ret == 0 ]] && true

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# quick wrapper for openrisc qemu
+
+SCRIPT_PATH=`dirname $0`
+
+QEMU=$HOME/work/openrisc/qemu
+# For regression testing
+# LINUX=$HOME/work/openrisc/or1k-linux-4.10
+# Latest mainline
+LINUX=$HOME/work/linux/vmlinux
+OSROOT=$HOME/work/openrisc/or1k-utils
+
+run() {
+  echo "exec: $@"
+  exec $@
+}
+
+# image created with
+# $QEMU/build/qemu-img create -f qcow2 qemu-snapshot.img 100M
+DRIVE="-drive file=${SCRIPT_PATH}/qemu-snapshot.img,cache=writeback"
+
+# Initrd not yet supported by openrisc
+#INITRD="-initrd $OSROOT/initramfs.cpio"
+
+# Debug, add -S to stop on startup
+DEBUG="-gdb tcp::10001"
+
+#TRACE="-D trace.txt -d in_asm,exec,int,cpu,op_opt"
+
+SERIAL="-serial stdio -nographic -monitor none"
+# With monitor 'ctrl+a c'
+SERIAL="-serial mon:stdio -nographic"
+
+SMP="-smp cpus=2"
+
+RAM="-m 128"
+
+run $QEMU/build/or1k-softmmu/qemu-system-or1k -cpu or1200 -M or1k-sim \
+    -kernel $LINUX \
+    $INITRD $SERIAL $DRIVE $DEBUG $TRACE $SMP $RAM $@

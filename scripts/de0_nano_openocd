@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Use our local config
+openocd -f ./or1k-utils/openocd/de0_nano.cfg
+
+# command for starting openocd when connecting to openrisc
+# on the altera de0 nano
+# openocd -s /opt/shorne/software/openocd/share/openocd/scripts/ -f interface/altera-usb-blaster.cfg -f board/or1k_generic.cfg
