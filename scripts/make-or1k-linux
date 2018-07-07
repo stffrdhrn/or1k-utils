@@ -7,9 +7,13 @@ hdmi2usb=$HOME/work/litex/HDMI2USB-litex-firmware
 openadk_source="$openadk/target_qemu-or1k_uclibc-ng/qemu-or1k-uclibc-ng-initramfspiggyback_list"
 or1k_utils_source="$or1k_utils/initramfs $or1k_utils/initramfs.devnodes"
 
+toolchain=or1k-elf-
+#toolchain=or1k-linux-musl-
+#toolchain=or1k-linux-
+
 # Select one of these to choose your preferred initramfs
-# initramfs_source=$or1k_utils_source
 initramfs_source=$or1k_utils_source
+#initramfs_source=$openadk_source
 
 run() {
   echo "exec: $@"
@@ -17,8 +21,9 @@ run() {
 }
 
 run make -j5 ARCH=openrisc \
-   CROSS_COMPILE=or1k-linux- \
+   CROSS_COMPILE=${toolchain} \
    CONFIG_INITRAMFS_SOURCE="$initramfs_source"
 
-run cp arch/openrisc/boot/vmlinux.bin $hdmi2usb/build/arty_net_or1k/software/linux/firmware.bin
+run mkdir -p $hdmi2usb/build/arty_net_or1k/software/linux
+# run cp arch/openrisc/boot/vmlinux.bin $hdmi2usb/build/arty_net_or1k/software/linux/firmware.bin
 # make ARCH=openrisc INSTALL_HDR_PATH=/opt/shorne/software/or1k-linux headers_install
