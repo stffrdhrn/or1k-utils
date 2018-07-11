@@ -22,9 +22,9 @@ case "$target_triplet" in {
 	set target_triplet "or1k-unknown-elf"
         set target_list { "or1k-elf-sim" }
     }
-    { "or32-*linux*" } {
-	set target_triplet "or32-unknown-gnu-linux"
-        set target_list { "or1k-linux-sim" }
+    { "or1k-*linux*" } {
+	set target_triplet "or1k-unknown-gnu-linux"
+        set target_list { "or1k-linux-qemu" }
     }
   }
 
