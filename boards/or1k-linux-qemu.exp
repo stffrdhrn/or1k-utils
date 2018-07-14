@@ -25,11 +25,11 @@ set_board_info target_install {or1k-linux-musl}
 # Load the basics, we inherit from sim
 load_generic_config "sim"
 
-set board_info is_simulator 1
-set board_info sim "qemu-or1k"
+set_board_info is_simulator 1
+set_board_info sim "qemu-or1k"
 
 # Set sysroot for musl libs when running qemu-or1k
-set board_info sim,options "-L /opt/shorne/software/or1k-linux-musl/or1k-linux-musl"
+set_board_info sim,options "-L /opt/crossbuild/output/or1k-linux-musl/or1k-linux-musl"
 
 # No multilib options needed by default.
 process_multilib_options ""
