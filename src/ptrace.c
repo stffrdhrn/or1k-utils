@@ -14,6 +14,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* Simple ptrace test, for testing ptracing in OpenRISC linux.  The program
+   will:
+    1. Fork
+    2. Child will exec "ls", flagging ptrace
+    3. Parent will wait for child to syscall and reach ptrace
+    4. Parent will read child regs
+    5. Parent will call ptrace continue
+
+ */
+
 int main()
 {   pid_t child;
     struct user_regs_struct regs;

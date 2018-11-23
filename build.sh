@@ -36,10 +36,12 @@ else
  exit 1
 fi
 
-if [ -f $LIBC ] ; then
+if [ -d $LIBC ] ; then
  echo "Installing lib"
  mkdir -p initramfs/lib
- cp $LIBC initramfs/lib
+ cp -a $LIBC/libc.so initramfs/lib
+ cp -a $LIBC/libstdc++.so* initramfs/lib
+ cp -a $LIBC/libgcc_s.so* initramfs/lib
  ln -sf libc.so initramfs/lib/ld-musl-or1k.so.1
 
 else

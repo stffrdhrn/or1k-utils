@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
+/* Simple program which does some forks then joins.  Used to test the strace
+   binary built for OpenRISC linux.  */
+
 int main(int argc, char **argv)
 {
     printf("--beginning of program\n");
