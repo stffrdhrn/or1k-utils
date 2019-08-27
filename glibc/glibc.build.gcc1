@@ -1,0 +1,31 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+RECONFIG=1
+
+source $DIR/glibc.config
+
+if [ -n $RECONFIG ] ; then
+  rm -rf $BUILDDIR/build-gcc
+  mkdir $BUILDDIR/build-gcc
+fi
+
+pushd $BUILDDIR/build-gcc 
+
+    if [ -n $RECONFIG ] ; then
+	$BUILDDIR/gcc/configure \
+	--target=$CROSS \
+	--prefix=$INSTALLDIR \
+	--with-sysroot=$SYSROOTDIR \
+	--enable-languages=c \
+	--disable-threads \
+        --disable-multilib \
+	--disable-libssp \
+	--disable-nls \
+	--disable-shared
+    fi
+
+    make -j4 all-gcc && make install-gcc
+    #make -j4 all-target-libgcc && make install-target-libgcc
+
+popd

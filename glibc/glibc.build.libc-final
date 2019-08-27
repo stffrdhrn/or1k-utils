@@ -1,0 +1,27 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+rm -rf $BUILDDIR/build-glibc
+mkdir $BUILDDIR/build-glibc
+
+pushd $BUILDDIR/build-glibc
+
+    echo "libc_cv_forced_unwind=yes" > config.cache
+    echo "libc_cv_c_cleanup=yes" >> config.cache
+
+    BUILD_CC="gcc" CC="${CROSS}-gcc" \
+    AR="${CROSS}-ar" RANLIB="${CROSS}-ranlib" \
+    $BUILDDIR/glibc/configure \
+    --host=$CROSS \
+    --prefix=/usr --libexecdir=/usr/lib/glibc \
+    --with-binutils=${INSTALLDIR}/bin --with-headers=${SYSROOTDIR}/usr/include \
+    --config-cache \
+    --enable-add-ons=nptl \
+    --enable-kernel=5.0.0
+
+    make -j5
+    make install_root=$SYSROOTDIR install
+
+popd

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+
+source $DIR/glibc.config
+
+# Dummy file installed by glibc needed by libgcc
+mkdir -p $INSTALLDIR/$CROSS/include/gnu
+touch $INSTALLDIR/$CROSS/include/gnu/stubs.h
+
+pushd $BUILDDIR/build-gcc 
+
+    make -j4 all-target-libgcc && make install-target-libgcc
+
+popd

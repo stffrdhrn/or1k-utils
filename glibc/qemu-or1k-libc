@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# quick wrapper for openrisc qemu
+
+SCRIPT_PATH=`dirname $0`
+
+QEMU=$HOME/work/openrisc/qemu
+
+## For glibc
+SYSROOT=$HOME/work/gnu-toolchain/sysroot
+
+## For MUSL libs
+#SYSROOT=$HOME//work/openrisc/or1k-utils/initramfs
+
+run() {
+  echo "exec: $@"
+  exec $@
+}
+
+# Debug, connect gdb with:
+#
+#  or1k-smh-linux-gnu-gdb $PROGRAM  -ex 'target remote localhost:10001'
+#
+#DEBUG="-g 10001"
+
+#TRACE="-D trace.txt -d in_asm,exec,int,cpu,op_opt"
+#TRACE="-trace open_eth_reg_* -trace open_eth_desc_*"
+
+#LD_DEBUG="-E LD_DEBUG=all"
+#LD_BIND_NOW="-E LD_BIND_NOW=1"
+
+SERIAL="-serial stdio -nographic -monitor none"
+# With monitor 'ctrl+a c'
+#SERIAL="-serial mon:stdio -nographic"
+
+#SMP="-smp cpus=2"
+
+# Go big if running openadk + debug
+#RAM="-m 512"
+RAM="-m 32"
+#RAM="-m 64"
+
+#IPRANGE=10.8.0
+#NETWORK="-net nic -netdev user,id=or1k,net=$IPRANGE.0/24,host=$IPRANGE.100,dhcpstart=$IPRANGE.50,hostfwd=tcp::2323-:23"
+#NETWORK="-net nic -net tap,ifname=tap0,script=no,downscript=no"
+
+rm -f trace.txt
+run $QEMU/build/or1k-linux-user/qemu-or1k -L $SYSROOT \
+    $TRACE $DEBUG $LD_DEBUG $LD_BIND_NOW $@

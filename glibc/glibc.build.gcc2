@@ -1,0 +1,26 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+RECONFIG=1
+
+source $DIR/glibc.config
+
+if [ -n $RECONFIG ] ; then
+  rm -rf $BUILDDIR/build-gcc
+  mkdir $BUILDDIR/build-gcc
+fi
+
+pushd $BUILDDIR/build-gcc
+    $BUILDDIR/gcc/configure \
+    --with-gnu-ld \
+    --with-gnu-as \
+    --disable-nls \
+    --disable-libssp \
+    --with-multilib-list=mcmov \
+    --enable-languages=c,c++ \
+    --target=$CROSS \
+    --prefix=$INSTALLDIR \
+    --with-sysroot=$SYSROOTDIR
+
+    make -j4 && make install
+popd

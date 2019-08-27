@@ -1,0 +1,24 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+rm -rf $BUILDDIR/build-glibc
+mkdir $BUILDDIR/build-glibc
+
+pushd $BUILDDIR/build-glibc
+
+    echo "libc_cv_forced_unwind=yes" > config.cache
+    echo "libc_cv_c_cleanup=yes" >> config.cache
+
+    $BUILDDIR/glibc/configure \
+    --host=$CROSS \
+    --prefix=/usr \
+    --with-headers=$SYSROOTDIR/usr/include \
+    --config-cache \
+    --enable-add-ons=nptl \
+    --enable-kernel=5.0.0
+
+    make install_root=$SYSROOTDIR install-headers 
+
+popd

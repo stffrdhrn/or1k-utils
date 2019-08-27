@@ -1,0 +1,19 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+rm -rf $BUILDDIR/build-binutils
+mkdir  $BUILDDIR/build-binutils
+
+pushd  $BUILDDIR/build-binutils
+
+    $BUILDDIR/binutils-gdb/configure \
+     --prefix=$INSTALLDIR \
+     --with-sysroot=$SYSROOTDIR \
+     --target=$CROSS
+
+    make -j5
+    make install
+
+popd
