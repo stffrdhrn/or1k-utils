@@ -1,6 +1,23 @@
 #!/bin/bash
 
-# quick wrapper for openrisc qemu
+# Wrapper for openrisc qemu user space emulator to help run libc binaries.
+# By editing this script we can:
+#
+#  - change between glibc and musl
+#  - setup gdb debugging
+#  - do instruction level tracing
+#  - enable glibc debugging
+#  - enable glibc bind now to skip lazy symbol resolution
+#  - change qemu ram size (not yet tested)
+#  - change qemu network settings (not yet tested)
+#
+# This script is also used to run the glibc testsuite.  I.e.
+#
+#  make check test-wrapper=$HOME/work/openrisc/or1k-utils/glibc/qemu-or1k-libc
+#
+# glibc doesn't use dejagnu so this wrapper script can be used.  For things
+# like gcc testing we use dejagnu which uses or1k-utils/site.exp which points to
+# or1k-utils/boards/or1k-linux-qemu.exp
 
 SCRIPT_PATH=`dirname $0`
 
@@ -12,10 +29,38 @@ SYSROOT=$HOME/work/gnu-toolchain/sysroot
 ## For MUSL libs
 #SYSROOT=$HOME//work/openrisc/or1k-utils/initramfs
 
+## For uclibc-ng libs?
+#SYSROOT=$HOME/
+
 run() {
   echo "exec: $@"
   exec $@
 }
+
+#### MAIN ####
+
+# glibc will pass in args like "env LD=xyz VAR=hello ./program
+# we parse those out here to a form accepted by qemu.
+
+ENV_ARGS=
+CMD_AND_ARGS=
+
+while [[ $# -gt 0 ]] ; do
+
+  case $1 in
+    env)
+      echo "Running GLIBC test with args: $@"
+      shift # remove env
+      while [[ $1 == *=* ]] ; do
+        ENV_ARGS="$ENV_ARGS -E $1" ; shift
+      done
+      ;;
+    *)
+      CMD_AND_ARGS="$CMD_AND_ARGS $1" ; shift
+      ;;
+  esac
+
+done
 
 # Debug, connect gdb with:
 #
@@ -46,4 +91,4 @@ RAM="-m 32"
 
 rm -f trace.txt
 run $QEMU/build/or1k-linux-user/qemu-or1k -L $SYSROOT \
-    $TRACE $DEBUG $LD_DEBUG $LD_BIND_NOW $@
+    $TRACE $DEBUG $LD_DEBUG $LD_BIND_NOW $ENV_ARGS $CMD_AND_ARGS
