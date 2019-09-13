@@ -19,18 +19,16 @@
 # like gcc testing we use dejagnu which uses or1k-utils/site.exp which points to
 # or1k-utils/boards/or1k-linux-qemu.exp
 
-SCRIPT_PATH=`dirname $0`
+SCRIPT_PATH=$0
 
-QEMU=$HOME/work/openrisc/qemu
+echo "  executing: $SCRIPT_PATH"
+echo "  with arguments:"
+echo "$@"
+echo
 
-## For glibc
-SYSROOT=$HOME/work/gnu-toolchain/sysroot
+DIR=`dirname $0`
 
-## For MUSL libs
-#SYSROOT=$HOME//work/openrisc/or1k-utils/initramfs
-
-## For uclibc-ng libs?
-#SYSROOT=$HOME/
+source $DIR/glibc.config
 
 run() {
   echo "exec: $@"
@@ -48,6 +46,10 @@ CMD_AND_ARGS=
 while [[ $# -gt 0 ]] ; do
 
   case $1 in
+    cp)
+      # CP commands getting passed to here should just run on the host
+      run $@
+      ;;
     env)
       echo "Running GLIBC test with args: $@"
       shift # remove env
@@ -67,6 +69,9 @@ done
 #  or1k-smh-linux-gnu-gdb $PROGRAM  -ex 'target remote localhost:10001'
 #
 #DEBUG="-g 10001"
+# env vars used for glib tests
+# TEST_COREDUMPS
+# TEST_DIRECT
 
 #TRACE="-D trace.txt -d in_asm,exec,int,cpu,op_opt"
 #TRACE="-trace open_eth_reg_* -trace open_eth_desc_*"
@@ -90,5 +95,5 @@ RAM="-m 32"
 #NETWORK="-net nic -net tap,ifname=tap0,script=no,downscript=no"
 
 rm -f trace.txt
-run $QEMU/build/or1k-linux-user/qemu-or1k -L $SYSROOT \
+run $QEMU/build/or1k-linux-user/qemu-or1k -L $SYSROOTDIR \
     $TRACE $DEBUG $LD_DEBUG $LD_BIND_NOW $ENV_ARGS $CMD_AND_ARGS
