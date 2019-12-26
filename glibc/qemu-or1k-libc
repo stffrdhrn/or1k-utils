@@ -21,17 +21,24 @@
 
 SCRIPT_PATH=$0
 
-echo "  executing: $SCRIPT_PATH"
-echo "  with arguments:"
-echo "$@"
-echo
+trace() {
+  if [ -n "${TRACE}${DEBUG}" ] ; then
+    echo "$(date -u +"%F %T") TRACE $@"
+  fi
+}
+
+# TRACE=1
+
+trace "executing:      $SCRIPT_PATH"
+trace "with arguments: $@"
+trace
 
 DIR=`dirname $0`
 
 source $DIR/glibc.config
 
 run() {
-  echo "exec: $@"
+  trace "exec: $@"
   exec $@
 }
 
@@ -47,11 +54,17 @@ while [[ $# -gt 0 ]] ; do
 
   case $1 in
     cp)
-      # CP commands getting passed to here should just run on the host
-      run $@
+      # CP commands need to run on this host, but may want to copy files out
+      # of sysroot so check if that is needed.
+      shift  ; # remove copy
+      from=$1; shift 
+      to=$1  ; shift
+      if [ -f "$SYSROOTDIR$from" ] ; then
+        from="$SYSROOTDIR$from"
+      fi
+      run "cp $from $to"
       ;;
     env)
-      echo "Running GLIBC test with args: $@"
       shift # remove env
       while [[ $1 == *=* ]] ; do
         ENV_ARGS="$ENV_ARGS -E $1" ; shift
@@ -68,13 +81,25 @@ done
 #
 #  or1k-smh-linux-gnu-gdb $PROGRAM  -ex 'target remote localhost:10001'
 #
-#DEBUG="-g 10001"
-# env vars used for glib tests
-# TEST_COREDUMPS
-# TEST_DIRECT
+if [ -n "$DEBUG" ] ; then
+  echo "Connect with: or1k-smh-linux-gnu-gdb $CMD_AND_ARGS -ex 'target remote localhost:10001'"
+  DEBUG="-g 10001"
 
-#TRACE="-D trace.txt -d in_asm,exec,int,cpu,op_opt"
-#TRACE="-trace open_eth_reg_* -trace open_eth_desc_*"
+fi
+
+if [ -n "$TRACE" ] ; then
+  QEMU_TRACE="-D trace.txt -d in_asm,exec,int,cpu,op_opt"
+#QEMU_TRACE="-trace open_eth_reg_* -trace open_eth_desc_*"
+fi
+
+if [ -n "${TRACE}${DEBUG}" ] ; then
+  # env vars used for glib tests
+  # TEST_DIRECT disables forking and directs output to the provided file
+  TEST_DIRECT="-E TEST_DIRECT=tst-output.txt"
+
+  # TEST_COREDUPS enabled core dumps
+  #TEST_COREDUMPS="-E TEST_COREDUMPS=1"
+fi
 
 #LD_DEBUG="-E LD_DEBUG=all"
 #LD_BIND_NOW="-E LD_BIND_NOW=1"
@@ -96,4 +121,5 @@ RAM="-m 32"
 
 rm -f trace.txt
 run $QEMU/build/or1k-linux-user/qemu-or1k -L $SYSROOTDIR \
-    $TRACE $DEBUG $LD_DEBUG $LD_BIND_NOW $ENV_ARGS $CMD_AND_ARGS
+    $QEMU_TRACE $DEBUG $LD_DEBUG $LD_BIND_NOW $TEST_COREDUMPS $TEST_DIRECT \
+    $ENV_ARGS $CMD_AND_ARGS

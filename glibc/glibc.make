@@ -1,28 +1,21 @@
 #!/bin/bash
 
 # A test runner to be used with glibc.  From the glibc directory run:
-#  glibc.test <subdir>
+#  glibc.make <make-target>
 #
-# This will run 'make check' with the correct arguments to run glibc
+# This will run 'make <make-target>' with the correct arguments to run glibc
 # tests as requested.  The SUBDIR argument is optional and will be used
 # to limit tests to run only for the selected sub-directory.
+#
+# This is used for regen-ulps
 
 DIR=`dirname $0`
 source $DIR/glibc.config
-
-if [ $# == 1 ] ; then
-  subdir=$1; shift
-fi
 
 TEST_WRAPPER="$DIR/qemu-or1k-libc"
 TEST_WRAPPER="$(readlink -f $TEST_WRAPPER)"
 
 pushd $BUILDDIR/build-glibc
-    if [ -z "$subdir" ] ; then
-        make -r PARALLELMFLAGS="-j4" \
-test-wrapper=$TEST_WRAPPER check
-    else
-        make -r PARALLELMFLAGS="-j4" -C $BUILDDIR/glibc/$subdir \
-test-wrapper=$TEST_WRAPPER objdir=`pwd` check
-    fi
+    make -r PARALLELMFLAGS="-j4" \
+test-wrapper=$TEST_WRAPPER objdir=`pwd` $@
 popd
