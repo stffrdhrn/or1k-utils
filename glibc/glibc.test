@@ -14,7 +14,11 @@ if [ $# == 1 ] ; then
   subdir=$1; shift
 fi
 
-TEST_WRAPPER="$DIR/qemu-or1k-libc"
+if [ "$CHROOT" ] ; then
+  CHROOT="-chroot"
+fi
+
+TEST_WRAPPER="$DIR/qemu-or1k-libc${CHROOT}"
 TEST_WRAPPER="$(readlink -f $TEST_WRAPPER)"
 
 pushd $BUILDDIR/build-glibc

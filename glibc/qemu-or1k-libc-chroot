@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Wrapper for openrisc user space emulator to help run libc binaries.
+# Similar to qemu-or1k-libc but this runs commands in a chroot environment
+# with the help of binfmt to make everything look transparent.
+#
+# This requires sudo to run.  The chroot environment is to be setup
+# as done by chroot.build.
+#
+# Parts of this are taken from glibc/scripts/cross-test-ssh.sh
+#
+# This script is also used to run the glibc testsuite.  I.e.
+#
+#  make check \
+#   test-wrapper=$HOME/work/openrisc/or1k-utils/glibc/qemu-or1k-libc-chroot
+#
+# glibc doesn't use dejagnu so this wrapper script can be used.  For things
+# like gcc testing we use dejagnu which uses or1k-utils/site.exp which points to
+# or1k-utils/boards/or1k-linux-qemu.exp
+
+SCRIPT_PATH=$0
+
+trace() {
+  if [ -n "${TRACE}${DEBUG}" ] ; then
+    echo "$(date -u +"%F %T") TRACE $@"
+  fi
+}
+
+TRACE=1
+
+trace "executing:      $SCRIPT_PATH"
+trace "with arguments: $@"
+trace
+
+DIR=`dirname $0`
+
+source $DIR/glibc.config
+
+#### MAIN ####
+
+timeoutfactor=
+
+# Print the sequence of arguments as strings properly quoted for the
+# Bourne shell, separated by spaces.
+bourne_quote ()
+{
+  local arg qarg
+  for arg in "$@"; do
+    qarg=${arg//\'/\'\\\'\'}
+    echo -n "'$qarg' "
+  done
+}
+
+# Transform the current argument list into a properly quoted Bourne shell
+# command string.
+command="$(bourne_quote "$@")"
+
+# Add command to set the current directory.
+command="cd $(bourne_quote "$PWD")
+${command}"
+
+# Add command to set the timeout factor, if required.
+if [ "$timeoutfactor" ]; then
+  command="export TIMEOUTFACTOR=$(bourne_quote "$timeoutfactor")
+${command}"
+fi
+
+full_command="cd $PWD; $@"
+trace "full command: $full_command"
+
+sudo chroot $SYSROOTDIR /bin/sh -c "$full_command"
