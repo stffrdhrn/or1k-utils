@@ -3,8 +3,10 @@
 DIR=`dirname $0`
 source $DIR/glibc.config
 
-rm -rf $BUILDDIR/build-binutils
-mkdir  $BUILDDIR/build-binutils
+mkdir -p $BUILDDIR/build-binutils
+# Clear anything inside, but don't delete the directory incase its mounted
+# in our chroot.
+rm -rf $BUILDDIR/build-binutils/*
 
 pushd  $BUILDDIR/build-binutils
 

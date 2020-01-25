@@ -21,12 +21,47 @@ fi
 TEST_WRAPPER="$DIR/qemu-or1k-libc${CHROOT}"
 TEST_WRAPPER="$(readlink -f $TEST_WRAPPER)"
 
+mkdir -p $BUILDDIR/log
+TESTLOG="$BUILDDIR/log/test-$subdir-$(date -u +"%Y%m%d-%H%M%S").log"
+
+start_time=`date -u +%s`
+
+startup() {
+  echo -n "# test start:    "; date -uIs
+}
+
+summary() {
+  local file=$1
+  echo
+  echo    "# failures"
+  grep ^FAIL $file
+  echo
+  echo -n "# test finish:   "; date -uIs
+  echo -n "# test time(m):  "; expr `date -u +%s` / 60 - $start_time / 60
+  echo    "# test for file: $file"
+  echo    "# test wrapper:  $TEST_WRAPPER"
+  echo
+  echo    "# summary"
+  cut -f1 -d: $file | sort | uniq -c
+}
+
 pushd $BUILDDIR/build-glibc
     if [ -z "$subdir" ] ; then
+        startup > $TESTLOG
         make -r PARALLELMFLAGS="-j4" \
 test-wrapper=$TEST_WRAPPER check
+        summary tests.sum >> $TESTLOG
     else
+        startup > $TESTLOG
         make -r PARALLELMFLAGS="-j4" -C $BUILDDIR/glibc/$subdir \
 test-wrapper=$TEST_WRAPPER objdir=`pwd` check
+        summary $subdir/subdir-tests.sum >> $TESTLOG
     fi
 popd
+
+echo "# results in file: $TESTLOG"
+cat $TESTLOG
+
+if [ "$MAILTO" ] ; then
+  cat $TESTLOG | mail -s "Glibc $subdir test results $(date -u +"%Y-%m-%d-%H:%M")" $MAILTO
+fi

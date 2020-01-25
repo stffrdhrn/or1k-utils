@@ -31,6 +31,7 @@ trace() {
 
 trace "executing:      $SCRIPT_PATH"
 trace "with arguments: $@"
+trace "from directory: $PWD"
 trace
 
 DIR=`dirname $0`
@@ -103,14 +104,14 @@ if [ -n "${TRACE}${DEBUG}" ] ; then
   TEST_DIRECT="-E TEST_DIRECT=tst-output.txt"
 
   # TEST_COREDUPS enabled core dumps
-  #TEST_COREDUMPS="-E TEST_COREDUMPS=1"
+  TEST_COREDUMPS="-E TEST_COREDUMPS=1"
 fi
 
 #LD_DEBUG="-E LD_DEBUG=all"
 #LD_BIND_NOW="-E LD_BIND_NOW=1"
 
 # Control timeout scale for glibc test framework, since we are slow
-TIMEOUTFACTOR=" -E TIMEOUTFACTOR=10"
+TIMEOUTFACTOR=" -E TIMEOUTFACTOR=$TIMEOUTFACTOR"
 
 rm -f trace.txt
 run $QEMU/build/or1k-linux-user/qemu-or1k -L $SYSROOTDIR \

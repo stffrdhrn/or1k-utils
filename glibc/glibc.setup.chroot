@@ -1,0 +1,69 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+function do_umount {
+  # get real/clean path that would shot up in mount
+  umount_path=`readlink -f $1`
+  if mount | grep -q "$umount_path "; then
+    # echo umount $umount_path
+    sudo umount $umount_path
+  fi
+}
+
+function do_mount {
+  mount_path=`readlink -f ${@: -1}`
+  if ! mount | grep -q "$mount_path "; then
+    # echo mount $@
+    sudo mount $@
+  fi
+}
+
+
+mkdir -p $SYSROOTDIR/usr/bin
+mkdir -p $SYSROOTDIR/tmp
+mkdir -p $SYSROOTDIR/bin
+mkdir -p $SYSROOTDIR/etc
+
+chmod a+w $SYSROOTDIR/tmp
+
+# Make mount points
+mkdir -p $SYSROOTDIR/proc
+mkdir -p $SYSROOTDIR/sys
+mkdir -p $SYSROOTDIR/dev
+mkdir -p $SYSROOTDIR/$BUILDDIR/build-glibc
+mkdir -p $SYSROOTDIR/$BUILDDIR/glibc
+
+grep ^root /etc/passwd > $SYSROOTDIR/etc/passwd
+grep ^$USER /etc/passwd >> $SYSROOTDIR/etc/passwd
+
+cp /etc/group $SYSROOTDIR/etc/group
+
+cp $BUSYBOX $SYSROOTDIR/bin
+$SYSROOTDIR/bin/busybox --install $SYSROOTDIR/bin
+
+# If statically linked need to also copy dependencies to sysroot/lib64
+cp $QEMU/build/or1k-linux-user/qemu-or1k $SYSROOTDIR/usr/bin
+
+# hard link so when we are in chroot we mirror the test directory
+
+# SUDO stuff remount everything
+
+## Umount in reverse order
+do_umount $SYSROOTDIR/$BUILDDIR/glibc
+do_umount $SYSROOTDIR/$BUILDDIR/build-glibc
+do_umount $SYSROOTDIR/dev/pts
+do_umount $SYSROOTDIR/dev
+do_umount $SYSROOTDIR/sys
+do_umount $SYSROOTDIR/proc/sys/fs/binfmt_misc
+# Can never umount proc!
+# do_umount $SYSROOTDIR/proc
+
+do_mount -t proc proc                  $SYSROOTDIR/proc
+do_mount -t binfmt_misc binfmt_misc    $SYSROOTDIR/proc/sys/fs/binfmt_misc
+do_mount -t sysfs sys                  $SYSROOTDIR/sys
+do_mount -o bind /dev                  $SYSROOTDIR/dev
+do_mount -o bind /dev/pts              $SYSROOTDIR/dev/pts
+do_mount -o bind $BUILDDIR/build-glibc $SYSROOTDIR/$BUILDDIR/build-glibc
+do_mount -o bind $BUILDDIR/glibc       $SYSROOTDIR/$BUILDDIR/glibc
