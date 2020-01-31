@@ -6,7 +6,7 @@ source $DIR/glibc.config
 mkdir -p $BUILDDIR/build-glibc
 # Clear anything inside, but don't delete the directory incase its mounted
 # in our chroot.
-rm -rf $BUILDDIR/build-binutils/*
+rm -rf $BUILDDIR/build-glibc/*
 
 pushd $BUILDDIR/build-glibc
 

@@ -43,8 +43,8 @@ cp /etc/group $SYSROOTDIR/etc/group
 cp $BUSYBOX $SYSROOTDIR/bin
 $SYSROOTDIR/bin/busybox --install $SYSROOTDIR/bin
 
-# If statically linked need to also copy dependencies to sysroot/lib64
-cp $QEMU/build/or1k-linux-user/qemu-or1k $SYSROOTDIR/usr/bin
+# If not static statically linked we need to also copy dependencies to sysroot/lib64
+cp $QEMU/build-static/or1k-linux-user/qemu-or1k $SYSROOTDIR/usr/bin
 
 # hard link so when we are in chroot we mirror the test directory
 
@@ -54,6 +54,7 @@ cp $QEMU/build/or1k-linux-user/qemu-or1k $SYSROOTDIR/usr/bin
 do_umount $SYSROOTDIR/$BUILDDIR/glibc
 do_umount $SYSROOTDIR/$BUILDDIR/build-glibc
 do_umount $SYSROOTDIR/dev/pts
+do_umount $SYSROOTDIR/dev/shm
 do_umount $SYSROOTDIR/dev
 do_umount $SYSROOTDIR/sys
 do_umount $SYSROOTDIR/proc/sys/fs/binfmt_misc
@@ -65,5 +66,6 @@ do_mount -t binfmt_misc binfmt_misc    $SYSROOTDIR/proc/sys/fs/binfmt_misc
 do_mount -t sysfs sys                  $SYSROOTDIR/sys
 do_mount -o bind /dev                  $SYSROOTDIR/dev
 do_mount -o bind /dev/pts              $SYSROOTDIR/dev/pts
+do_mount -o bind /dev/shm              $SYSROOTDIR/dev/shm
 do_mount -o bind $BUILDDIR/build-glibc $SYSROOTDIR/$BUILDDIR/build-glibc
 do_mount -o bind $BUILDDIR/glibc       $SYSROOTDIR/$BUILDDIR/glibc

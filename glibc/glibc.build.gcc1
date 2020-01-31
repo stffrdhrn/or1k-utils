@@ -1,14 +1,11 @@
 #!/bin/bash
 
 DIR=`dirname $0`
-RECONFIG=1
 
 source $DIR/glibc.config
 
-if [ -n $RECONFIG ] ; then
-  rm -rf $BUILDDIR/build-gcc
-  mkdir $BUILDDIR/build-gcc
-fi
+mkdir -p $BUILDDIR/build-gcc
+rm -rf $BUILDDIR/build-gcc/*
 
 pushd $BUILDDIR/build-gcc 
 

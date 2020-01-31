@@ -37,9 +37,14 @@ DIR=`dirname $0`
 
 source $DIR/glibc.config
 
-#### MAIN ####
+if [ "${STRACE}" ] ; then
+  STRACE="strace -fo /tmp/strace"
+fi
 
-full_command="export TIMEOUTFACTOR=$TIMEOUTFACTOR; cd $PWD; $@"
+EXPORTS="export TIMEOUTFACTOR=$TIMEOUTFACTOR; export HOME=$HOME"
+
+#### MAIN ####
+full_command="$EXPORTS; cd $PWD; $STRACE $@"
 trace "full command: $full_command"
 
 sudo chroot --userspec $USER:$USER $SYSROOTDIR /bin/sh -c "$full_command"

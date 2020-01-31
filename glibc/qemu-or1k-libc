@@ -93,6 +93,10 @@ if [ -n "$DEBUG" ] ; then
 
 fi
 
+if [ -n "$STRACE" ] ; then
+  QEMU_STRACE="-strace"
+fi
+
 if [ -n "$TRACE" ] ; then
   QEMU_TRACE="-D trace.txt -d in_asm,exec,int,cpu,op_opt"
 #QEMU_TRACE="-trace open_eth_reg_* -trace open_eth_desc_*"
@@ -107,6 +111,7 @@ if [ -n "${TRACE}${DEBUG}" ] ; then
   TEST_COREDUMPS="-E TEST_COREDUMPS=1"
 fi
 
+# The glibc runtime linker debugging
 #LD_DEBUG="-E LD_DEBUG=all"
 #LD_BIND_NOW="-E LD_BIND_NOW=1"
 
@@ -115,5 +120,6 @@ TIMEOUTFACTOR=" -E TIMEOUTFACTOR=$TIMEOUTFACTOR"
 
 rm -f trace.txt
 run $QEMU/build/or1k-linux-user/qemu-or1k -L $SYSROOTDIR \
-    $QEMU_TRACE $DEBUG $LD_DEBUG $LD_BIND_NOW $TEST_COREDUMPS $TEST_DIRECT \
+    $QEMU_TRACE $QEMU_STRACE $DEBUG $LD_DEBUG $LD_BIND_NOW \
+    $TEST_COREDUMPS $TEST_DIRECT \
     $ENV_ARGS $TIMEOUTFACTOR $CMD_AND_ARGS
