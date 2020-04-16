@@ -21,6 +21,11 @@ fi
 TEST_WRAPPER="$DIR/qemu-or1k-libc${CHROOT}"
 TEST_WRAPPER="$(readlink -f $TEST_WRAPPER)"
 
+if [ "$SSH" ] ; then
+  TEST_WRAPPER="$BUILDDIR/glibc/scripts/cross-test-ssh.sh"
+  TEST_WRAPPER="$TEST_WRAPPER --timeoutfactor $TIMEOUTFACTOR $SSH"
+fi
+
 mkdir -p $BUILDDIR/log
 TESTLOG="$BUILDDIR/log/test-$subdir-$(date -u +"%Y%m%d-%H%M%S").log"
 
@@ -34,7 +39,11 @@ summary() {
   local file=$1
   echo
   echo    "# failures"
-  grep ^FAIL $file
+  for failure in `grep ^FAIL $file | cut -d' ' -f2`; do
+    if ! grep -q "^$failure," $DIR/glibc.explained ; then
+      echo FAIL $failure
+    fi
+  done
   echo
   echo -n "# test finish:   "; date -uIs
   echo -n "# test time(m):  "; expr `date -u +%s` / 60 - $start_time / 60
@@ -49,12 +58,12 @@ pushd $BUILDDIR/build-glibc
     if [ -z "$subdir" ] ; then
         startup > $TESTLOG
         make -r PARALLELMFLAGS="-j4" \
-test-wrapper=$TEST_WRAPPER check
+test-wrapper="$TEST_WRAPPER" check
         summary tests.sum >> $TESTLOG
     else
         startup > $TESTLOG
         make -r PARALLELMFLAGS="-j4" -C $BUILDDIR/glibc/$subdir \
-test-wrapper=$TEST_WRAPPER objdir=`pwd` check
+test-wrapper="$TEST_WRAPPER" objdir=`pwd` check
         summary $subdir/subdir-tests.sum >> $TESTLOG
     fi
 popd

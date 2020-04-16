@@ -1,0 +1,20 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+PKG=zlib
+
+mkdir -p $BUILDDIR/build-${PKG}
+# Clear anything inside, but don't delete the directory incase its mounted
+# in our chroot.
+rm -rf $BUILDDIR/build-${PKG}/*
+
+pushd  $BUILDDIR/build-${PKG}
+
+    time ( CC=$CROSS-gcc $BUILDDIR/${PKG}/configure \
+     --prefix=$SYSROOTDIR/usr &&
+    make -j5 &&
+    make install )
+
+popd

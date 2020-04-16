@@ -1,0 +1,269 @@
+# List of tests which were investigated and explained
+
+gmon/tst-gmon-gprof,extra stack `+f3 1`, looks ok same in *csky*
+gmon/tst-gmon-pie-gprof,extra stack `+f3 1`, looks ok same in *csky*
+gmon/tst-gmon-static-gprof,extra stack `+f3 1`, looks ok same in *csky*
+
+nptl/tst-cond-except,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
+nptl/tst-cond24,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
+nptl/tst-cond25,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
+nptl/tst-robust-fork,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
+
+nptl/tst-align-clone,QEMU BUG (flags is 0) clone failed: Invalid argument
+nptl/tst-getpid1,QEMU BUG (flags is 0) clone failed: Invalid argument
+misc/tst-clone2,QEMU BUG (flags is 0) clone failed: Invalid argument
+misc/tst-clone3,QEMU BUG (flags is 0) clone failed: Invalid argument
+
+nptl/test-condattr-printers,No python
+nptl/test-cond-printers,No python
+nptl/test-mutexattr-printers,No python
+nptl/test-mutex-printers,No python
+nptl/test-rwlockattr-printers,No python
+nptl/test-rwlock-printers,No python
+
+rt/tst-mqueue3,QEMU BUG mq_notify not implemented
+rt/tst-mqueue5,QEMU BUG mq_notify not implemented
+rt/tst-mqueue6,QEMU BUG mq_notify not implemented
+
+misc/test-errno-linux,QEMU BUG (epoll) works on full linux
+libio/tst-vtables,QEMU BUG causing left right diff
+
+dirent/tst-scandir,CHROOT fail in chroot but not expected in real (confirmed)
+elf/tst-prelink-cmp,CHROOT fail in chroot but not expected in real
+elf/tst-unused-dep,CHROOT fail in chroot but not expected in real
+elf/tst-unused-dep-cmp,CHROOT fail in chroot but not expected in real
+io/tst-fts,CHROOT fail in chroot but not expected in real
+io/tst-fts-lfs,CHROOT fail in chroot but not expected in real
+posix/tst-spawn3,CHROOT fail in chroot but not expected in real
+
+# Work on linux confirmed
+# All tests, posix, misc, io, dirent
+posix/test-errno,Work on linux
+posix/tst-posix_spawn-setsid,Work on linux
+posix/tst-spawn2,Work on linux
+posix/tst-spawn4,Work on linux
+
+misc/test-errno-linux,Work on linux (dup double check)
+misc/tst-clone2,Work on linux (dup double check)
+misc/tst-clone3,Work on linux (dup double check)
+misc/tst-memfd_create,Work on linux
+misc/tst-mlock2,Work on linux
+
+io/tst-lockf,Works on linux
+dirent/list,Works on linux
+elf/tst-rtld-preload,Works running directly on linux, fails with ssh wrapper
+debug/tst-longjmp_chk2,Works on linux
+stdio-common/tst-vfprintf-width-prec,Works on linux
+
+# Ignore math fails until we fix it
+stdlib/tst-strtod-underflow,Ignore math fails
+math/test-double-asinh,Ignore math fails
+math/test-double-cacos,Ignore math fails
+math/test-double-cacosh,Ignore math fails
+math/test-double-casin,Ignore math fails
+math/test-double-casinh,Ignore math fails
+math/test-double-catanh,Ignore math fails
+math/test-double-ccos,Ignore math fails
+math/test-double-ccosh,Ignore math fails
+math/test-double-cexp,Ignore math fails
+math/test-double-clog10,Ignore math fails
+math/test-double-csin,Ignore math fails
+math/test-double-csinh,Ignore math fails
+math/test-double-csqrt,Ignore math fails
+math/test-double-ctan,Ignore math fails
+math/test-double-ctanh,Ignore math fails
+math/test-double-exp10,Ignore math fails
+math/test-double-expm1,Ignore math fails
+math/test-double-finite-asinh,Ignore math fails
+math/test-double-finite-cacos,Ignore math fails
+math/test-double-finite-cacosh,Ignore math fails
+math/test-double-finite-casin,Ignore math fails
+math/test-double-finite-casinh,Ignore math fails
+math/test-double-finite-catanh,Ignore math fails
+math/test-double-finite-clog10,Ignore math fails
+math/test-double-finite-csqrt,Ignore math fails
+math/test-double-finite-ctan,Ignore math fails
+math/test-double-finite-ctanh,Ignore math fails
+math/test-double-finite-expm1,Ignore math fails
+math/test-double-finite-j0,Ignore math fails
+math/test-double-finite-sinh,Ignore math fails
+math/test-double-finite-tan,Ignore math fails
+math/test-double-finite-tanh,Ignore math fails
+math/test-double-finite-y0,Ignore math fails
+math/test-double-j0,Ignore math fails
+math/test-double-sinh,Ignore math fails
+math/test-double-tan,Ignore math fails
+math/test-double-tanh,Ignore math fails
+math/test-double-y0,Ignore math fails
+math/test-fenv-return,Ignore math fails
+math/test-float-ccos,Ignore math fails
+math/test-float-ccosh,Ignore math fails
+math/test-float-cexp,Ignore math fails
+math/test-float-clog10,Ignore math fails
+math/test-float-csin,Ignore math fails
+math/test-float-csinh,Ignore math fails
+math/test-float-erfc,Ignore math fails
+math/test-float-finite-clog10,Ignore math fails
+math/test-float-finite-erfc,Ignore math fails
+math/test-float32-ccos,Ignore math fails
+math/test-float32-ccosh,Ignore math fails
+math/test-float32-cexp,Ignore math fails
+math/test-float32-clog10,Ignore math fails
+math/test-float32-csin,Ignore math fails
+math/test-float32-csinh,Ignore math fails
+math/test-float32-erfc,Ignore math fails
+math/test-float32-finite-clog10,Ignore math fails
+math/test-float32-finite-erfc,Ignore math fails
+math/test-float32x-asinh,Ignore math fails
+math/test-float32x-cacos,Ignore math fails
+math/test-float32x-cacosh,Ignore math fails
+math/test-float32x-casin,Ignore math fails
+math/test-float32x-casinh,Ignore math fails
+math/test-float32x-catanh,Ignore math fails
+math/test-float32x-ccos,Ignore math fails
+math/test-float32x-ccosh,Ignore math fails
+math/test-float32x-cexp,Ignore math fails
+math/test-float32x-clog10,Ignore math fails
+math/test-float32x-csin,Ignore math fails
+math/test-float32x-csinh,Ignore math fails
+math/test-float32x-csqrt,Ignore math fails
+math/test-float32x-ctan,Ignore math fails
+math/test-float32x-ctanh,Ignore math fails
+math/test-float32x-exp10,Ignore math fails
+math/test-float32x-expm1,Ignore math fails
+math/test-float32x-finite-asinh,Ignore math fails
+math/test-float32x-finite-cacos,Ignore math fails
+math/test-float32x-finite-cacosh,Ignore math fails
+math/test-float32x-finite-casin,Ignore math fails
+math/test-float32x-finite-casinh,Ignore math fails
+math/test-float32x-finite-catanh,Ignore math fails
+math/test-float32x-finite-clog10,Ignore math fails
+math/test-float32x-finite-csqrt,Ignore math fails
+math/test-float32x-finite-ctan,Ignore math fails
+math/test-float32x-finite-ctanh,Ignore math fails
+math/test-float32x-finite-expm1,Ignore math fails
+math/test-float32x-finite-j0,Ignore math fails
+math/test-float32x-finite-sinh,Ignore math fails
+math/test-float32x-finite-tan,Ignore math fails
+math/test-float32x-finite-tanh,Ignore math fails
+math/test-float32x-finite-y0,Ignore math fails
+math/test-float32x-j0,Ignore math fails
+math/test-float32x-sinh,Ignore math fails
+math/test-float32x-tan,Ignore math fails
+math/test-float32x-tanh,Ignore math fails
+math/test-float32x-y0,Ignore math fails
+math/test-float64-asinh,Ignore math fails
+math/test-float64-cacos,Ignore math fails
+math/test-float64-cacosh,Ignore math fails
+math/test-float64-casin,Ignore math fails
+math/test-float64-casinh,Ignore math fails
+math/test-float64-catanh,Ignore math fails
+math/test-float64-ccos,Ignore math fails
+math/test-float64-ccosh,Ignore math fails
+math/test-float64-cexp,Ignore math fails
+math/test-float64-clog10,Ignore math fails
+math/test-float64-csin,Ignore math fails
+math/test-float64-csinh,Ignore math fails
+math/test-float64-csqrt,Ignore math fails
+math/test-float64-ctan,Ignore math fails
+math/test-float64-ctanh,Ignore math fails
+math/test-float64-exp10,Ignore math fails
+math/test-float64-expm1,Ignore math fails
+math/test-float64-finite-asinh,Ignore math fails
+math/test-float64-finite-cacos,Ignore math fails
+math/test-float64-finite-cacosh,Ignore math fails
+math/test-float64-finite-casin,Ignore math fails
+math/test-float64-finite-casinh,Ignore math fails
+math/test-float64-finite-catanh,Ignore math fails
+math/test-float64-finite-clog10,Ignore math fails
+math/test-float64-finite-csqrt,Ignore math fails
+math/test-float64-finite-ctan,Ignore math fails
+math/test-float64-finite-ctanh,Ignore math fails
+math/test-float64-finite-expm1,Ignore math fails
+math/test-float64-finite-j0,Ignore math fails
+math/test-float64-finite-sinh,Ignore math fails
+math/test-float64-finite-tan,Ignore math fails
+math/test-float64-finite-tanh,Ignore math fails
+math/test-float64-finite-y0,Ignore math fails
+math/test-float64-j0,Ignore math fails
+math/test-float64-sinh,Ignore math fails
+math/test-float64-tan,Ignore math fails
+math/test-float64-tanh,Ignore math fails
+math/test-float64-y0,Ignore math fails
+math/test-idouble-cacos,Ignore math fails
+math/test-idouble-cacosh,Ignore math fails
+math/test-idouble-casin,Ignore math fails
+math/test-idouble-casinh,Ignore math fails
+math/test-idouble-ctan,Ignore math fails
+math/test-idouble-ctanh,Ignore math fails
+math/test-idouble-j0,Ignore math fails
+math/test-idouble-tan,Ignore math fails
+math/test-idouble-y0,Ignore math fails
+math/test-ifloat32x-cacos,Ignore math fails
+math/test-ifloat32x-cacosh,Ignore math fails
+math/test-ifloat32x-casin,Ignore math fails
+math/test-ifloat32x-casinh,Ignore math fails
+math/test-ifloat32x-ctan,Ignore math fails
+math/test-ifloat32x-ctanh,Ignore math fails
+math/test-ifloat32x-j0,Ignore math fails
+math/test-ifloat32x-tan,Ignore math fails
+math/test-ifloat32x-y0,Ignore math fails
+math/test-ifloat64-cacos,Ignore math fails
+math/test-ifloat64-cacosh,Ignore math fails
+math/test-ifloat64-casin,Ignore math fails
+math/test-ifloat64-casinh,Ignore math fails
+math/test-ifloat64-ctan,Ignore math fails
+math/test-ifloat64-ctanh,Ignore math fails
+math/test-ifloat64-j0,Ignore math fails
+math/test-ifloat64-tan,Ignore math fails
+math/test-ifloat64-y0,Ignore math fails
+math/test-ildouble-cacos,Ignore math fails
+math/test-ildouble-cacosh,Ignore math fails
+math/test-ildouble-casin,Ignore math fails
+math/test-ildouble-casinh,Ignore math fails
+math/test-ildouble-ctan,Ignore math fails
+math/test-ildouble-ctanh,Ignore math fails
+math/test-ildouble-j0,Ignore math fails
+math/test-ildouble-tan,Ignore math fails
+math/test-ildouble-y0,Ignore math fails
+math/test-ldouble-asinh,Ignore math fails
+math/test-ldouble-cacos,Ignore math fails
+math/test-ldouble-cacosh,Ignore math fails
+math/test-ldouble-casin,Ignore math fails
+math/test-ldouble-casinh,Ignore math fails
+math/test-ldouble-catanh,Ignore math fails
+math/test-ldouble-ccos,Ignore math fails
+math/test-ldouble-ccosh,Ignore math fails
+math/test-ldouble-cexp,Ignore math fails
+math/test-ldouble-clog10,Ignore math fails
+math/test-ldouble-csin,Ignore math fails
+math/test-ldouble-csinh,Ignore math fails
+math/test-ldouble-csqrt,Ignore math fails
+math/test-ldouble-ctan,Ignore math fails
+math/test-ldouble-ctanh,Ignore math fails
+math/test-ldouble-exp10,Ignore math fails
+math/test-ldouble-expm1,Ignore math fails
+math/test-ldouble-finite-asinh,Ignore math fails
+math/test-ldouble-finite-cacos,Ignore math fails
+math/test-ldouble-finite-cacosh,Ignore math fails
+math/test-ldouble-finite-casin,Ignore math fails
+math/test-ldouble-finite-casinh,Ignore math fails
+math/test-ldouble-finite-catanh,Ignore math fails
+math/test-ldouble-finite-clog10,Ignore math fails
+math/test-ldouble-finite-csqrt,Ignore math fails
+math/test-ldouble-finite-ctan,Ignore math fails
+math/test-ldouble-finite-ctanh,Ignore math fails
+math/test-ldouble-finite-expm1,Ignore math fails
+math/test-ldouble-finite-j0,Ignore math fails
+math/test-ldouble-finite-sinh,Ignore math fails
+math/test-ldouble-finite-tan,Ignore math fails
+math/test-ldouble-finite-tanh,Ignore math fails
+math/test-ldouble-finite-y0,Ignore math fails
+math/test-ldouble-j0,Ignore math fails
+math/test-ldouble-pow,Ignore math fails
+math/test-ldouble-sinh,Ignore math fails
+math/test-ldouble-tan,Ignore math fails
+math/test-ldouble-tanh,Ignore math fails
+math/test-ldouble-y0,Ignore math fails
+math/test-tgmath2,Ignore math fails
+

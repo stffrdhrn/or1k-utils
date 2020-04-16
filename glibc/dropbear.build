@@ -1,0 +1,24 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+PKG=dropbear
+
+mkdir -p $BUILDDIR/build-${PKG}
+# Clear anything inside, but don't delete the directory incase its mounted
+# in our chroot.
+rm -rf $BUILDDIR/build-${PKG}/*
+
+pushd  $BUILDDIR/build-${PKG}
+
+    # If we don't install zlib (zlib.build) we can do:
+    #   --disable-zlib
+
+    time ( $BUILDDIR/${PKG}/configure \
+     --prefix=$SYSROOTDIR/usr \
+     --host=$CROSS &&
+    make -j5 &&
+    make install )
+
+popd

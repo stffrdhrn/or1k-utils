@@ -59,7 +59,7 @@ while [[ $# -gt 0 ]] ; do
       # CP commands need to run on this host, but may want to copy files out
       # of sysroot so check if that is needed.
       shift  ; # remove copy
-      from=$1; shift 
+      from=$1; shift
       to=$1  ; shift
       if [ -f "$SYSROOTDIR$from" ] ; then
         from="$SYSROOTDIR$from"

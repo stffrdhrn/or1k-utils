@@ -1,0 +1,14 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+
+time (
+  $DIR/glibc.build.binutils &&
+  $DIR/glibc.build.linux-headers &&
+  $DIR/glibc.build.gcc1 &&
+  $DIR/glibc.build.libc-headers &&
+  $DIR/glibc.build.gcc1.5 &&
+  $DIR/glibc.build.libc-final &&
+  $DIR/glibc.build.gcc2 &&
+  $DIR/glibc.build.libc-final
+)
