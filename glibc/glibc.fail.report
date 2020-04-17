@@ -1,0 +1,25 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+mkdir -p $BUILDDIR/build-glibc
+
+tests_sum="$BUILDDIR/build-glibc/tests.sum"
+
+if [ "$VERBOSE" ] ; then
+  VERBOSE=""
+else
+  VERBOSE="-q"
+fi
+
+if [ -f "$tests_sum" ] ; then
+  for failure in `grep ^FAIL "$tests_sum" | cut -d' ' -f2`; do
+    if ! grep $VERBOSE "^$failure," $DIR/glibc.explained ; then
+      echo "ZZZFAIL $failure"
+    fi
+  # Sor results with FAIL at the end, quick hack
+  done | sort | sed 's/^ZZZ//'
+else
+  echo "ERROR: missing $tests_sum, cannot run. Run full $DIR/glibc.test first."
+fi

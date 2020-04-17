@@ -1,8 +1,8 @@
 # List of tests which were investigated and explained
 
-gmon/tst-gmon-gprof,extra stack `+f3 1`, looks ok same in *csky*
-gmon/tst-gmon-pie-gprof,extra stack `+f3 1`, looks ok same in *csky*
-gmon/tst-gmon-static-gprof,extra stack `+f3 1`, looks ok same in *csky*
+gmon/tst-gmon-gprof,extra stack "+f3 1"; same in *csky*
+gmon/tst-gmon-pie-gprof,extra stack "+f3 1"; same in *csky*
+gmon/tst-gmon-static-gprof,extra stack "+f3 1"; same in *csky*
 
 nptl/tst-cond-except,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
 nptl/tst-cond24,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
@@ -51,7 +51,7 @@ misc/tst-mlock2,Work on linux
 
 io/tst-lockf,Works on linux
 dirent/list,Works on linux
-elf/tst-rtld-preload,Works running directly on linux, fails with ssh wrapper
+elf/tst-rtld-preload,Works running directly on linux; fails with ssh wrapper
 debug/tst-longjmp_chk2,Works on linux
 stdio-common/tst-vfprintf-width-prec,Works on linux
 
