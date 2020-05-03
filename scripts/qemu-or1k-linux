@@ -34,20 +34,26 @@ DEBUG="-gdb tcp::10001"
 #TRACE="-D trace.txt -d in_asm,exec,int,cpu,op_opt"
 #TRACE="-trace open_eth_reg_* -trace open_eth_desc_*"
 
-SERIAL="-serial stdio -nographic -monitor none"
+#SERIAL="-serial stdio -nographic -monitor none"
 # With monitor 'ctrl+a c'
-#SERIAL="-serial mon:stdio -nographic"
+SERIAL="-serial mon:stdio -nographic"
 
 #SMP="-smp cpus=2"
 
 # Go big if running openadk + debug
-#RAM="-m 512"
-RAM="-m 32"
+RAM="-m 512"
+#RAM="-m 32"
 #RAM="-m 64"
 
-IPRANGE=10.8.0
+IPRANGE=10.9.0
+
+# Setup networking with the user more IP tack, it doesn't appear to work for me.
 #NETWORK="-net nic -netdev user,id=or1k,net=$IPRANGE.0/24,host=$IPRANGE.100,dhcpstart=$IPRANGE.50,hostfwd=tcp::2323-:23"
-NETWORK="-net nic -net tap,ifname=tap0,script=no,downscript=no"
+
+# Setup networking with a tap tunnel, this works.
+if ip addr show tap0 | grep -q "UP" && ip addr show tap0 | grep -q "$IPRANGE.100"; then
+  NETWORK="-net nic -net tap,ifname=tap0,script=no,downscript=no"
+fi
 
 rm -f trace.txt
 run $QEMU/build/or1k-softmmu/qemu-system-or1k -cpu or1200 -M or1k-sim \

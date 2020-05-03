@@ -20,10 +20,13 @@ run() {
   "$@"
 }
 
+(
+cd $HOME/work/linux
 run make -j5 ARCH=openrisc \
    CROSS_COMPILE=${toolchain} \
    CONFIG_INITRAMFS_SOURCE="$initramfs_source"
+)
 
-run mkdir -p $hdmi2usb/build/arty_net_or1k/software/linux
+# run mkdir -p $hdmi2usb/build/arty_net_or1k/software/linux
 # run cp arch/openrisc/boot/vmlinux.bin $hdmi2usb/build/arty_net_or1k/software/linux/firmware.bin
 # make ARCH=openrisc INSTALL_HDR_PATH=/opt/shorne/software/or1k-linux headers_install
