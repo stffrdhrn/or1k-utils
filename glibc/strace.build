@@ -1,0 +1,21 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+PKG=strace
+
+mkdir -p $BUILDDIR/build-${PKG}
+# Clear anything inside, but don't delete the directory incase its mounted
+# in our chroot.
+rm -rf $BUILDDIR/build-${PKG}/*
+
+pushd $BUILDDIR/build-${PKG}
+
+    time ( $BUILDDIR/${PKG}/configure \
+     --prefix=$SYSROOTDIR/usr \
+     --host=$CROSS &&
+    make -j5 &&
+    make install )
+
+popd

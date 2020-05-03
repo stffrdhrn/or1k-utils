@@ -7,7 +7,7 @@ source $DIR/glibc.config
 mkdir -p $BUILDDIR/build-gcc
 rm -rf $BUILDDIR/build-gcc/*
 
-pushd $BUILDDIR/build-gcc 
+pushd $BUILDDIR/build-gcc
 
     if [ -n $RECONFIG ] ; then
 	$BUILDDIR/gcc/configure \

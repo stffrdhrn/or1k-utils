@@ -94,7 +94,7 @@ if [ -n "$DEBUG" ] ; then
 fi
 
 if [ -n "$STRACE" ] ; then
-  QEMU_STRACE="-strace"
+  QEMU_STRACE="strace -fo strace.txt"
 fi
 
 if [ -n "$TRACE" ] ; then
@@ -119,7 +119,7 @@ fi
 TIMEOUTFACTOR=" -E TIMEOUTFACTOR=$TIMEOUTFACTOR"
 
 rm -f trace.txt
-run $QEMU/build/or1k-linux-user/qemu-or1k -L $SYSROOTDIR \
-    $QEMU_TRACE $QEMU_STRACE $DEBUG $LD_DEBUG $LD_BIND_NOW \
+run $QEMU_STRACE $QEMU/build/or1k-linux-user/qemu-or1k -L $SYSROOTDIR \
+    $QEMU_TRACE $DEBUG $LD_DEBUG $LD_BIND_NOW \
     $TEST_COREDUMPS $TEST_DIRECT \
     $ENV_ARGS $TIMEOUTFACTOR $CMD_AND_ARGS

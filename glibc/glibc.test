@@ -72,5 +72,5 @@ echo "# results in file: $TESTLOG"
 cat $TESTLOG
 
 if [ "$MAILTO" ] ; then
-  cat $TESTLOG | mail -s "Glibc $subdir test results $(date -u +"%Y-%m-%d-%H:%M")" $MAILTO
+  cat $TESTLOG | mail -s "Glibc $subdir test results $(date +"%Y-%m-%d-%H:%M")" $MAILTO
 fi

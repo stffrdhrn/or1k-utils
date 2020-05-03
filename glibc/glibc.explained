@@ -21,6 +21,28 @@ nptl/test-mutex-printers,No python
 nptl/test-rwlockattr-printers,No python
 nptl/test-rwlock-printers,No python
 
+# Creates 100x 20threads, each creating 2 works threads opening 20 dso files
+# which then exectures a function in each dlopen(dso) file.
+#nptl/tst-stack4,GLIBC BUG dl-tls.c: 481: _dl_allocate_tls_init: Assertion
+nptl/tst-stack4,Works on native linux; timeout=20
+
+# Creates 2 worker threads working to create 100,000 detached threads doesn't
+# wait for detached threads to join, waits for 2 workers to return.
+nptl/tst-create-detached,Works on native linux; timeout=20
+
+malloc/tst-malloc-thread-fail,Works on native linux; timeout=20
+malloc/tst-mallocfork2,Works on native linux; timeout=20
+
+malloc/tst-malloc-usable-tunables,Works on native linux; export TUNABLES not working in chroot
+malloc/tst-mxfast,Passes on native linux
+malloc/tst-safe-linking,Passes on native linux
+nptl/tst-mutex10,Works on native linux; timeout=20
+stdio-common/tst-vfprintf-width-prec-mem,Works on native linux; No memory leaks
+support/tst-support_blob_repeat,Works on native linux; timeout=20
+
+malloc/tst-dynarray-fail,Works on linux
+malloc/tst-dynarray-at-fail,Works on linux
+
 rt/tst-mqueue3,QEMU BUG mq_notify not implemented
 rt/tst-mqueue5,QEMU BUG mq_notify not implemented
 rt/tst-mqueue6,QEMU BUG mq_notify not implemented
@@ -54,6 +76,8 @@ dirent/list,Works on linux
 elf/tst-rtld-preload,Works running directly on linux; fails with ssh wrapper
 debug/tst-longjmp_chk2,Works on linux
 stdio-common/tst-vfprintf-width-prec,Works on linux
+
+timezone/tst-tzset,Works on linux; >64mb ram; timeout=20
 
 # Ignore math fails until we fix it
 stdlib/tst-strtod-underflow,Ignore math fails

@@ -1,6 +1,17 @@
 #!/bin/bash
+# Wrapper to run all builds in the right order
 
 DIR=`dirname $0`
+source $DIR/glibc.config
+
+start_time=`date -u +%s`
+
+summary() {
+  echo
+  echo -n "# build finish:   "; date -uIs
+  echo -n "# build time(m):  "; expr `date -u +%s` / 60 - $start_time / 60
+  echo
+}
 
 time (
   $DIR/glibc.build.binutils &&
@@ -12,3 +23,8 @@ time (
   $DIR/glibc.build.gcc2 &&
   $DIR/glibc.build.libc-final
 )
+
+
+if [ "$MAILTO" ] ; then
+  summary | mail -s "Glibc build report $(date +"%Y-%m-%d-%H:%M")" $MAILTO
+fi
