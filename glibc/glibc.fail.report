@@ -3,9 +3,14 @@
 DIR=`dirname $0`
 source $DIR/glibc.config
 
-mkdir -p $BUILDDIR/build-glibc
+if [ $# == 1 ] ; then
+  subdir=$1; shift
+  tests_sum="$BUILDDIR/build-glibc/$subdir/subdir-tests.sum"
+else
+  tests_sum="$BUILDDIR/build-glibc/tests.sum"
+fi
 
-tests_sum="$BUILDDIR/build-glibc/tests.sum"
+mkdir -p $BUILDDIR/build-glibc
 
 if [ "$VERBOSE" ] ; then
   VERBOSE=""
@@ -17,6 +22,9 @@ if [ -f "$tests_sum" ] ; then
   for failure in `grep ^FAIL "$tests_sum" | cut -d' ' -f2`; do
     if ! grep $VERBOSE "^$failure," $DIR/glibc.explained ; then
       echo "ZZZFAIL $failure"
+      if [ -z "$VERBOSE" ] ; then
+        cat -n "$BUILDDIR/build-glibc/$failure.out" | sed 's/ \([0-9]\)\t/0\1\t/' | sed "s@^@ZZZFAIL $failure: @"
+      fi
     fi
   # Sor results with FAIL at the end, quick hack
   done | sort | sed 's/^ZZZ//'

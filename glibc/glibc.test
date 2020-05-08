@@ -8,6 +8,7 @@
 # to limit tests to run only for the selected sub-directory.
 
 DIR=`dirname $0`
+DIR=`readlink -f $DIR`
 source $DIR/glibc.config
 
 if [ $# == 1 ] ; then
@@ -57,13 +58,17 @@ summary() {
 pushd $BUILDDIR/build-glibc
     if [ -z "$subdir" ] ; then
         startup > $TESTLOG
-        make -r PARALLELMFLAGS="-j4" \
-test-wrapper="$TEST_WRAPPER" check
+        (
+          make -r PARALLELMFLAGS="-j4" \
+            test-wrapper="$TEST_WRAPPER" check
+        )
         summary tests.sum >> $TESTLOG
     else
         startup > $TESTLOG
-        make -r PARALLELMFLAGS="-j4" -C $BUILDDIR/glibc/$subdir \
-test-wrapper="$TEST_WRAPPER" objdir=`pwd` check
+        (
+          make -r PARALLELMFLAGS="-j4" -C $BUILDDIR/glibc/$subdir \
+            test-wrapper="$TEST_WRAPPER" objdir=`pwd` check
+        )
         summary $subdir/subdir-tests.sum >> $TESTLOG
     fi
 popd

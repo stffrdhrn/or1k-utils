@@ -7,7 +7,7 @@ function do_umount {
   # get real/clean path that would shot up in mount
   umount_path=`readlink -f $1`
   if mount | grep -q "$umount_path "; then
-    # echo umount $umount_path
+    echo umount $umount_path
     sudo umount $umount_path
   fi
 }
@@ -15,7 +15,7 @@ function do_umount {
 function do_mount {
   mount_path=`readlink -f ${@: -1}`
   if ! mount | grep -q "$mount_path "; then
-    # echo mount $@
+    echo mount $@
     sudo mount $@
   fi
 }

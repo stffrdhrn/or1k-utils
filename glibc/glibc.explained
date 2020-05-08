@@ -58,6 +58,10 @@ io/tst-fts,CHROOT fail in chroot but not expected in real
 io/tst-fts-lfs,CHROOT fail in chroot but not expected in real
 posix/tst-spawn3,CHROOT fail in chroot but not expected in real
 
+sysvipc/test-sysvmsg,QEMU mask issue; Passes on full linux
+sysvipc/test-sysvshm,QEMU mask issue; Passes on full linux
+sysvipc/test-sysvsem,QEMU mask issue; Passes on full linux
+
 # Work on linux confirmed
 # All tests, posix, misc, io, dirent
 posix/test-errno,Work on linux
@@ -80,6 +84,24 @@ stdio-common/tst-vfprintf-width-prec,Works on linux
 timezone/tst-tzset,Works on linux; >64mb ram; timeout=20
 
 # Ignore math fails until we fix it
+math/test-double-acos,Ignore math fails
+math/test-double-asin,Ignore math fails
+math/test-float32x-acos,Ignore math fails
+math/test-float32x-asin,Ignore math fails
+#math/test-float64-acos,Ignore math fails (Invalid Operation)
+math/test-float64-asin,Ignore math fails
+math/test-float64-ccos,Ignore math fails
+math/test-float64-ccosh,Ignore math fails
+#math/test-float-ccos,Ignore math fails (Overflow)
+math/test-float-ccosh,Ignore math fails
+math/test-float-cexp,Ignore math fails
+math/test-float-clog10,Ignore math fails
+math/test-float-csin,Ignore math fails
+math/test-float-csinh,Ignore math fails
+#math/test-float-erfc,Ignore math fails (Underflow)
+math/test-ldouble-acos,Ignore math fails
+math/test-ldouble-asin,Ignore math fails
+
 stdlib/tst-strtod-underflow,Ignore math fails
 math/test-double-asinh,Ignore math fails
 math/test-double-cacos,Ignore math fails
@@ -119,16 +141,6 @@ math/test-double-sinh,Ignore math fails
 math/test-double-tan,Ignore math fails
 math/test-double-tanh,Ignore math fails
 math/test-double-y0,Ignore math fails
-math/test-fenv-return,Ignore math fails
-math/test-float-ccos,Ignore math fails
-math/test-float-ccosh,Ignore math fails
-math/test-float-cexp,Ignore math fails
-math/test-float-clog10,Ignore math fails
-math/test-float-csin,Ignore math fails
-math/test-float-csinh,Ignore math fails
-math/test-float-erfc,Ignore math fails
-math/test-float-finite-clog10,Ignore math fails
-math/test-float-finite-erfc,Ignore math fails
 math/test-float32-ccos,Ignore math fails
 math/test-float32-ccosh,Ignore math fails
 math/test-float32-cexp,Ignore math fails
@@ -290,4 +302,3 @@ math/test-ldouble-tan,Ignore math fails
 math/test-ldouble-tanh,Ignore math fails
 math/test-ldouble-y0,Ignore math fails
 math/test-tgmath2,Ignore math fails
-

@@ -24,6 +24,8 @@ time (
   $DIR/glibc.build.libc-final
 )
 
+# Sync gcc runtime libs into sysroot
+rsync -a $INSTALLDIR/or1k-smh-linux-gnu/lib/  $SYSROOTDIR/lib
 
 if [ "$MAILTO" ] ; then
   summary | mail -s "Glibc build report $(date +"%Y-%m-%d-%H:%M")" $MAILTO
