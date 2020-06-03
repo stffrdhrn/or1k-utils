@@ -59,4 +59,5 @@ command="$(bourne_quote "$@")"
 full_command="$EXPORTS; cd $PWD; $STRACE ${command}"
 trace "full command: $full_command"
 
+export LC_ALL=C
 sudo chroot --userspec $USER:$USER $SYSROOTDIR /bin/sh -c "$full_command"
