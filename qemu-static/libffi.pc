@@ -1,0 +1,11 @@
+prefix=/home/shorne/work/openrisc/qemu-static/local
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+toolexeclibdir=${prefix}/lib64
+includedir=${libdir}/libffi-3.1/include
+
+Name: libffi
+Description: Library supporting Foreign Function Interfaces
+Version: 3.1
+Libs: -L${toolexeclibdir} -lffi
+Cflags: -I${includedir}

@@ -1,0 +1,50 @@
+#!/bin/bash
+# This builds libs required by qemu when building with static.
+# The RPMs for the below packages do not provide -static libs.
+#
+# These RPMs were needed and available
+#  - libselinux-static-3.0-3.fc32.x86_64
+#  - libsepol-static-3.0-3.fc32.x86_64
+#  - pcre2-static-10.35-1.fc32.x86_64
+#
+# INSTALL
+#
+# Download Sources
+# To run this you will need to download the sources as below. These
+# were the versions needed for fedora 32.  Check if you need different
+# versions.
+#
+# curl https://www.cairographics.org/releases/pixman-0.40.0.tar.gz -o pixman-0.40.0.tar.gz
+# curl https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.35/util-linux-2.35.1.tar.gz -o util-linux-2.35.1.tar.gz
+# curl ftp://sourceware.org/pub/libffi/libffi-3.1.tar.gz -o libffi-3.1.tar.gz
+#
+# Set Prefix
+# Set the below PREFIX to a directory you want to install into.
+# This PREFIX should also be updated in the config.qemu-or1k-static
+
+CFLAGS='-fPIE -Og'
+PREFIX=/home/shorne/work/openrisc/qemu-static/local
+
+export CFLAGS PREFIX
+
+# For libmount libblkid
+pushd util-linux-2.35.1
+  ./configure --prefix=$PREFIX
+  make -j2
+  echo "Need to sudo to install util-linux"
+  sudo true
+  sudo make install
+popd
+
+pushd pixman-0.40.0
+  ./configure --prefix=$PREFIX
+  make -j2
+  make install
+popd
+
+pushd libffi-3.1
+  ./configure --prefix=$PREFIX
+  make -j2
+  make install
+popd
+cp libffi.pc local/lib/pkgconfig/libffi.pc
