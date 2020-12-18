@@ -3,18 +3,20 @@
 DIR=`dirname $0`
 source $DIR/glibc.config
 
-mkdir -p $BUILDDIR/build-binutils
+mkdir -p $BUILDDIR/build-binutils-native
 # Clear anything inside, but don't delete the directory incase its mounted
 # in our chroot.
-rm -rf $BUILDDIR/build-binutils/*
+rm -rf $BUILDDIR/build-binutils-native/*
 
-pushd  $BUILDDIR/build-binutils
+pushd  $BUILDDIR/build-binutils-native
 
     $BUILDDIR/binutils-gdb/configure \
-     --prefix=$INSTALLDIR \
+     --prefix=$SYSROOTDIR \
      --with-sysroot=$SYSROOTDIR \
-     --target=$CROSS &&
-    make -j5 &&
-    make install
+     --host=$CROSS \
+     --target=$CROSS
+
+    make -j5
+    # make install
 
 popd

@@ -9,10 +9,12 @@ start_time=`date -u +%s`
 summary() {
   echo
   echo -n "# build finish:   "; date -uIs
+  grep glibc.build execlog
   echo -n "# build time(m):  "; expr `date -u +%s` / 60 - $start_time / 60
   echo
 }
 
+set -x
 time (
   $DIR/glibc.build.binutils &&
   $DIR/glibc.build.linux-headers &&
@@ -21,8 +23,10 @@ time (
   $DIR/glibc.build.gcc1.5 &&
   $DIR/glibc.build.libc-final &&
   $DIR/glibc.build.gcc2 &&
-  $DIR/glibc.build.libc-final
-)
+  $DIR/glibc.build.libc-final &&
+  $DIR/glibc.build.done
+) > execlog 2>&1
+set +x
 
 # Sync gcc runtime libs into sysroot
 rsync -a $INSTALLDIR/or1k-smh-linux-gnu/lib/  $SYSROOTDIR/lib

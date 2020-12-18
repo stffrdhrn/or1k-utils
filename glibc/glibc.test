@@ -11,12 +11,24 @@ DIR=`dirname $0`
 DIR=`readlink -f $DIR`
 source $DIR/glibc.config
 
+mkdir -p $BUILDDIR/log
+
 if [ $# == 1 ] ; then
-  subdir=$1; shift
+  if [[ $1 == */* ]] ; then
+    singletest=$1; shift
+  else
+    subdir=$1; shift
+  fi
 fi
 
 if [ "$CHROOT" ] ; then
   CHROOT="-chroot"
+fi
+
+if [ "$PARALLEL" ] ; then
+  PARALLEL="PARALLELMFLAGS=\"-j${PARALLEL}\""
+else
+  PARALLEL="PARALLELMFLAGS=\"-j4\""
 fi
 
 TEST_WRAPPER="$DIR/qemu-or1k-libc${CHROOT}"
@@ -27,7 +39,6 @@ if [ "$SSH" ] ; then
   TEST_WRAPPER="$TEST_WRAPPER --timeoutfactor $TIMEOUTFACTOR $SSH"
 fi
 
-mkdir -p $BUILDDIR/log
 TESTLOG="$BUILDDIR/log/test-$subdir-$(date -u +"%Y%m%d-%H%M%S").log"
 
 start_time=`date -u +%s`
@@ -56,17 +67,19 @@ summary() {
 }
 
 pushd $BUILDDIR/build-glibc
-    if [ -z "$subdir" ] ; then
+    if [ "$singletest" ] ; then
+        make test-wrapper="$TEST_WRAPPER" test t=$singletest
+        exit $?
+    elif [ -z "$subdir" ] ; then
         startup > $TESTLOG
         (
-          make -r PARALLELMFLAGS="-j4" \
-            test-wrapper="$TEST_WRAPPER" check
+          make -r $PARALLEL test-wrapper="$TEST_WRAPPER" check
         )
         summary tests.sum >> $TESTLOG
     else
         startup > $TESTLOG
         (
-          make -r PARALLELMFLAGS="-j4" -C $BUILDDIR/glibc/$subdir \
+          make -r $PARALLEL -C $BUILDDIR/glibc/$subdir \
             test-wrapper="$TEST_WRAPPER" objdir=`pwd` check
         )
         summary $subdir/subdir-tests.sum >> $TESTLOG

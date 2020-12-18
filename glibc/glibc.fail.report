@@ -23,7 +23,7 @@ if [ -f "$tests_sum" ] ; then
     if ! grep $VERBOSE "^$failure," $DIR/glibc.explained ; then
       echo "ZZZFAIL $failure"
       if [ -z "$VERBOSE" ] ; then
-        cat -n "$BUILDDIR/build-glibc/$failure.out" | head -n99 | sed 's/ \([0-9]\)\t/0\1\t/' | sed "s@^@ZZZFAIL $failure: @"
+        cat -n "$BUILDDIR/build-glibc/$failure.out" | head -n99 | cut -b1-256 | sed 's/ \([0-9]\)\t/0\1\t/' | sed "s@^@ZZZFAIL $failure: @"
       fi
     fi
   # Sor results with FAIL at the end, quick hack

@@ -13,6 +13,7 @@ fi
 
 pushd $BUILDDIR/build-glibc
 
+    config_rv=0
     if [ -z "$NOCLEAN" ] ; then
       echo "libc_cv_forced_unwind=yes" > config.cache
       echo "libc_cv_c_cleanup=yes" >> config.cache
@@ -30,9 +31,9 @@ pushd $BUILDDIR/build-glibc
       --config-cache \
       --enable-add-ons=nptl \
       --enable-kernel=5.0.0
+      config_rv=$?
     fi
 
-    make -j5
-    make install_root=$SYSROOTDIR install
+    [ $config_rv = 0 ] && make -j5 && make install_root=$SYSROOTDIR install
 
 popd
