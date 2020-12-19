@@ -9,6 +9,7 @@ QEMU=$HOME/work/openrisc/qemu
 # LINUX=$HOME/work/openrisc/or1k-linux-4.10
 # Latest mainline
 #LINUX=$HOME/work/openrisc/buildroot/output/images/vmlinux
+#INITRD_CPIO=$HOME/work/openrisc/buildroot/output/rootfs.cpio.gz
 LINUX=$HOME/work/linux/vmlinux
 OSROOT=$HOME/work/openrisc/or1k-utils
 INITRD_CPIO=$HOME/work/linux/initramfs.cpio.gz
@@ -24,10 +25,8 @@ if [ ! -f ${SCRIPT_PATH}/qemu-snapshot.img ] ; then
   $QEMU/build/qemu-img create -f qcow2 ${SCRIPT_PATH}/qemu-snapshot.img 100M
 fi
 
+# For taking hibernation like snapshots of QEMU
 #DRIVE="-drive file=${SCRIPT_PATH}/qemu-snapshot.img,cache=writeback"
-
-# Initrd not yet supported by openrisc
-#INITRD="-initrd $OSROOT/initramfs.cpio"
 
 # Debug, add -S to stop on startup
 DEBUG="-gdb tcp::10001"

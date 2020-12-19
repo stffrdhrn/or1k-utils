@@ -29,7 +29,7 @@ unset SMBD
 unset STRIP
 unset WINDRES
 
-PREFIX=/home/shorne/work/openrisc/qemu-static/local
+PREFIX=$HOME/work/openrisc/qemu-static/local
 
 PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig:/usr/lib64/pkgconfig
 export PKG_CONFIG_PATH
