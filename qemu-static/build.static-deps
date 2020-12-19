@@ -23,7 +23,7 @@
 # This PREFIX should also be updated in the config.qemu-or1k-static
 
 CFLAGS='-fPIE -Og'
-PREFIX=/home/shorne/work/openrisc/qemu-static/local
+PREFIX=$HOME/work/openrisc/qemu-static/local
 
 export CFLAGS PREFIX
 
@@ -47,4 +47,4 @@ pushd libffi-3.1
   make -j2
   make install
 popd
-cp libffi.pc local/lib/pkgconfig/libffi.pc
+cp libffi.pc $PREFIX/lib/pkgconfig/libffi.pc
