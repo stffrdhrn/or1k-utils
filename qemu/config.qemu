@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -z $CPU ] ; then
+  CPU=or1k
+fi
+
+if [ "$STATIC" ] ; then
+  STATIC="--static"
+fi
+
+../configure --target-list="$CPU-linux-user $CPU-softmmu lm32-softmmu" \
+	--enable-fdt \
+	--disable-kvm \
+	--disable-xen \
+	--disable-xkbcommon \
+	--enable-debug \
+	--enable-debug-info $STATIC $@
