@@ -10,7 +10,9 @@ $ make
 Copy the rootfs for litex tftp to boot
 
 ```
-echo "Copying rootfs.cpio.gz to $HOME/work/litex/litex-buildenv/build/tftpd/"
+or1k_utils=$HOME/work/openrisc/or1k-utils
+
+echo "Copying rootfs.cpio.gz to $or1k_utils/litex/tftpd/"
 ls -lh output/images/
-cp output/images/rootfs.cpio.gz $HOME/work/litex/litex-buildenv/build/tftpd/
+cp output/images/rootfs.cpio.gz $or1k_utils/litex/tftpd/
 ```

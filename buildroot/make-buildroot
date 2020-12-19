@@ -1,0 +1,9 @@
+#!/bin/bash
+
+or1k_utils=$HOME/work/openrisc/or1k-utils
+
+make
+
+echo "Copying rootfs.cpio.gz to $or1k_utils/litex/tftpd/"
+ls -lh output/images/
+cp output/images/rootfs.cpio.gz $or1k_utils/litex/tftpd/
