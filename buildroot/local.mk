@@ -1,0 +1,7 @@
+GNU_DEV = /home/shorne/work/gnu-toolchain
+
+BINUTILS_OVERRIDE_SRCDIR = $(GNU_DEV)/binutils-gdb
+GDB_OVERRIDE_SRCDIR = $(GNU_DEV)/binutils-gdb
+GCC_INITIAL_OVERRIDE_SRCDIR = $(GNU_DEV)/gcc
+GCC_FINAL_OVERRIDE_SRCDIR = $(GNU_DEV)/gcc
+GLIBC_OVERRIDE_SRCDIR = $(GNU_DEV)/glibc
