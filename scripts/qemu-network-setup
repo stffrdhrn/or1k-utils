@@ -39,3 +39,6 @@ else
     echo "Unable to find tool to configure tap0 address"
     exit 1
 fi
+
+# Enable tap0 firewall
+sudo firewall-cmd --zone=libvirt --add-interface=tap0

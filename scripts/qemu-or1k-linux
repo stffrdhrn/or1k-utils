@@ -11,10 +11,11 @@ QEMU=$HOME/work/openrisc/qemu
 #LINUX=$HOME/work/openrisc/buildroot/output/images/vmlinux
 LINUX=$HOME/work/linux/vmlinux
 OSROOT=$HOME/work/openrisc/or1k-utils
+INITRD_CPIO=$HOME/work/linux/initramfs.cpio.gz
 
 run() {
   echo "exec: $@"
-  exec $@
+  exec "$@"
 }
 
 # image created with
@@ -47,6 +48,11 @@ RAM="-m 512"
 
 IPRANGE=10.9.0
 
+# https://wiki.qemu.org/Features/TCGPlugins
+PLUGIN="-plugin $QEMU/tests/plugin/libtracewatch.so,arg=store,arg=addr,arg=0x30007478,arg=addr_mask,arg=0xf000ffff,arg=tracepath,arg=-"
+
+#INITRD="-initrd $INITRD_CPIO"
+
 # Setup networking with the user more IP tack, it doesn't appear to work for me.
 #NETWORK="-net nic -netdev user,id=or1k,net=$IPRANGE.0/24,host=$IPRANGE.100,dhcpstart=$IPRANGE.50,hostfwd=tcp::2323-:23"
 
@@ -58,4 +64,5 @@ fi
 rm -f trace.txt
 run $QEMU/build/or1k-softmmu/qemu-system-or1k -cpu or1200 -M or1k-sim \
     -kernel $LINUX \
-    $INITRD $NETWORK $SERIAL $DRIVE $DEBUG $TRACE $SMP $RAM $@
+    $PLUGIN \
+    $INITRD $NETWORK $SERIAL $DRIVE $DEBUG $TRACE $SMP $RAM $INITRD "$@"
