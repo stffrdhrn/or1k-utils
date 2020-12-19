@@ -4,7 +4,7 @@ Mostly you can use upstream qemu, but the or1k-glibc
 branch has some patches for:
 
 - FPU flag access in userspace that are not yet in the spec.
-- Fenerating an or1ksim devicetree and passing directly to linux.
+- Generating an or1ksim devicetree and passing directly to linux.
 - Rootfs loading
 
 ```
