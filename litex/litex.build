@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
+
+(
+  cd $HOME/work/litex/litex-boards
+  ./litex_boards/targets/arty.py --cpu-type mor1kx \
+    --cpu-variant linux \
+    --csr-csv csr.csv \
+    --with-ethernet \
+    --integrated-rom-size 64000 \
+    --integrated-sram-size 32000 --build
+)
