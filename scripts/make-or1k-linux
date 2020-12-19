@@ -3,7 +3,7 @@
 or1k_utils=$HOME/work/openrisc/or1k-utils
 openadk=$HOME/work/openrisc/openadk
 hdmi2usb=$HOME/work/litex/HDMI2USB-litex-firmware
-litexbuild=$HOME/work/litex/litex-buildenv
+litextftpd=$or1k_utils/litex/tftpd
 
 openadk_source="$openadk/target_qemu-or1k_uclibc-ng/qemu-or1k-uclibc-ng-initramfspiggyback_list"
 or1k_utils_source="$or1k_utils/initramfs $or1k_utils/initramfs.devnodes"
@@ -36,8 +36,7 @@ run() {
 #  gzip -f initramfs.cpio
 )
 
-run mkdir -p $litexbuild/build/tftpd
-run ${toolchain}objcopy -O binary vmlinux $litexbuild/build/tftpd/boot.bin
+run ${toolchain}objcopy -O binary vmlinux $litextftpd/boot.bin
 
 #run mkdir -p $hdmi2usb/build/arty_net_or1k/software/linux
 #run cp arch/openrisc/boot/vmlinux.bin $hdmi2usb/build/arty_net_or1k/software/linux/firmware.bin
