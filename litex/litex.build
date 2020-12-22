@@ -1,13 +1,14 @@
 #!/bin/bash
 
+export PATH=$PATH:$HOME/work/litex/litex-buildenv/build/conda/bin
 export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
 
 (
   cd $HOME/work/litex/litex-boards
   ./litex_boards/targets/arty.py --cpu-type mor1kx \
-    --cpu-variant linux \
+    --cpu-variant linux+fpu \
     --csr-csv csr.csv \
     --with-ethernet \
-    --integrated-rom-size 64000 \
-    --integrated-sram-size 32000 --build
+    --integrated-rom-size 65536 \
+    --integrated-sram-size 32768 $@
 )
