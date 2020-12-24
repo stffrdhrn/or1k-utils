@@ -1,13 +1,13 @@
 
 #!/usr/bin/bash
 
+# program using pure openocd, its recommented to just do 'litex.build --load'
+# though.
+
 export PATH=$PATH:$HOME/work/litex/litex-buildenv/build/conda/bin
 
 PLATFORM=arty
 LITEX_BOARDS=$HOME/work/litex/litex-boards
 BITS=${LITEX_BOARDS}/build/${PLATFORM}/gateware/${PLATFORM}.bit
-
-# Where to find more board files
-#SEARCH="-s $HOME/work/litex/litex-buildenv/build/conda/share/openocd/scripts"
 
 openocd $SEARCH -f board/digilent_${PLATFORM}.cfg -c "init; pld load 0 $BITS; exit"
