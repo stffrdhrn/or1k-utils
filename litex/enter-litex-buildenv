@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Source me, don't run me!
+
+export CPU=mor1kx
+export TARGET=net
+export PLATFORM=arty
+
+export CPU_VARIANT=linux
+export FIRMWARE=linux
+
+. ./scripts/enter-env.sh

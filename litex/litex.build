@@ -1,4 +1,8 @@
 #!/bin/bash
+# Run lites for mor1kx linux on arty
+# Args:
+#  --build - builds the bios and gateware
+#  --load  - load it up onto the arty (uses openocd)
 
 export PATH=$PATH:$HOME/work/litex/litex-buildenv/build/conda/bin
 export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
