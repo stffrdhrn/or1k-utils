@@ -4,6 +4,8 @@
 #  --build - builds the bios and gateware
 #  --load  - load it up onto the arty (uses openocd)
 
+DIR=`dirname $0`
+
 export PATH=$PATH:$HOME/work/litex/litex-buildenv/build/conda/bin
 export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
 
@@ -16,4 +18,7 @@ export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
     --csr-data-width 8 \
     --integrated-rom-size 65536 \
     --integrated-sram-size 32768 $@
+
+  $HOME/work/litex/tools/litex_json2dts.py litex-mor1kx-csr.json | \
+    dtc > $DIR/tftpd/litex-mor1kx.dtb
 )

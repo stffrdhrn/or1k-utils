@@ -1,2 +1,3 @@
 tftpd/boot.bin
 tftpd/rootfs.cpio.gz
+tftpd/litex-mor1kx.dtb

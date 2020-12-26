@@ -1,4 +1,11 @@
 {
-	"rootfs.cpio.gz": "0x07000000",
-	"Image":          "0x00000000"
+  "boot.bin":         "0x00000000",
+  "litex-mor1kx.dtb": "0x06ff0000",
+  "rootfs.cpio.gz":   "0x07000000",
+  "bootargs": {
+    "r1":             "0x06ff0000",
+    "r2":             "0x00000000",
+    "r3":             "0x00000000",
+    "addr":           "0x00000000"
+  }
 }
