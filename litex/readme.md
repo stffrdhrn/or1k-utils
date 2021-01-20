@@ -11,7 +11,6 @@ For example:
 ```bash
 mkdir $HOME/work/litex
 cd $HOME/work/litex
-git clone git@github.com:enjoy-digital/litex.git
 
 wget https://raw.githubusercontent.com/enjoy-digital/litex/master/litex_setup.py
 chmod +x litex_setup.py
