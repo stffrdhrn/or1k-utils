@@ -1,3 +1,5 @@
 tftpd/boot.bin
 tftpd/rootfs.cpio.gz
 tftpd/litex-mor1kx.dtb
+tftpd/litex-mor1kx.dts
+tftpd/litex-mor1kx-csr.json

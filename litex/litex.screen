@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Open a tty terminal to the board
+
+screen /dev/ttyUSB1 115200

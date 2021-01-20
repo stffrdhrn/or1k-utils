@@ -5,7 +5,9 @@
 #  --load  - load it up onto the arty (uses openocd)
 
 DIR=`dirname $0`
+DIR=`readlink -f $DIR`
 
+CSR_WIDTH=32 # This must match the value x8 of linux/.config : CONFIG_LITEX_SUBREG_SIZE
 LITEX_HOME=$HOME/work/litex
 
 export PATH=$PATH:$HOME/work/litex/litex-buildenv/build/conda/bin
@@ -15,15 +17,21 @@ export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
   cd $LITEX_HOME/litex-boards
   ./litex_boards/targets/arty.py --cpu-type mor1kx \
     --cpu-variant linux+fpu \
-    --csr-json litex-mor1kx-csr.json \
+    --csr-json $DIR/tftpd/litex-mor1kx-csr.json \
     --with-ethernet \
-    --csr-data-width 8 \
+    --csr-data-width $CSR_WIDTH \
     --integrated-rom-size 65536 \
     --integrated-sram-size 32768 $@
-
 )
 
 if [ "$1" != "--load" ] ; then
-  $LITEX_HOME/litex/litex/tools/litex_json2dts.py $LITEX_HOME/litex-boards/litex-mor1kx-csr.json | \
-    dtc > $DIR/tftpd/litex-mor1kx.dtb
+  inirrd_start=`grep rootfs.cpio.gz $DIR/tftpd/boot.json | grep -o "0x[0-9]\+"`
+  initrd_start=`printf "%d" $inirrd_start`
+  initrd_size=`stat --format=%s $DIR/tftpd/rootfs.cpio.gz`
+
+  $LITEX_HOME/litex/litex/tools/litex_json2dts.py \
+    --initrd-start $initrd_start \
+    --initrd-size $initrd_size \
+    $DIR/tftpd/litex-mor1kx-csr.json > $DIR/tftpd/litex-mor1kx.dts
+  dtc $DIR/tftpd/litex-mor1kx.dts > $DIR/tftpd/litex-mor1kx.dtb
 fi
