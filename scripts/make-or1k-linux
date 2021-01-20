@@ -24,19 +24,24 @@ run() {
 }
 
 (
+  # Getting a bunch of perl warnings with en_US.utf8
+  export LC_ALL=en_US.UTF-8
+
   cd $HOME/work/linux
-  run make -j5 ARCH=openrisc \
+  run make -j5 LC_ALL=en_US.UTF-8 ARCH=openrisc \
      CFLAGS="${cflags}" \
      CROSS_COMPILE=${toolchain} \
      $@
      # CONFIG_INITRAMFS_SOURCE="$initramfs_source" \
 
+  if [ -f arch/openrisc/boot/vmlinux.bin ]; then
+    run cp arch/openrisc/boot/vmlinux.bin $litextftpd/boot.bin
+  fi
 #  echo "Generating initramfs.cpio.gz ..."
 #  ./usr/gen_initramfs.sh -o initramfs.cpio -u squash -g squash $initramfs_source
 #  gzip -f initramfs.cpio
 )
 
-run ${toolchain}objcopy -O binary vmlinux $litextftpd/boot.bin
 
 #run mkdir -p $hdmi2usb/build/arty_net_or1k/software/linux
 #run cp arch/openrisc/boot/vmlinux.bin $hdmi2usb/build/arty_net_or1k/software/linux/firmware.bin
