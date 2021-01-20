@@ -27,7 +27,7 @@ cd $HOME/work/litex
 
 ## Building (For arty)
 
-To build the bitstream and bios.
+To build the bitstream, bios and linux device tree.
 
 ```
  ./litex.build --build
@@ -48,13 +48,13 @@ serve the linux kernel.  This is recommended for linux when you don't have
 an SDcard etc as serial is too slow.
 
 First:
-  - Build the linux kernel using `or1klitex_defconfig` and copy `vmlinux.bin` into `tftpd/` as
-   is created in [make-or1k-linux](/scripts/make-or1k-linux)
-   - If you need a toolchain try: http://shorne.noip.me/downloads/or1k-smh-linux-gnu-11.0.0-20201219.tar.gz
-  - Copy `rootfs.cpio.gz` into `tftpd/` as is done in the [buildroot](/buildroot/readme.md) build
-   - Or get a prebuild image from: http://shorne.noip.me/downloads/or1k-glibc-rootfs.cpio.gz
+- Build the linux kernel using `or1klitex_defconfig` and copy `vmlinux.bin` into `tftpd/` as
+  is created in [make-or1k-linux](/scripts/make-or1k-linux)
+  - If you need a toolchain try: http://shorne.noip.me/downloads/or1k-smh-linux-gnu-11.0.0-20201219.tar.gz
+- Copy `rootfs.cpio.gz` into `tftpd/` as is done in the [buildroot](/buildroot/readme.md) build
+  - Or get a prebuild image from: http://shorne.noip.me/downloads/or1k-glibc-rootfs.cpio.gz
 
-Building the kernel can be done with the following:
+Building the kernel can also be done with the following:
 
 ```
 cd path-to/linux
@@ -66,8 +66,9 @@ make -j5 ARCH=oepnrisc CROSS_COMPILE=or1k-smh-linux-gnu-
 cp arch/openrisc/boot/vmlinux.bin path-to/or1k-utils/litex/tftpd/boot.bin
 ```
 
-There is a `boot.json` file that the litex bootloader uses to
-load the kernel and rootfs to the right locations.
+The `tftpd/boot.json` file is used by litex bootloader to load the kernel,
+device tree and rootfs to the right locations in the target ram.  A tftpd server
+needs be to running to serve the files.  Start one up as follows:
 
 ```
 IF=enp0s31f6
