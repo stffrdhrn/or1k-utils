@@ -68,21 +68,34 @@ summary() {
 
 pushd $BUILDDIR/build-glibc
     if [ "$singletest" ] ; then
+        echo "Running single test: $singletest ..."
         make test-wrapper="$TEST_WRAPPER" test t=$singletest
         exit $?
-    elif [ -z "$subdir" ] ; then
-        startup > $TESTLOG
-        (
-          make -r $PARALLEL test-wrapper="$TEST_WRAPPER" check
-        )
-        summary tests.sum >> $TESTLOG
-    else
+    elif [ -d "$BUILDDIR/glibc/$subdir" ] ; then
+        # Run all tests in a directly
+        echo "Running subdir test: $subdir ..."
         startup > $TESTLOG
         (
           make -r $PARALLEL -C $BUILDDIR/glibc/$subdir \
             test-wrapper="$TEST_WRAPPER" objdir=`pwd` check
         )
         summary $subdir/subdir-tests.sum >> $TESTLOG
+    elif [ "$subdir" ] ; then
+        # Run a specific test target
+        echo "Running targeted test: $subdir ..."
+        startup > $TESTLOG
+        (
+          make -r $PARALLEL test-wrapper="$TEST_WRAPPER" $subdir
+        )
+        summary ${subdir}.test-result >> $TESTLOG
+    else
+        # Test everything
+        echo "Running all tests ..."
+        startup > $TESTLOG
+        (
+          make -r $PARALLEL test-wrapper="$TEST_WRAPPER" check
+        )
+        summary tests.sum >> $TESTLOG
     fi
 popd
 

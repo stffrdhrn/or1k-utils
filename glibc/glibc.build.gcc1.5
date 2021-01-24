@@ -8,7 +8,7 @@ source $DIR/glibc.config
 mkdir -p $INSTALLDIR/$CROSS/include/gnu
 touch $INSTALLDIR/$CROSS/include/gnu/stubs.h
 
-pushd $BUILDDIR/build-gcc 
+pushd $BUILDDIR/build-gcc
 
     make -j4 all-target-libgcc && make install-target-libgcc
 
