@@ -24,14 +24,4 @@ export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
     --integrated-sram-size 32768 $@
 )
 
-if [ "$1" != "--load" ] ; then
-  inirrd_start=`grep rootfs.cpio.gz $DIR/tftpd/boot.json | grep -o "0x[0-9]\+"`
-  initrd_start=`printf "%d" $inirrd_start`
-  initrd_size=`stat --format=%s $DIR/tftpd/rootfs.cpio.gz`
-
-  $LITEX_HOME/litex/litex/tools/litex_json2dts.py \
-    --initrd-start $initrd_start \
-    --initrd-size $initrd_size \
-    $DIR/tftpd/litex-mor1kx-csr.json > $DIR/tftpd/litex-mor1kx.dts
-  dtc $DIR/tftpd/litex-mor1kx.dts > $DIR/tftpd/litex-mor1kx.dtb
-fi
+make LITEX_HOME=$LITEX_HOME -C tftpd litex-mor1kx.dtb
