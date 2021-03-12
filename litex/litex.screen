@@ -1,5 +1,7 @@
 #!/bin/sh
 
 # Open a tty terminal to the board
+# NOTE: You can also do...
+#    litex_term /dev/ttyUSB1
 
 screen /dev/ttyUSB1 115200

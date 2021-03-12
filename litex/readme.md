@@ -80,6 +80,54 @@ ip addr add ${DEV_IP}/24 dev ${IF}
 ./litex.tftpd
 ```
 
+## Advanced Debugging
+
+We can use a jtagbone or etherbone host bridge to access the SoC's wishbone bus from
+your host computer.  From there we  can script several things.
+
+For me this works with jtagbone as I want to use ethernet at the same time.
+
+### BIOS reloading
+
+Writes the bios directly to the SoC's rom and reloads.
+
+```
+./litex.run $PWD/reload-rom.py /home/shorne/work/litex/litex-boards/build/arty/software/bios/bios.bin && echo wait 30s && litex_term /dev/ttyUSB1
+```
+
+Just reboot the CPU and reconnect (not restarting the jtagbone etc)
+
+```
+./litex.run $PWD/reboot.py && echo wait 30s && litex_term /dev/ttyUSB1
+```
+
+### Getting it all setup
+
+We need a few code changes to get the below to work.
+  - Ensure rom is set to "rw" in arty.py
+  - Ensure we have jtagbone on
+  - Disable Full SoC reset
+
+Steps explained below
+
+```
+15:42 < shorne> Is there a fast way to flash a new bios to the board?  If I make c changes and do " ./arty.py ..platform options.. --load " it doesn't update the bios
+15:43 < shorne> I seem to have to do "./arty.py ...option... --build;  ./arty.py ...options... --load"  which requires waiting for the bitstream to build
+15:44 < shorne> the --no-compile-gateware option doesn't seem to do anything 
+15:56 < zyp> the bios is stored in blockram initialization in the bitstream so updating it requires either rebuilding the bitstream or rewriting the bitstream to 
+             change blockram contents, and I don't think the latter is supported
+16:04 < shorne> zyp: thats what I figured, but wasn't sure, thanks for clarifying
+...
+
+16:55 < _florent_> shorne: That's not supported directly in the LiteX-Targets, but it's possible to easily rebuild the BIOS and reload it
+16:56 < _florent_> With a bridge in your SoC (for example JTAGBone in your case), you can set integrated_rom_mode to "rw": 
+                   https://github.com/enjoy-digital/litedram/blob/master/bench/arty.py#L76
+16:57 < _florent_> and then use a simple script to reload the ROM and reset the SoC: https://github.com/enjoy-digital/litedram/blob/master/bench/common.py#L95-L109
+16:59 < _florent_> in case reseting the full SoC breaks the bridge, you could comment this: 
+                   https://github.com/enjoy-digital/litex/blob/master/litex/soc/integration/soc.py#L939-L944
+16:59 < _florent_> this will only reset the CPU and not the whole SoC
+```
+
 ## Also here
 
 We can also use `litex-buildenv`, for that use:

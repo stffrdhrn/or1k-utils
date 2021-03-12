@@ -1,0 +1,18 @@
+#!/bin/bash
+# Run litex_server in jtag mode, in the right directory with openocd
+# in the PATH.
+
+DIR=`dirname $0`
+DIR=`readlink -f $DIR`
+
+home=$HOME
+LITEX_HOME=$home/work/litex
+
+export PATH=$PATH:$home/.local/bin
+export PATH=$PATH:$home/work/litex/litex-buildenv/build/conda/bin
+export PATH=$PATH:$home/local/xilinx-2017.3/Vivado/2017.3/bin
+
+(
+  cd $LITEX_HOME/litex-boards
+  litex_server --jtag --jtag-config openocd_xc7_ft2232.cfg
+)

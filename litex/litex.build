@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run lites for mor1kx linux on arty
+# Run litex for mor1kx linux on arty
 # Args:
 #  --build - builds the bios and gateware
 #  --load  - load it up onto the arty (uses openocd)
@@ -13,13 +13,24 @@ LITEX_HOME=$HOME/work/litex
 export PATH=$PATH:$HOME/work/litex/litex-buildenv/build/conda/bin
 export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
 
+# We can use one or the other
+#ETHERNET="--with-ethernet"
+#ETHERBONE="--csr-csv $DIR/litex-mor1kx-csr.csv --with-etherbone"
+
+JTAGBONE="--csr-csv $DIR/litex-mor1kx-csr.csv --with-jtagbone"
+
+VARIANT=linux
+#VARIANT=linux+smp+fpu
+
 (
   cd $LITEX_HOME/litex-boards
   ./litex_boards/targets/arty.py --cpu-type mor1kx \
-    --cpu-variant linux+fpu \
+    --cpu-variant $VARIANT \
     --csr-json $DIR/tftpd/litex-mor1kx-csr.json \
-    --with-ethernet \
+    $ETHERNET \
+    $ETHERBONE $JTAGBONE \
     --csr-data-width $CSR_WIDTH \
+    --with-sdcard \
     --integrated-rom-size 65536 \
     --integrated-sram-size 32768 $@
 )
