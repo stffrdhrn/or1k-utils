@@ -10,6 +10,7 @@ QEMU=$HOME/work/openrisc/qemu
 # Latest mainline
 #LINUX=$HOME/work/openrisc/buildroot/output/images/vmlinux
 #INITRD_CPIO=$HOME/work/openrisc/buildroot/output/rootfs.cpio.gz
+BAREBOX=$HOME/work/openrisc/barebox/barebox
 LINUX=$HOME/work/linux/vmlinux
 OSROOT=$HOME/work/openrisc/or1k-utils
 INITRD_CPIO=$HOME/work/linux/initramfs.cpio.gz
@@ -41,14 +42,14 @@ SERIAL="-serial mon:stdio -nographic"
 #SMP="-smp cpus=2"
 
 # Go big if running openadk + debug
-RAM="-m 512"
-#RAM="-m 32"
+#RAM="-m 512"
+RAM="-m 32"
 #RAM="-m 64"
 
 IPRANGE=10.9.0
 
 # https://wiki.qemu.org/Features/TCGPlugins
-PLUGIN="-plugin $QEMU/tests/plugin/libtracewatch.so,arg=store,arg=addr,arg=0x30007478,arg=addr_mask,arg=0xf000ffff,arg=tracepath,arg=-"
+#PLUGIN="-plugin $QEMU/tests/plugin/libtracewatch.so,arg=store,arg=addr,arg=0x30007478,arg=addr_mask,arg=0xf000ffff,arg=tracepath,arg=-"
 
 #INITRD="-initrd $INITRD_CPIO"
 
@@ -57,11 +58,17 @@ PLUGIN="-plugin $QEMU/tests/plugin/libtracewatch.so,arg=store,arg=addr,arg=0x300
 
 # Setup networking with a tap tunnel, this works.
 if ip addr show tap0 | grep -q "UP" && ip addr show tap0 | grep -q "$IPRANGE.100"; then
-  NETWORK="-net nic -net tap,ifname=tap0,script=no,downscript=no"
+  __NETWORK="-net nic -net tap,ifname=tap0,script=no,downscript=no"
 fi
+NETWORK=$__NETWORK
+
+# Bios doesn't work on OpenRISC yet
+#BIOS="-bios ${BAREBOX}.bin"
+#KERNEL="-kernel $BAREBOX"
+KERNEL="-kernel $LINUX"
 
 rm -f trace.txt
 run $QEMU/build/or1k-softmmu/qemu-system-or1k -cpu or1200 -M or1k-sim \
-    -kernel $LINUX \
+    $KERNEL $BIOS \
     $PLUGIN \
     $INITRD $NETWORK $SERIAL $DRIVE $DEBUG $TRACE $SMP $RAM $INITRD "$@"
