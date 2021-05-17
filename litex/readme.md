@@ -70,7 +70,7 @@ device tree and rootfs to the right locations in the target ram.  A tftpd server
 needs be to running to serve the files.  Start one up as follows:
 
 ```
-IF=enp0s31f6
+IF=eno1
 
 #Extra IP for fpga dev
 DEV_IP=192.168.1.100

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run litex_server in jtag mode, in the right directory with openocd
+# Run litex_server in jtag/ether mode, in the right directory with openocd
 # in the PATH.
 
 DIR=`dirname $0`
@@ -12,7 +12,10 @@ export PATH=$PATH:$home/.local/bin
 export PATH=$PATH:$home/work/litex/litex-buildenv/build/conda/bin
 export PATH=$PATH:$home/local/xilinx-2017.3/Vivado/2017.3/bin
 
+#TRANSPORT="--jtag --jtag-config openocd_xc7_ft2232.cfg"
+TRANSPORT="--udp"
+
 (
   cd $LITEX_HOME/litex-boards
-  litex_server --jtag --jtag-config openocd_xc7_ft2232.cfg
+  litex_server $TRANSPORT
 )

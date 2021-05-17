@@ -10,29 +10,47 @@ DIR=`readlink -f $DIR`
 CSR_WIDTH=32 # This must match the value x8 of linux/.config : CONFIG_LITEX_SUBREG_SIZE
 LITEX_HOME=$HOME/work/litex
 
-export PATH=$PATH:$HOME/work/litex/litex-buildenv/build/conda/bin
-export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
+# Bring OpenOCD and Vivado into our PATH
+#export PATH=$PATH:$HOME/work/litex/litex-buildenv/build/conda/bin
+#export PATH=$PATH:$HOME/local/xilinx-2017.3/Vivado/2017.3/bin
+#export PATH=$PATH:$HOME/local/xilinx-2018.3/Vivado/2018.3/bin
+export PATH=$PATH:$HOME/local/xilinx-2019.2/Vivado/2019.2/bin
+
+BOARD=digilent_arty
 
 # We can use one or the other
-#ETHERNET="--with-ethernet"
+ETHERNET="--with-ethernet"
 #ETHERBONE="--csr-csv $DIR/litex-mor1kx-csr.csv --with-etherbone"
 
-JTAGBONE="--csr-csv $DIR/litex-mor1kx-csr.csv --with-jtagbone"
+#JTAGBONE="--csr-csv $DIR/litex-mor1kx-csr.csv --with-jtagbone"
 
-VARIANT=linux
-#VARIANT=linux+smp+fpu
+#VARIANT=linux
+VARIANT=linux+smp+fpu
+
+# 65536 131072
+ROM="--integrated-rom-size 131072"
+#SRAM="--integrated-sram-size 32768"
+
+run() {
+  echo "exec: $@"
+  $@
+}
 
 (
   cd $LITEX_HOME/litex-boards
-  ./litex_boards/targets/arty.py --cpu-type mor1kx \
+  run ./litex_boards/targets/${BOARD}.py --cpu-type mor1kx \
     --cpu-variant $VARIANT \
     --csr-json $DIR/tftpd/litex-mor1kx-csr.json \
     $ETHERNET \
     $ETHERBONE $JTAGBONE \
     --csr-data-width $CSR_WIDTH \
     --with-sdcard \
-    --integrated-rom-size 65536 \
-    --integrated-sram-size 32768 $@
+    $ROM $SRAM \
+    $@
 )
+
+echo "artifact sizes..."
+ls -lh $LITEX_HOME/litex-boards/build/${BOARD}/software/bios/bios.bin
+ls -lh $LITEX_HOME/litex-boards/build/${BOARD}/gateware/${BOARD}.bit
 
 make LITEX_HOME=$LITEX_HOME -C tftpd litex-mor1kx.dtb
