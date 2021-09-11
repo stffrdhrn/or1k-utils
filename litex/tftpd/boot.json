@@ -1,7 +1,7 @@
 {
   "boot.bin":         "0x00000000",
   "litex-mor1kx.dtb": "0x007f0000",
-  "rootfs.cpio.gz":   "0x00800000",
+  "dummy-rootfs.cpio.gz":"0x00800000",
   "bootargs": {
     "r1":             "0x007f0000",
     "r2":             "0x00000000",

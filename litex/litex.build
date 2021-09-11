@@ -17,6 +17,7 @@ LITEX_HOME=$HOME/work/litex
 export PATH=$PATH:$HOME/local/xilinx-2019.2/Vivado/2019.2/bin
 
 BOARD=digilent_arty
+DTB_UPDATE=${DTB_UPDATE:-Y}
 
 # We can use one or the other
 ETHERNET="--with-ethernet"
@@ -53,4 +54,9 @@ echo "artifact sizes..."
 ls -lh $LITEX_HOME/litex-boards/build/${BOARD}/software/bios/bios.bin
 ls -lh $LITEX_HOME/litex-boards/build/${BOARD}/gateware/${BOARD}.bit
 
-make LITEX_HOME=$LITEX_HOME -C tftpd litex-mor1kx.dtb
+if [ $DTB_UPDATE = "Y" ]; then
+  echo "Performing DTB update as per env DTB_UPDATE: $DTB_UPDATE"
+  make LITEX_HOME=$LITEX_HOME -C tftpd litex-mor1kx.dtb
+else
+  echo "Skipping DTB update as per env DTB_UPDATE: $DTB_UPDATE"
+fi

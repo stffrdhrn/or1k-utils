@@ -1,8 +1,7 @@
 #!/bin/bash
-# Run lites for mor1kx linux on arty
-# Args:
-#  --build - builds the bios and gateware
-#  --load  - load it up onto the arty (uses openocd)
+# Builds the litex dts file, targets:
+#  all (default): build the .dtb file
+#  clean        : removes everything
 
 LITEX_HOME := $(HOME)/work/litex
 JSON2DTS   := $(LITEX_HOME)/litex/litex/tools/litex_json2dts.py
