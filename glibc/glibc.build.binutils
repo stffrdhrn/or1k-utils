@@ -14,7 +14,7 @@ pushd  $BUILDDIR/build-binutils
      --prefix=$INSTALLDIR \
      --with-sysroot=$SYSROOTDIR \
      --target=$CROSS &&
-    make -j5 &&
+    make -j${THREADS} &&
     make install
 
 popd

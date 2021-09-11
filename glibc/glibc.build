@@ -6,9 +6,17 @@ source $DIR/glibc.config
 
 start_time=`date -u +%s`
 
+success_or_failure() {
+  if grep libc.build.done execlog > /dev/null ; then
+    echo -n SUCCESS
+  else
+    echo -n FAILURE
+  fi
+}
+
 summary() {
   echo
-  echo -n "# build finish:   "; date -uIs
+  echo -n "# build finish:   "; date -Is
   grep glibc.build execlog
   echo -n "# build time(m):  "; expr `date -u +%s` / 60 - $start_time / 60
   echo
@@ -32,5 +40,5 @@ set +x
 rsync -a $INSTALLDIR/or1k-smh-linux-gnu/lib/  $SYSROOTDIR/lib
 
 if [ "$MAILTO" ] ; then
-  summary | mail -s "Glibc build report $(date +"%Y-%m-%d-%H:%M")" $MAILTO
+  summary | mail -s "Glibc build report $(date +"%Y-%m-%d-%H:%M") - $(success_or_failure)" $MAILTO
 fi

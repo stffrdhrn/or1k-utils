@@ -19,5 +19,5 @@ pushd $BUILDDIR/build-gcc
     --prefix=$INSTALLDIR \
     --with-sysroot=$SYSROOTDIR
 
-    make -j4 && make install
+    make -j${THREADS} && make install
 popd

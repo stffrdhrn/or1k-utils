@@ -21,6 +21,6 @@ pushd $BUILDDIR/build-glibc
     --enable-add-ons=nptl \
     --enable-kernel=5.0.0
 
-    make install_root=$SYSROOTDIR install-headers 
+    make install_root=$SYSROOTDIR install-headers
 
 popd

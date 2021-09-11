@@ -36,7 +36,7 @@ pushd $BUILDDIR/build-glibc
     fi
 
     if [ $config_rv = 0 ]; then
-       make -j5 && make install_root=$SYSROOTDIR install
+       make -j${THREADS} && make install_root=$SYSROOTDIR install
        make_rv=$?
     fi
 

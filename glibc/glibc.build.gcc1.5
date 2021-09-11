@@ -10,6 +10,6 @@ touch $INSTALLDIR/$CROSS/include/gnu/stubs.h
 
 pushd $BUILDDIR/build-gcc
 
-    make -j4 all-target-libgcc && make install-target-libgcc
+    make -j${THREADS} all-target-libgcc && make install-target-libgcc
 
 popd

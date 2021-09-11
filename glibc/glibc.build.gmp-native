@@ -3,20 +3,22 @@
 DIR=`dirname $0`
 source $DIR/glibc.config
 
-mkdir -p $BUILDDIR/build-binutils-native
+pkg="gmp-6.1.2"
+
+mkdir -p $BUILDDIR/build-${pkg}-native
 # Clear anything inside, but don't delete the directory incase its mounted
 # in our chroot.
-rm -rf $BUILDDIR/build-binutils-native/*
+rm -rf $BUILDDIR/build-${pkg}-native/*
 
-pushd  $BUILDDIR/build-binutils-native
+pushd  $BUILDDIR/build-${pkg}-native
 
-    $BUILDDIR/binutils-gdb/configure \
+    $BUILDDIR/${pkg}/configure \
      --prefix=$SYSROOTDIR \
      --with-sysroot=$SYSROOTDIR \
      --host=$CROSS \
      --target=$CROSS
 
     make -j${THREADS}
-    # make install
+    make install
 
 popd

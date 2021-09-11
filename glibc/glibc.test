@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # A test runner to be used with glibc.  From the glibc directory run:
-#  glibc.test <subdir>
+#  glibc.test <target>
 #
 # This will run 'make check' with the correct arguments to run glibc
 # tests as requested.  The SUBDIR argument is optional and will be used
@@ -13,11 +13,13 @@ source $DIR/glibc.config
 
 mkdir -p $BUILDDIR/log
 
+TEST_SUM=tests.sum
 if [ $# == 1 ] ; then
   if [[ $1 == */* ]] ; then
     singletest=$1; shift
   else
-    subdir=$1; shift
+    target=$1; shift
+    TEST_SUM=$target/subdir-tests.sum
   fi
 fi
 
@@ -39,26 +41,51 @@ if [ "$SSH" ] ; then
   TEST_WRAPPER="$TEST_WRAPPER --timeoutfactor $TIMEOUTFACTOR $SSH"
 fi
 
-TESTLOG="$BUILDDIR/log/test-$subdir-$(date -u +"%Y%m%d-%H%M%S").log"
+TESTLOG="$BUILDDIR/log/test-$target-$(date +"%Y%m%d-%H%M%S").log"
 
 start_time=`date -u +%s`
 
 startup() {
-  echo -n "# test start:    "; date -uIs
+  echo -n "# test start:    "; date -Is
+}
+
+subject()
+{
+    local testlog=$1; shift
+    local target=$1; shift
+
+    local failures=`grep ^FAIL $testlog | wc -l`
+
+    echo "Glibc $target test results $(date +"%Y-%m-%d-%H:%M") - $failures failure(s)"
+}
+
+function displaytime {
+  local T=$1
+  local D=$((T/60/60/24))
+  local H=$((T/60/60%24))
+  local M=$((T/60%60))
+  local S=$((T%60))
+  (( $D > 0 )) && printf '%d days ' $D
+  (( $H > 0 )) && printf '%d hours ' $H
+  (( $M > 0 )) && printf '%d minutes ' $M
+  (( $D > 0 || $H > 0 || $M > 0 )) && printf 'and '
+  printf '%d seconds\n' $S
 }
 
 summary() {
   local file=$1
   echo
   echo    "# failures"
-  for failure in `grep ^FAIL $file | cut -d' ' -f2`; do
-    if ! grep -q "^$failure," $DIR/glibc.explained ; then
-      echo FAIL $failure
-    fi
-  done
+# We used to just print explained failures, but now I want to know all
+#  for failure in `grep ^FAIL $file | cut -d' ' -f2`; do
+#    if ! grep -q "^$failure," $DIR/glibc.explained ; then
+#      echo FAIL $failure
+#    fi
+#  done
+  grep ^FAIL $file
   echo
-  echo -n "# test finish:   "; date -uIs
-  echo -n "# test time(m):  "; expr `date -u +%s` / 60 - $start_time / 60
+  echo -n "# test finish:   "; date -Is
+  echo -n "# test duration: "; displaytime $(expr `date -u +%s` - $start_time)
   echo    "# test for file: $file"
   echo    "# test wrapper:  $TEST_WRAPPER"
   echo
@@ -71,31 +98,27 @@ pushd $BUILDDIR/build-glibc
         echo "Running single test: $singletest ..."
         make test-wrapper="$TEST_WRAPPER" test t=$singletest
         exit $?
-    elif [ -d "$BUILDDIR/glibc/$subdir" ] ; then
+    elif [ -d "$BUILDDIR/glibc/$target" ] ; then
         # Run all tests in a directly
-        echo "Running subdir test: $subdir ..."
+        echo "Running directory test: '$target' ..."
         startup > $TESTLOG
         (
-          make -r $PARALLEL -C $BUILDDIR/glibc/$subdir \
+          make -r $PARALLEL -C $BUILDDIR/glibc/$target \
             test-wrapper="$TEST_WRAPPER" objdir=`pwd` check
         )
-        summary $subdir/subdir-tests.sum >> $TESTLOG
-    elif [ "$subdir" ] ; then
+        summary $TEST_SUM >> $TESTLOG
+    elif [ "$target" ] ; then
         # Run a specific test target
-        echo "Running targeted test: $subdir ..."
+        echo "Running targeted test: $target ..."
+        echo "Note: use TEST_DIRECT=file to skip forking"
         startup > $TESTLOG
         (
-          make -r $PARALLEL test-wrapper="$TEST_WRAPPER" $subdir
+          make -r $PARALLEL test-wrapper="$TEST_WRAPPER" $target
         )
-        summary ${subdir}.test-result >> $TESTLOG
+        summary ${target}.test-result >> $TESTLOG
     else
-        # Test everything
-        echo "Running all tests ..."
-        startup > $TESTLOG
-        (
-          make -r $PARALLEL test-wrapper="$TEST_WRAPPER" check
-        )
-        summary tests.sum >> $TESTLOG
+        echo "Don't know how to run $target ... Exiting."
+        exit 1
     fi
 popd
 
@@ -103,5 +126,5 @@ echo "# results in file: $TESTLOG"
 cat $TESTLOG
 
 if [ "$MAILTO" ] ; then
-  cat $TESTLOG | mail -s "Glibc $subdir test results $(date +"%Y-%m-%d-%H:%M")" $MAILTO
+  cat $TESTLOG | mail -s "$(subject $TESTLOG $target)" $MAILTO
 fi
