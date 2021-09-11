@@ -3,6 +3,7 @@
 ```
 $ git clone git@github.com:stffrdhrn/buildroot.git or1k-glibc
 $ cd buildroot
+$ cp ../or1k-utils/buildroot/local.mk .
 $ make BR2_EXTERNAL=../or1k-utils/buildroot/ litex_mor1kx_defconfig
 $ make
 ```
