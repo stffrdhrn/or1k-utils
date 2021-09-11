@@ -8,10 +8,11 @@ if [ "$STATIC" ] ; then
   STATIC="--static"
 fi
 
-../configure --target-list="$CPU-linux-user $CPU-softmmu lm32-softmmu" \
+export CFLAGS="-Wno-maybe-uninitialized"
+
+../configure --target-list="$CPU-linux-user $CPU-softmmu riscv64-softmmu" \
 	--enable-fdt \
 	--disable-kvm \
 	--disable-xen \
 	--disable-xkbcommon \
-	--enable-debug \
 	--enable-debug-info $STATIC $@
