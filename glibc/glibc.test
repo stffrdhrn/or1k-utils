@@ -38,7 +38,10 @@ TEST_WRAPPER="$(readlink -f $TEST_WRAPPER)"
 
 if [ "$SSH" ] ; then
   TEST_WRAPPER="$BUILDDIR/glibc/scripts/cross-test-ssh.sh"
-  TEST_WRAPPER="$TEST_WRAPPER --timeoutfactor $TIMEOUTFACTOR $SSH"
+  TEST_WRAPPER="$TEST_WRAPPER --timeoutfactor $TIMEOUTFACTOR"
+  #TEST_WRAPPER="$TEST_WRAPPER --ssh 'ssh -tt'"
+  #TEST_WRAPPER="$TEST_WRAPPER --ssh 'ssh -tt -vvv -E /tmp/glibc.ssh.log'"
+  TEST_WRAPPER="$TEST_WRAPPER $SSH"
 fi
 
 TESTLOG="$BUILDDIR/log/test-$target-$(date +"%Y%m%d-%H%M%S").log"
@@ -75,13 +78,21 @@ function displaytime {
 summary() {
   local file=$1
   echo
-  echo    "# failures"
 # We used to just print explained failures, but now I want to know all
 #  for failure in `grep ^FAIL $file | cut -d' ' -f2`; do
 #    if ! grep -q "^$failure," $DIR/glibc.explained ; then
 #      echo FAIL $failure
 #    fi
 #  done
+  if [ ! -f $file ]; then
+    echo  "FAIL Tests Aborted"
+    echo  "FAIL Could not find file: $file"
+    echo
+    echo -n "# test duration: "; displaytime $(expr `date -u +%s` - $start_time)
+    return
+  fi
+
+  echo    "# failures"
   grep ^FAIL $file
   echo
   echo -n "# test finish:   "; date -Is
@@ -96,6 +107,7 @@ summary() {
 pushd $BUILDDIR/build-glibc
     if [ "$singletest" ] ; then
         echo "Running single test: $singletest ..."
+        echo running: make test-wrapper=\"$TEST_WRAPPER\" test t=$singletest
         make test-wrapper="$TEST_WRAPPER" test t=$singletest
         exit $?
     elif [ -d "$BUILDDIR/glibc/$target" ] ; then
@@ -113,6 +125,7 @@ pushd $BUILDDIR/build-glibc
         echo "Note: use TEST_DIRECT=file to skip forking"
         startup > $TESTLOG
         (
+          echo running: make -r $PARALLEL test-wrapper=\"$TEST_WRAPPER\" $target
           make -r $PARALLEL test-wrapper="$TEST_WRAPPER" $target
         )
         summary ${target}.test-result >> $TESTLOG

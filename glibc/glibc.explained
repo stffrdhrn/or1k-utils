@@ -1,18 +1,25 @@
 # List of tests which were investigated and explained
 
-gmon/tst-gmon-gprof,extra stack "+f3 1"; same in *csky*
-gmon/tst-gmon-pie-gprof,extra stack "+f3 1"; same in *csky*
-gmon/tst-gmon-static-gprof,extra stack "+f3 1"; same in *csky*
+gmon/tst-gmon-gprof,extra stack "+f3 1"; fixed upstream *BZ 28153*
+gmon/tst-gmon-pie-gprof,extra stack "+f3 1"; same in *BZ 28153*
+#gmon/tst-gmon-static-gprof,extra stack "+f3 1"; same in *csky*
 
-nptl/tst-cond-except,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
-nptl/tst-cond24,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
-nptl/tst-cond25,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
-nptl/tst-robust-fork,QEMU BUG (priority inversion) pthread_mutex_init failed: Operation not supported
+elf/tst-audit14,works with stdout redirect to file: not over ssh
+elf/tst-audit15,works with stdout redirect to file: not over ssh
+elf/tst-audit16,works with stdout redirect to file: not over ssh
 
-nptl/tst-align-clone,QEMU BUG (flags is 0) clone failed: Invalid argument
-nptl/tst-getpid1,QEMU BUG (flags is 0) clone failed: Invalid argument
-misc/tst-clone2,QEMU BUG (flags is 0) clone failed: Invalid argument
-misc/tst-clone3,QEMU BUG (flags is 0) clone failed: Invalid argument
+nss/tst-nss-files-hosts-long,need to enable kernel IPV6
+
+timezone/tst-tzset,needs space for a 4GiB file in /tmp
+
+libio/tst-wfile-sync,works with stdin redirect: not over ssh
+
+iconv/tst-iconv_prog,has redirects works on platform: not over ssh
+
+misc/tst-ntp_gettimex,fixed upstream incorrect timex struct used causing memory corruption
+misc/tst-ntp_gettime,fixed upstream incorrect timex struct used causing memory corruption
+
+nptl/tst-pthread-attr-affinity-fail,failuse in xsysconf: bug in xsysconf sent patch *upstreamed*
 
 nptl/test-condattr-printers,No python
 nptl/test-cond-printers,No python
@@ -20,6 +27,8 @@ nptl/test-mutexattr-printers,No python
 nptl/test-mutex-printers,No python
 nptl/test-rwlockattr-printers,No python
 nptl/test-rwlock-printers,No python
+
+nptl/tst-cancel28,Race condition with barrier re-init: flakey test sent patch
 
 # Creates 100x 20threads, each creating 2 works threads opening 20 dso files
 # which then exectures a function in each dlopen(dso) file.
@@ -37,12 +46,6 @@ malloc/tst-malloc-usable-tunables,Works on native linux; export TUNABLES not wor
 malloc/tst-safe-linking,Passes on native linux
 nptl/tst-mutex10,Works on native linux; timeout=20
 support/tst-support_blob_repeat,Works on native linux; timeout=20
-
-rt/tst-mqueue3,QEMU BUG mq_notify not implemented
-rt/tst-mqueue5,QEMU BUG mq_notify not implemented
-rt/tst-mqueue6,QEMU BUG mq_notify not implemented
-
-libio/tst-vtables,QEMU BUG causing left right diff
 
 malloc/tst-mallocfork2-mcheck, FAIL process seems to be stuck (reduce noise)
 localedata/sort-test, FAIL maybe OOM? (reduce noise)

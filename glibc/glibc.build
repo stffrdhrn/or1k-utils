@@ -23,6 +23,9 @@ summary() {
 }
 
 set -x
+# Clean any old artifacts that may impact our build
+rm -rf $INSTALLDIR/or1k-smh-linux-gnu
+
 time (
   $DIR/glibc.build.binutils &&
   $DIR/glibc.build.linux-headers &&
