@@ -1,0 +1,24 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+ts=$(date +"%Y-%m-%d-%H:%M")
+
+pass_cnt=$(grep PASS $BUILDDIR/build-glibc/*/*.test-result | wc -l)
+fail_cnt=$(grep FAIL $BUILDDIR/build-glibc/*/*.test-result | wc -l)
+latest_test=$(ls -tr $BUILDDIR/build-glibc/*/*.test-result | tail -n1)
+
+latest_test_ts=$(stat -c '%y' $latest_test)
+latest_test_dir=$(basename `dirname $latest_test`)
+latest_test_name=$(basename -s .test-result $latest_test)
+
+PROGRESSLOG="$BUILDDIR/log/test-progress.csv"
+
+echo "$ts,$pass_cnt,$fail_cnt,$latest_test_dir/$latest_test_name@$latest_test_ts" >> $PROGRESSLOG
+echo "curent time: $ts"
+echo
+cat $BUILDDIR/build-glibc/*/*.test-result | cut -f1 -d: | sort | uniq -c
+echo
+echo "ts,pass,fail,latest"
+tail $PROGRESSLOG
