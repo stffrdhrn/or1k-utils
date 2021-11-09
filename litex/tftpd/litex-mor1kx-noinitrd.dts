@@ -1,0 +1,102 @@
+
+/dts-v1/;
+
+/ {
+        #address-cells = <1>;
+        #size-cells    = <1>;
+
+
+        chosen {
+            bootargs = "mem=256M@0x0 rootwait console=liteuart earlycon=liteuart,0xe0006800 root=/dev/mmcblk0p3 init=/sbin/init";
+        };
+
+        cpus {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            cpu@0 {
+                compatible = "opencores,or1200-rtlsvn481";
+                reg = <0>;
+                clock-frequency = <100000000>;
+            };
+        };
+
+        memory@0 {
+            device_type = "memory";
+            reg = <0x0 0x10000000>;
+        };
+
+        soc {
+            #address-cells = <1>;
+            #size-cells    = <1>;
+            bus-frequency  = <100000000>;
+            compatible = "simple-bus";
+            interrupt-parent = <&intc0>;
+            ranges;
+
+            soc_ctrl0: soc_controller@e0000000 {
+                compatible = "litex,soc-controller";
+                reg = <0xe0000000 0xc>;
+                status = "okay";
+            };
+
+            intc0: interrupt-controller {
+                interrupt-controller;
+                #interrupt-cells = <1>;
+                compatible = "opencores,or1k-pic";
+                status = "okay";
+            };
+
+            liteuart0: serial@e0006800 {
+                compatible = "litex,liteuart";
+                reg = <0xe0006800 0x100>;
+                interrupts = <0>;
+                status = "okay";
+            };
+
+            mac0: mac@e0001000 {
+                compatible = "litex,liteeth";
+                reg = <0xe0001000 0x7c>,
+                      <0xe0001800 0x0a>,
+                      <0x80000000 0x2000>;
+                tx-fifo-depth = <2>;
+                rx-fifo-depth = <2>;
+                interrupts = <2>;
+                status = "okay";
+            };
+
+            mmc0: mmc@e0005000 {
+                compatible = "litex,mmc";
+                reg = <0xe0005000 0x100>,
+                      <0xe0003800 0x100>,
+                      <0xe0003000 0x100>,
+                      <0xe0004800 0x100>,
+                      <0xe0004000 0x100>;
+                bus-width = <0x04>;
+                interrupts = <3>;
+                status = "okay";
+            };
+
+            leds: gpio@e0002800 {
+                compatible = "litex,gpio";
+                reg = <0xe0002800 0x4>;
+                gpio-controller;
+                #gpio-cells = <2>;
+                litex,direction = "out";
+                status = "disabled";
+            };
+
+        };
+
+        aliases {
+
+                serial0 = &liteuart0;
+
+        };
+
+};
+
+&leds {
+        litex,ngpio = <4>;
+        status = "okay";
+};
+
