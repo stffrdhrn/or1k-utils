@@ -18,7 +18,8 @@ others="i686-gnu x86_64-linux-gnu riscv32-linux-gnu-rv32imac-ilp32 riscv64-linux
 export CFLAGS="-g -O2"
 
 #OTHER=riscv32-linux-gnu-rv32imac-ilp32
-OTHER=x86_64-linux-gnu
+#OTHER=x86_64-linux-gnu
+OTHER=arc-linux-gnu
 
 if [ "$BUILD_MANY_SETUP" ] ; then
   mkdir -p $SRC
@@ -39,8 +40,10 @@ fi
 
 if [ "$BUILD_MANY_COMPILERS" ] ; then
   $SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD compilers $OTHER
-  $SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD compilers or1k-linux-gnu-soft
+  $SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD compilers or1k-linux-gnu
 fi
 
 $SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD   glibcs    $OTHER
 $SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD   glibcs    or1k-linux-gnu-soft
+$SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD   glibcs    or1k-linux-gnu-hard
+$SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD   glibcs    or1k-linux-gnu-hard64

@@ -33,7 +33,20 @@ nptl/tst-cancel28,Race condition with barrier re-init: flakey test sent patch
 # Creates 100x 20threads, each creating 2 works threads opening 20 dso files
 # which then exectures a function in each dlopen(dso) file.
 #nptl/tst-stack4,GLIBC BUG dl-tls.c: 481: _dl_allocate_tls_init: Assertion
-nptl/tst-stack4,timeout=20
+nptl/tst-stack4,timeout=100
+nptl/tst-mutex10,timeout=100
+string/test-strcasecmp,timeout=300
+string/test-strncasecmp,timeout=300
+string/tst-cmp,timeout=300
+stdio-common/tst-vfprintf-width-prec,timeout=300
+stdio-common/tst-vfprintf-width-prec-mem,mem profile for test with timeout=300
+stdio-common/tst-vfprintf-width-prec-alloc,timeout=300
+malloc/tst-dynarray-fail,timeout=300
+malloc/tst-dynarray-fail-mem,mem profile for test with timeout=300
+posix/tst-regcomp-truncated,timeout=300
+locale/tst-localedef-path-norm,timeout=300
+nss/tst-nss-files-hosts-multi,timeout=300
+nss/tst-nss-files-hosts-getent,timeout=300
 
 # Creates 2 worker threads working to create 100,000 detached threads doesn't
 # wait for detached threads to join, waits for 2 workers to return.
@@ -44,8 +57,7 @@ malloc/tst-mallocfork2,Works on native linux; timeout=20
 
 malloc/tst-malloc-usable-tunables,Works on native linux; export TUNABLES not working in chroot
 malloc/tst-safe-linking,Passes on native linux
-nptl/tst-mutex10,Works on native linux; timeout=20
-support/tst-support_blob_repeat,Works on native linux; timeout=20
+support/tst-support_blob_repeat,timeout=100
 
 malloc/tst-mallocfork2-mcheck, FAIL process seems to be stuck (reduce noise)
 localedata/sort-test, FAIL maybe OOM? (reduce noise)

@@ -30,7 +30,7 @@ fi
 if [ "$PARALLEL" ] ; then
   PARALLEL="PARALLELMFLAGS=\"-j${PARALLEL}\""
 else
-  PARALLEL="PARALLELMFLAGS=\"-j4\""
+  PARALLEL="PARALLELMFLAGS=\"-j2\""
 fi
 
 TEST_WRAPPER="$DIR/qemu-or1k-libc${CHROOT}"

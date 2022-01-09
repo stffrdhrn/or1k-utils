@@ -5,9 +5,12 @@ DIR=`dirname $0`
 source $DIR/glibc.config
 
 start_time=`date -u +%s`
+build_log=$BUILDDIR/log/build.log
+
+mkdir -p $BUILDDIR/log
 
 success_or_failure() {
-  if grep libc.build.done execlog > /dev/null ; then
+  if grep libc.build.done ${build_log} > /dev/null ; then
     echo -n SUCCESS
   else
     echo -n FAILURE
@@ -17,7 +20,7 @@ success_or_failure() {
 summary() {
   echo
   echo -n "# build finish:   "; date -Is
-  grep glibc.build execlog
+  grep glibc.build ${build_log}
   echo -n "# build time(m):  "; expr `date -u +%s` / 60 - $start_time / 60
   echo
 }
@@ -36,7 +39,7 @@ time (
   $DIR/glibc.build.gcc2 &&
   $DIR/glibc.build.libc-final &&
   $DIR/glibc.build.done
-) > execlog 2>&1
+) > ${build_log} 2>&1
 set +x
 
 # Sync gcc runtime libs into sysroot

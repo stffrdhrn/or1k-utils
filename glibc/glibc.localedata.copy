@@ -1,0 +1,29 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+backup_dir=$BUILDDIR/localedata.backup
+dest_dir=$BUILDDIR/build-glibc/localedata
+
+if [ ! -d ${backup_dir} ] ; then
+  echo "Cannot find ${backup_dir}, make a backup first"
+  exit 1
+fi
+
+if [ ! -d ${dest_dir} ] ; then
+  echo "Cannot find ${dest_dir}, do a build first"
+  exit 1
+fi
+
+for dir in `ls ${backup_dir}/*.nocache.xout`; do
+  dirname=$(basename $dir .nocache.xout)
+  dest=$dest_dir/$dirname
+  src=$backup_dir/$dirname
+  if [ -d $dest ] ; then
+    echo dest: $dirname already exists
+  else
+    echo cp: $src $dest_dir
+    cp -r $src $dest_dir
+  fi
+done
