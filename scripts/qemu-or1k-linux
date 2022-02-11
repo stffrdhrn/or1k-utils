@@ -5,14 +5,17 @@
 SCRIPT_PATH=`dirname $0`
 
 QEMU=$HOME/work/openrisc/qemu
+BAREBOX=$HOME/work/openrisc/barebox/barebox
+OSROOT=$HOME/work/openrisc/or1k-utils
+
 # For regression testing
 # LINUX=$HOME/work/openrisc/or1k-linux-4.10
-# Latest mainline
 #LINUX=$HOME/work/openrisc/buildroot/output/images/vmlinux
-#INITRD_CPIO=$HOME/work/openrisc/buildroot/output/rootfs.cpio.gz
-BAREBOX=$HOME/work/openrisc/barebox/barebox
+
+# Latest mainline
 LINUX=$HOME/work/linux/vmlinux
-OSROOT=$HOME/work/openrisc/or1k-utils
+
+#INITRD_CPIO=$HOME/work/openrisc/buildroot/output/images/rootfs.cpio.gz
 INITRD_CPIO=$HOME/work/linux/initramfs.cpio.gz
 
 run() {
@@ -51,7 +54,7 @@ IPRANGE=10.9.0
 # https://wiki.qemu.org/Features/TCGPlugins
 #PLUGIN="-plugin $QEMU/tests/plugin/libtracewatch.so,arg=store,arg=addr,arg=0x30007478,arg=addr_mask,arg=0xf000ffff,arg=tracepath,arg=-"
 
-#INITRD="-initrd $INITRD_CPIO"
+INITRD="-initrd $INITRD_CPIO"
 
 # Setup networking with the user more IP tack, it doesn't appear to work for me.
 #NETWORK="-net nic -netdev user,id=or1k,net=$IPRANGE.0/24,host=$IPRANGE.100,dhcpstart=$IPRANGE.50,hostfwd=tcp::2323-:23"
@@ -71,4 +74,4 @@ rm -f trace.txt
 run $QEMU/build/or1k-softmmu/qemu-system-or1k -cpu or1200 -M or1k-sim \
     $KERNEL $BIOS \
     $PLUGIN \
-    $INITRD $NETWORK $SERIAL $DRIVE $DEBUG $TRACE $SMP $RAM $INITRD "$@"
+    $INITRD $NETWORK $SERIAL $DRIVE $DEBUG $TRACE $SMP $RAM "$@"
