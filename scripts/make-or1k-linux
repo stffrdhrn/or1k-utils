@@ -8,15 +8,13 @@ litextftpd=$or1k_utils/litex/tftpd
 openadk_source="$openadk/target_qemu-or1k_uclibc-ng/qemu-or1k-uclibc-ng-initramfspiggyback_list"
 or1k_utils_source="$or1k_utils/initramfs $or1k_utils/initramfs.devnodes"
 
-#toolchain=or1k-elf-
+toolchain=or1k-elf-
 #toolchain=or1k-linux-musl-
-toolchain=or1k-linux-
+#toolchain=or1k-linux-
 
 # Select one of these to choose your preferred initramfs
 initramfs_source=$or1k_utils_source
 #initramfs_source=$openadk_source
-
-cflags="-O3 -mhard-mul"
 
 run() {
   echo "exec: $@"
@@ -29,7 +27,6 @@ run() {
 
   cd $HOME/work/linux
   run make -j12 LC_ALL=en_US.UTF-8 ARCH=openrisc \
-     CFLAGS="${cflags}" \
      CROSS_COMPILE=${toolchain} \
      $@
      # CONFIG_INITRAMFS_SOURCE="$initramfs_source" \
