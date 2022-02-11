@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 DIR=`dirname $0`
 
 source $DIR/glibc.config
@@ -19,5 +21,6 @@ pushd $BUILDDIR/build-gcc
     --prefix=$INSTALLDIR \
     --with-sysroot=$SYSROOTDIR
 
-    make -j${THREADS} && make install
+    make -j${THREADS}
+    make install
 popd

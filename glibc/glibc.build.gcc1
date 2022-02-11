@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 DIR=`dirname $0`
 
 source $DIR/glibc.config
@@ -22,7 +24,8 @@ pushd $BUILDDIR/build-gcc
 	--disable-shared
     fi
 
-    make -j${THREADS} all-gcc && make install-gcc
+    make -j${THREADS} all-gcc
+    make install-gcc
     #make -j4 all-target-libgcc && make install-target-libgcc
 
 popd

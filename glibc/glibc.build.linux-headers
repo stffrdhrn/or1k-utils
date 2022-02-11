@@ -1,11 +1,12 @@
 #!/bin/bash
 
+set -e
+
 DIR=`dirname $0`
 source $DIR/glibc.config
 
 pushd $LINUXDIR
 
-  make ARCH=openrisc headers_check
   make ARCH=openrisc INSTALL_HDR_PATH=$SYSROOTDIR/usr headers_install
 
 popd
