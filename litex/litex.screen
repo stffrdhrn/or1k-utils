@@ -4,4 +4,5 @@
 # NOTE: You can also do...
 #    litex_term /dev/ttyUSB1
 
-screen /dev/ttyUSB1 115200
+DEV=${DEV:-/dev/ttyUSB1}
+screen $DEV 115200
