@@ -19,15 +19,31 @@ else
 fi
 
 if [ -f "$tests_sum" ] ; then
-  for failure in `grep ^FAIL "$tests_sum" | cut -d' ' -f2`; do
-    if ! grep $VERBOSE "^$failure," $DIR/glibc.explained ; then
-      echo "ZZZFAIL $failure"
-      if [ -z "$VERBOSE" ] ; then
-        cat -n "$BUILDDIR/build-glibc/$failure.out" | head -n99 | cut -b1-256 | sed 's/ \([0-9]\)\t/0\1\t/' | sed "s@^@ZZZFAIL $failure: @"
+  if [ "$MEDIAWIKI" ] ; then
+    echo "Known failures"
+    for failure in `grep ^FAIL "$tests_sum" | cut -d' ' -f2`; do
+      grep "^$failure," $DIR/glibc.explained | sed 's/^/ * /'
+    done
+    for failure in `grep ^FAIL "$tests_sum" | cut -d' ' -f2`; do
+      if ! grep -q "^$failure," $DIR/glibc.explained ; then
+        echo
+        echo "$failure:"
+        echo "{{{"
+        cat $BUILDDIR/build-glibc/$failure.out | tail -n20
+        echo "}}}"
       fi
-    fi
-  # Sor results with FAIL at the end, quick hack
-  done | sort | sed 's/^ZZZ//'
+    done
+  else
+    for failure in `grep ^FAIL "$tests_sum" | cut -d' ' -f2`; do
+      if ! grep $VERBOSE "^$failure," $DIR/glibc.explained ; then
+        echo "ZZZFAIL $failure"
+        if [ -z "$VERBOSE" ] ; then
+          cat -n "$BUILDDIR/build-glibc/$failure.out" | head -n99 | cut -b1-256 | sed 's/ \([0-9]\)\t/0\1\t/' | sed "s@^@ZZZFAIL $failure: @"
+        fi
+      fi
+    # Sort results with FAIL at the end, quick hack
+    done | sort | sed 's/^ZZZ//'
+  fi # MEDIAWIKI
 else
   echo "ERROR: missing $tests_sum, cannot run. Run full $DIR/glibc.test first."
 fi

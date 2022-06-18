@@ -48,6 +48,13 @@ locale/tst-localedef-path-norm,timeout=300
 nss/tst-nss-files-hosts-multi,timeout=300
 nss/tst-nss-files-hosts-getent,timeout=300
 
+string/test-memcpy,timeout=300
+string/test-memcpy-large,timeout=300
+string/test-mempcpy,timeout=300
+
+resolv/tst-resolv-binary,non aligned data structures
+resolv/tst-resolv-trustad,non aligned data structures
+
 # Creates 2 worker threads working to create 100,000 detached threads doesn't
 # wait for detached threads to join, waits for 2 workers to return.
 nptl/tst-create-detached,Works on native linux; timeout=20
