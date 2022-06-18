@@ -8,9 +8,9 @@ litextftpd=$or1k_utils/litex/tftpd
 openadk_source="$openadk/target_qemu-or1k_uclibc-ng/qemu-or1k-uclibc-ng-initramfspiggyback_list"
 or1k_utils_source="$or1k_utils/initramfs $or1k_utils/initramfs.devnodes"
 
-toolchain=or1k-elf-
+#toolchain=or1k-elf-
 #toolchain=or1k-linux-musl-
-#toolchain=or1k-linux-
+toolchain=or1k-linux-
 
 # Select one of these to choose your preferred initramfs
 initramfs_source=$or1k_utils_source
@@ -31,7 +31,7 @@ run() {
      $@
      # CONFIG_INITRAMFS_SOURCE="$initramfs_source" \
 
-  if [ -f arch/openrisc/boot/vmlinux.bin ]; then
+  if [ -f arch/openrisc/boot/vmlinux.bin ] && grep -q 'CONFIG_LITEX=y' .config ; then
     run cp arch/openrisc/boot/vmlinux.bin $litextftpd/boot.bin
   fi
 #  echo "Generating initramfs.cpio.gz ..."

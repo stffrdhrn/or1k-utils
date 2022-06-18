@@ -11,12 +11,17 @@ OSROOT=$HOME/work/openrisc/or1k-utils
 # For regression testing
 # LINUX=$HOME/work/openrisc/or1k-linux-4.10
 #LINUX=$HOME/work/openrisc/buildroot/output/images/vmlinux
+# Jason's wireguard test
+#LINUX=$HOME/work/linux/vmlinux-zx2c4-wireguard
+#LINUX=$HOME/work/linux/vmlinux-wireguard-minimal
 
 # Latest mainline
 LINUX=$HOME/work/linux/vmlinux
 
 #INITRD_CPIO=$HOME/work/openrisc/buildroot/output/images/rootfs.cpio.gz
 INITRD_CPIO=$HOME/work/linux/initramfs.cpio.gz
+
+DISK=$HOME/work/linux/virt.qcow2
 
 run() {
   echo "exec: $@"
@@ -32,21 +37,35 @@ fi
 # For taking hibernation like snapshots of QEMU
 #DRIVE="-drive file=${SCRIPT_PATH}/qemu-snapshot.img,cache=writeback"
 
+DRIVE="-device virtio-blk-device,drive=d0 -drive file=${DISK},id=d0,if=none,format=qcow2"
+
 # Debug, add -S to stop on startup
 DEBUG="-gdb tcp::10001"
 
-#TRACE="-D trace.txt -d in_asm,exec,int,cpu,op_opt"
+# Qemu Tracing
+#TRACE="-D trace.txt -d in_asm,exec,nochain,op_opt,int"
+#TRACE="-D trace.txt -d in_asm,int,mmu"
+#TRACE="-D trace.txt -d in_asm,int"
+#TRACE="-D trace.txt -d int"
+#TRACE="-d int,mmu"
+#TRACE="-D trace.txt -d int,exec,nochain"
+#TRACE="-D trace.txt -d int,exec,cpu,nochain -dfilter 0xc0005000..0xc0006000,0xc0009000..0xc0010000"
 #TRACE="-trace open_eth_reg_* -trace open_eth_desc_*"
+
+# Kernel Tracing
+# Enable DYNAMIC_DEBUG=Y in .config
+# Then pass, -append 'earlycon dyndbg="file drivers/pci/* +plf" loglevel=10'
 
 #SERIAL="-serial stdio -nographic -monitor none"
 # With monitor 'ctrl+a c'
 SERIAL="-serial mon:stdio -nographic"
 
-#SMP="-smp cpus=2"
+#SMP="-smp cpus=4"
+SMP="-accel tcg,thread=multi -smp cpus=4"
 
 # Go big if running openadk + debug
 #RAM="-m 512"
-RAM="-m 32"
+RAM="-m 128"
 #RAM="-m 64"
 
 IPRANGE=10.9.0
@@ -59,11 +78,14 @@ INITRD="-initrd $INITRD_CPIO"
 # Setup networking with the user more IP tack, it doesn't appear to work for me.
 #NETWORK="-net nic -netdev user,id=or1k,net=$IPRANGE.0/24,host=$IPRANGE.100,dhcpstart=$IPRANGE.50,hostfwd=tcp::2323-:23"
 
-# Setup networking with a tap tunnel, this works.
-if ip addr show tap0 | grep -q "UP" && ip addr show tap0 | grep -q "$IPRANGE.100"; then
-  __NETWORK="-net nic -net tap,ifname=tap0,script=no,downscript=no"
-fi
-NETWORK=$__NETWORK
+## Setup networking with a tap tunnel, this works.
+#if ip addr show tap0 | grep -q "UP" && ip addr show tap0 | grep -q "$IPRANGE.100"; then
+#  __NETWORK="-net nic -net tap,ifname=tap0,script=no,downscript=no"
+#fi
+#NETWORK=$__NETWORK
+
+# Setup virt network using user mode
+NETWORK=" -device virtio-net-device,netdev=user -netdev user,id=user,net=10.9.0.1/24,host=10.9.0.100"
 
 # Bios doesn't work on OpenRISC yet
 #BIOS="-bios ${BAREBOX}.bin"
@@ -71,7 +93,7 @@ NETWORK=$__NETWORK
 KERNEL="-kernel $LINUX"
 
 rm -f trace.txt
-run $QEMU/build/or1k-softmmu/qemu-system-or1k -cpu or1200 -M or1k-sim \
-    $KERNEL $BIOS \
+run $QEMU/build/or1k-softmmu/qemu-system-or1k -cpu or1200 -M virt \
+    -no-reboot $KERNEL $BIOS \
     $PLUGIN \
     $INITRD $NETWORK $SERIAL $DRIVE $DEBUG $TRACE $SMP $RAM "$@"
