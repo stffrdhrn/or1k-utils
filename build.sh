@@ -39,10 +39,21 @@ fi
 if [ -d $LIBC ] ; then
  echo "Installing lib"
  mkdir -p initramfs/lib
- cp -a $LIBC/libc.so initramfs/lib
+ cp -a $LIBC/libc.so* initramfs/lib
  cp -a $LIBC/libstdc++.so* initramfs/lib
  cp -a $LIBC/libgcc_s.so* initramfs/lib
- ln -sf libc.so initramfs/lib/ld-musl-or1k.so.1
+
+ if [ -f initramfs/lib/libc.so ] ; then
+   # musl style
+   ln -sf libc.so initramfs/lib/ld-musl-or1k.so.1
+ else
+   # glibc style
+   cp -a $LIBC/libm.so* initramfs/lib
+   cp -a $LIBC/librt.so* initramfs/lib
+   cp -a $LIBC/ld-linux-or1k.so* initramfs/lib
+   cp -a $LIBC/libresolv.so* initramfs/lib
+   cp -a $LIBC/libnss_*.so* initramfs/lib
+ fi
 
 else
  echo "Cannot find libc at '$LIBC' install not completed"
@@ -57,9 +68,8 @@ if [ -d $KSELFTESTS ] ; then
 fi
 
 # Build initramfs, currently openrisc cannot use this
-#DIR=$PWD
-#pushd $LINUX
-# ./scripts/gen_initramfs_list.sh -o $DIR/initramfs.cpio $DIR/initramfs $DIR/initramfs.devnodes
-#popd
-
-exit 0
+DIR=$PWD
+pushd $LINUX
+ ./usr/gen_initramfs.sh -o $DIR/initramfs.cpio $DIR/initramfs $DIR/initramfs.devnodes
+ gzip -f $DIR/initramfs.cpio
+popd
