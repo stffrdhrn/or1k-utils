@@ -13,7 +13,9 @@ or1k_utils_source="$or1k_utils/initramfs $or1k_utils/initramfs.devnodes"
 toolchain=or1k-linux-
 
 # Select one of these to choose your preferred initramfs
-initramfs_source=$or1k_utils_source
+# we use for or1ksim, but no longer for qemu as for qemu we just
+# passin the initrd.
+#initramfs_source=$or1k_utils_source
 #initramfs_source=$openadk_source
 
 run() {
@@ -28,8 +30,8 @@ run() {
   cd $HOME/work/linux
   run make -j12 LC_ALL=en_US.UTF-8 ARCH=openrisc \
      CROSS_COMPILE=${toolchain} \
+     CONFIG_INITRAMFS_SOURCE="$initramfs_source" \
      $@
-     # CONFIG_INITRAMFS_SOURCE="$initramfs_source" \
 
   if [ -f arch/openrisc/boot/vmlinux.bin ] && grep -q 'CONFIG_LITEX=y' .config ; then
     run cp arch/openrisc/boot/vmlinux.bin $litextftpd/boot.bin
