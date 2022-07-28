@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Extra setup for Stafford's home glibc test environment
+
+start() {
+    echo mounting home work nfs ...
+    mkdir -p /home/shorne/work
+    mount 10.9.0.100:/home/shorne/work /home/shorne/work -o nolock,rsize=1024,wsize=1024
+
+    echo enabling login for shorne ...
+    mkdir -p /home/shorne/.ssh
+    echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7JvvqRSDTQZcLYiQXMQ/o4F8yYGxeCrAV+Cdua7/xunM9fJbh6mXpTB4nTf85vDKR4f8r2IhUCYZYNZ9GbQBnbYu+eKGXrSLzI0QQVFs5gQtHVdOPr4CqtRa1mkcc1CSTt91/abQrygo9dphRK8kUJjZxuugr8VTlwpg/mSD5Ezb5m2bA0PQC2kju4izA2FBWlLafmsN0bKLjaqpY67UEz1Ly+OcURjSVTUnRYr/Dq9Cd/v9VV2EPch2XRpi7MnPVDGjwhbD7Gh1MQ3p28C09XjWhZYXor8JlwKZrRbvfbLDS8ht557madfzxByTGjl705j7ItBZ576xxNkDJXuQz shorne@lianli.shorne-pla.net" > \
+      /home/shorne/.ssh/authorized_keys
+
+    echo setting up sshkeys ...
+    chmod 600 /etc/ssh/*_key
+
+    echo setting coredumps ...
+    ulimit -c unlimited
+    echo "/tmp/core.%u.%e.%p" > /proc/sys/kernel/core_pattern
+}
+
+stop() {
+    echo unmounting nfs ...
+    umount /home/shorne/work
+}
+
+case "$1" in
+    start|stop)
+        "$1";;
+    *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+esac
+
