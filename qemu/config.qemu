@@ -10,9 +10,11 @@ fi
 
 export CFLAGS="-Wno-maybe-uninitialized"
 
-../configure --target-list="$CPU-linux-user $CPU-softmmu riscv64-softmmu" \
+../configure --target-list="$CPU-linux-user $CPU-softmmu riscv64-softmmu m68k-softmmu" \
 	--enable-fdt \
 	--disable-kvm \
 	--disable-xen \
 	--disable-xkbcommon \
+	--enable-profiler \
+	--enable-docs \
 	--enable-debug-info $STATIC $@
