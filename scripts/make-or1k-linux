@@ -10,7 +10,8 @@ or1k_utils_source="$or1k_utils/initramfs $or1k_utils/initramfs.devnodes"
 
 #toolchain=or1k-elf-
 #toolchain=or1k-linux-musl-
-toolchain=or1k-linux-
+#toolchain=or1k-linux-
+toolchain=or1k-smh-linux-gnu-
 
 # Select one of these to choose your preferred initramfs
 # we use for or1ksim, but no longer for qemu as for qemu we just

@@ -4,7 +4,7 @@
 
 SCRIPT_PATH=`dirname $0`
 
-QEMU=$HOME/work/openrisc/qemu
+QEMU=$HOME/work/qemu
 BAREBOX=$HOME/work/openrisc/barebox/barebox
 OSROOT=$HOME/work/openrisc/or1k-utils
 
@@ -22,7 +22,7 @@ INITRD_CPIO=$HOME/work/openrisc/buildroot/output/images/rootfs.cpio
 #INITRD_CPIO=$HOME/work/linux/initramfs.cpio.gz
 #INITRD_CPIO=$HOME/work/openrisc/or1k-utils/initramfs.cpio.gz
 
-DISK=$HOME/work/qemu-fs-or1k.qcow2
+DISK=$HOME/work/or1k-rootfs.qcow2
 
 run() {
   echo "exec: $@"
@@ -35,9 +35,9 @@ if [ ! -f ${SCRIPT_PATH}/qemu-snapshot.img ] ; then
   $QEMU/build/qemu-img create -f qcow2 ${SCRIPT_PATH}/qemu-snapshot.img 100M
 fi
 
-if [ ! -f ${SCRIPT_PATH}/qemu-fs-or1k.qcow2 ] ; then
-  $QEMU/build/qemu-img create -o size=8G -f qcow2 qemu-fs-or1k.qcow2
-fi
+#if [ ! -f ${SCRIPT_PATH}/qemu-fs-or1k.qcow2 ] ; then
+#  $QEMU/build/qemu-img create -o size=8G -f qcow2 qemu-fs-or1k.qcow2
+#fi
 
 # For taking hibernation like snapshots of QEMU
 #DRIVE="-drive file=${SCRIPT_PATH}/qemu-snapshot.img,cache=writeback"

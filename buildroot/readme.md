@@ -1,7 +1,7 @@
 ## Building
 
 ```
-$ git clone git@github.com:stffrdhrn/buildroot.git or1k-glibc
+$ git clone git@github.com:stffrdhrn/buildroot.git buildroot
 $ cd buildroot
 $ cp ../or1k-utils/buildroot/local.mk .
 $ make BR2_EXTERNAL=../or1k-utils/buildroot/ litex_mor1kx_defconfig
@@ -28,3 +28,7 @@ Copy rootfs to your partition
 ```
 sudo dd if=output/images/rootfs.ext2 of=/dev/sdd3
 ```
+
+### For QEMU Virt
+
+Build a qemu rootfs with swap.  Run mkqcow2.sh.
