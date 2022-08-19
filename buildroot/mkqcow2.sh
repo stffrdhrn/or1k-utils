@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 # Need to run all this as root
 
 IMG=/home/shorne/work/openrisc/buildroot/output/images/rootfs.ext4
@@ -22,6 +22,8 @@ sfdisk --dump $DEV
 
 mkswap ${DEV}p1
 dd if=$IMG of=${DEV}p2 bs=4096
+sync
 resize2fs ${DEV}p2
+chown $SUDO_USER:$SUDO_USER $QCOW2
 
 qemu-nbd --disconnect $DEV

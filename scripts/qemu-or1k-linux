@@ -31,9 +31,9 @@ run() {
 
 # image created with
 # $QEMU/build/qemu-img create -f qcow2 qemu-snapshot.img 100M
-if [ ! -f ${SCRIPT_PATH}/qemu-snapshot.img ] ; then
-  $QEMU/build/qemu-img create -f qcow2 ${SCRIPT_PATH}/qemu-snapshot.img 100M
-fi
+#if [ ! -f ${SCRIPT_PATH}/qemu-snapshot.img ] ; then
+#  $QEMU/build/qemu-img create -f qcow2 ${SCRIPT_PATH}/qemu-snapshot.img 100M
+#fi
 
 #if [ ! -f ${SCRIPT_PATH}/qemu-fs-or1k.qcow2 ] ; then
 #  $QEMU/build/qemu-img create -o size=8G -f qcow2 qemu-fs-or1k.qcow2

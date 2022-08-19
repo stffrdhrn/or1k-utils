@@ -1,0 +1,22 @@
+#!/bin/sh
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+cd $BUILDDIR/buildall
+  make  # build the timer tool
+
+  # create the buildall build config
+   cat <<EOF >config
+BINUTILS_SRC=${BUILDDIR}/binutils-gdb
+GCC_SRC=${BUILDDIR}/gcc
+PREFIX=${INSTALLDIR}
+EXTRA_BINUTILS_CONF=""
+EXTRA_GCC_CONF=""
+MAKEOPTS="-j${THREADS}"
+CHECKING=release
+ECHO=/bin/echo
+EOF
+
+  ./build --toolchain openrisc
+cd ..
