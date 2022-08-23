@@ -76,6 +76,8 @@ IPRANGE=10.9.0
 
 # https://wiki.qemu.org/Features/TCGPlugins
 #PLUGIN="-plugin $QEMU/tests/plugin/libtracewatch.so,arg=store,arg=addr,arg=0x30007478,arg=addr_mask,arg=0xf000ffff,arg=tracepath,arg=-"
+#PLUGIN="-plugin $QEMU/build/tests/plugin/libirqsampler.so,tracepath=-"
+#PLUGIN="-plugin $QEMU/build/tests/plugin/libmemsampler.so,tracepath=-"
 
 # Initrd not needed if we are using the rootfs partition
 #INITRD="-initrd $INITRD_CPIO"
