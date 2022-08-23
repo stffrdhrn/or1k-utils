@@ -16,7 +16,7 @@ pushd $BUILDDIR/build-gcc
 	--target=$CROSS \
 	--prefix=$INSTALLDIR \
 	--with-sysroot=$SYSROOTDIR \
-	--enable-languages=c \
+	--enable-languages=c,c++ \
 	--disable-threads \
         --disable-multilib \
 	--disable-libssp \
