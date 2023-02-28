@@ -1,0 +1,17 @@
+#!/bin/bash
+# Dumps versions of each repo
+
+DIR=`dirname $0`
+source $DIR/glibc.config
+
+echo GCC version
+cat $BUILDDIR/gcc/gcc/BASE-VER
+git -C $BUILDDIR/gcc lo -n1
+
+echo binutils version
+grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' $BUILDDIR/binutils-gdb/bfd/version.m4
+git -C $BUILDDIR/binutils-gdb lo -n1
+
+echo glibc version
+grep VERSION $BUILDDIR/glibc/version.h
+git -C $BUILDDIR/glibc lo -n1
