@@ -15,7 +15,7 @@ pushd $BUILDDIR/build-gcc
     --with-gnu-as \
     --disable-nls \
     --disable-libssp \
-    --with-multilib-list=mcmov \
+    --with-multilib-list=mcmov,mhard-float \
     --enable-languages=c,c++ \
     --target=$CROSS \
     --prefix=$INSTALLDIR \

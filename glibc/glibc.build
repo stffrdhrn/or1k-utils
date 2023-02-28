@@ -27,7 +27,7 @@ summary() {
 
 set -x
 # Clean any old artifacts that may impact our build
-rm -rf $INSTALLDIR/or1k-smh-linux-gnu
+rm -rf $INSTALLDIR/${CROSS}
 
 time (
   $DIR/glibc.build.binutils &&
@@ -43,7 +43,7 @@ time (
 set +x
 
 # Sync gcc runtime libs into sysroot
-rsync -a $INSTALLDIR/or1k-smh-linux-gnu/lib/  $SYSROOTDIR/lib
+rsync -a $INSTALLDIR/${CROSS}/lib/  $SYSROOTDIR/lib
 
 if [ "$MAILTO" ] ; then
   summary | mail -s "Glibc build report $(date +"%Y-%m-%d-%H:%M") - $(success_or_failure)" $MAILTO
