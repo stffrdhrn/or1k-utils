@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e # FAIL FAST
+set -x # DEBUG
+
+# These are the commands to create our qemu qcow image
+# from the openrisc buildroot ext2 disk image.
+
+SCRIPT_PATH=`dirname $0`
+
+WORK_HOME=$HOME/work/openrisc
+QEMU=$WORK_HOME/qemu
+BUILDROOT=$WORK_HOME/buildroot
+OUTPUT=$WORK_HOME/or1k-utils/buildroot/output
+
+qcow_img=$OUTPUT/qemu-fs-or1k.qcow2
+extfs_img=$BUILDROOT/output/images/rootfs.ext2
+
+if [ ! -f ${extfs_img} ] ; then
+  echo "E2FS Image: $extfs_img doesn't exist.  Can't make image, make buidroot first."
+  exit 1
+fi
+
+if [ ! -f ${qcow_img} ] ; then
+  $QEMU/build/qemu-img create -o size=8G -f qcow2 $qcow_img
+
+  # Mound image as device
+  sudo modprobe nbd
+  sudo qemu-nbd -c /dev/nbd0  $qcow_img
+
+  # use FDISK to partition
+  sudo sfdisk /dev/nbd0 < $SCRIPT_PATH/qemu-or1k-img.part
+
+  # Make swap image
+  sudo mkswap /dev/nbd0p1
+
+  # Write ext4 image
+  sudo dd if=$extfs_img of=/dev/nbd0p2
+  sudo resize2fs /dev/nbd0p2
+
+  # Unmount image
+  sync
+  sudo qemu-nbd -d /dev/nbd0
+else
+  echo "Image: $qcow_img already exists, doing nothing."
+  exit 1
+fi

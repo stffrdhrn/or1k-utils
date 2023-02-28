@@ -1,0 +1,8 @@
+label: dos
+label-id: 0xb41d0312
+device: /dev/nbd0
+unit: sectors
+sector-size: 512
+
+/dev/nbd0p1 : start=          63, size=     4194304, type=82
+/dev/nbd0p2 : start=     4194367, size=    12582849, type=83
