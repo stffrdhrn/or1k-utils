@@ -1,7 +1,7 @@
 # List of tests which were investigated and explained
 
-gmon/tst-gmon-gprof,extra stack "+f3 1"; fixed upstream *BZ 28153*
-gmon/tst-gmon-pie-gprof,extra stack "+f3 1"; same in *BZ 28153*
+#gmon/tst-gmon-gprof,extra stack "+f3 1"; fixed upstream *BZ 28153*
+#gmon/tst-gmon-pie-gprof,extra stack "+f3 1"; same in *BZ 28153*
 #gmon/tst-gmon-static-gprof,extra stack "+f3 1"; same in *csky*
 
 elf/tst-audit14,works with stdout redirect to file: not over ssh
@@ -27,6 +27,7 @@ nptl/test-mutexattr-printers,No python
 nptl/test-mutex-printers,No python
 nptl/test-rwlockattr-printers,No python
 nptl/test-rwlock-printers,No python
+nptl/tst-cond24,timeout=200
 
 nptl/tst-cancel28,Race condition with barrier re-init: flakey test sent patch
 

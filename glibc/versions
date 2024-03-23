@@ -15,3 +15,10 @@ git -C $BUILDDIR/binutils-gdb lo -n1
 echo glibc version
 grep VERSION $BUILDDIR/glibc/version.h
 git -C $BUILDDIR/glibc lo -n1
+
+echo Testing verisons $CROSS
+echo -n 'Compiler: ' ; $INSTALLDIR/bin/${CROSS}-gcc -v 2>&1 | tail -n1
+echo -n 'Binutils: ' ; $INSTALLDIR/bin/${CROSS}-as -v < /dev/null 2>&1
+# This bit expects the qemu box to be up
+echo -n 'Linux: ' ; ssh localhost -p 2222 uname -a
+echo Tester: $USER

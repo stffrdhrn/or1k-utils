@@ -40,6 +40,14 @@ if [ "$SSH" ] ; then
   TEST_WRAPPER="$BUILDDIR/glibc/scripts/cross-test-ssh.sh"
   TEST_WRAPPER="$TEST_WRAPPER --timeoutfactor $TIMEOUTFACTOR"
   #TEST_WRAPPER="$TEST_WRAPPER --ssh 'ssh -tt'"
+
+  # Use port 2222 which setup in our qemu-or1k-linux wrapper
+  # Using the ssh arg break iconv stuff, so we use .ssh/config instead to
+  # override localhost port to 2222.
+  #if [ "$SSH" == 'localhost' ] ; then
+  #  TEST_WRAPPER="$TEST_WRAPPER --ssh \"ssh -p2222\""
+  #fi
+
   #TEST_WRAPPER="$TEST_WRAPPER --ssh 'ssh -tt -vvv -E /tmp/glibc.ssh.log'"
   TEST_WRAPPER="$TEST_WRAPPER $SSH"
 fi
@@ -101,7 +109,7 @@ summary() {
   echo    "# test wrapper:  $TEST_WRAPPER"
   echo
   echo    "# summary"
-  cut -f1 -d: $file | sort | uniq -c
+  grep : $file | cut -f1 -d: | sort | uniq -c
 }
 
 pushd $BUILDDIR/build-glibc
