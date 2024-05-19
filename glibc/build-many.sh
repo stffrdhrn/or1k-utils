@@ -59,37 +59,94 @@ summary() {
   echo
 }
 
-if [ "$BUILD_MANY_SETUP" ] ; then
+usage() {
+  echo "usage: $0 <command>"
+  echo "available commands:"
+  echo " setup     - create $SRC and pull all default sources from build-many-glibcs.py,"
+  echo "             run when build-many versions change"
+  echo " compilers - build compilers $OTHER and $COMPILER"
+  echo " glibcs    - build glibcs after compilers $OTHER and or1k-linux-gnu-soft"
+  echo " list      - list compilers and glibcs"
+  exit 1
+}
+
+check_src() {
+  if [ ! -d "$SRC/glibc" ] ; then
+    echo "Missing $SRC/glibc, run '$0 setup' first."
+    exit 1
+  fi
+}
+
+send_report() {
+  cmd=$1 ; shift
+
+  if [ "$MAILTO" ] ; then
+    summary | mail -s "Build many $cmd report $(date +"%Y-%m-%d-%H:%M") - $(success_or_failure)" $MAILTO
+  fi
+}
+
+build_command=$1
+
+if [ ! "$build_command" ] ; then
+  usage
+fi
+
+# Do the buildmany checkout, use default versions
+# from build-many-glibcs for everything but the stuff
+# I work on.
+# Note, if we run this again it will not do anything
+# it only does checkout if version args change.
+if [ "$build_command" == "setup" ] ; then
+  rm -rf $BUILD
   mkdir -p $SRC
-  [ ! -L $SRC/glibc ]    && ln -s $BUILDDIR/glibc $SRC/glibc
-  [ ! -L $SRC/gcc ]      && ln -s $BUILDDIR/gcc $SRC/gcc
   [ ! -L $SRC/binutils ] && ln -s $BUILDDIR/binutils-gdb $SRC/binutils
-  #[ ! -L $SRC/gmp ]      && ln -s $BUILDDIR/gmp-6.1.2 $SRC/gmp
-  #[ ! -L $SRC/mpc ]      && ln -s $BUILDDIR/mpc-1.0.3 $SRC/mpc
-  #[ ! -L $SRC/mpfr ]     && ln -s $BUILDDIR/mpfr-3.1.5 $SRC/mpfr
+  [ ! -L $SRC/glibc ]    && ln -s $BUILDDIR/glibc        $SRC/glibc
+  [ ! -L $SRC/gcc ]      && ln -s $BUILDDIR/gcc          $SRC/gcc
 
-  $SRC/glibc/scripts/build-many-glibcs.py $BUILD checkout \
-    gcc-vcs-${gcc_branch} \
-    binutils-vcs-${binutils_branch} \
-    glibc-vcs-${branch}
+  # Trick build-many-glibcs to use our versions and don't touch my dirs
+  {
+    echo '{'
+    echo ' "binutils":{"explicit":true,"revision":"abc123","version":"vcs-mainline"}'
+    echo ',"glibc":   {"explicit":true,"revision":"abc123","version":"vcs-mainline"}'
+    echo ',"gcc":     {"explicit":true,"revision":"abc123","version":"vcs-mainline"}'
+    echo '}'
+  } > $SRC/versions.json
 
-  $SRC/glibc/scripts/build-many-glibcs.py $BUILD host-libraries
+  $SRC/glibc/scripts/build-many-glibcs.py --shallow $BUILD checkout \
+    glibc-vcs-mainline \
+    binutils-vcs-mainline \
+    gcc-vcs-mainline
+
+  $SRC/glibc/scripts/build-many-glibcs.py -j12 $BUILD host-libraries
+elif [ "$build_command" == "compilers" ] ; then
+  check_src
+
+  $SRC/glibc/scripts/build-many-glibcs.py -j12 --keep failed $BUILD compilers $OTHER
+  $SRC/glibc/scripts/build-many-glibcs.py -j12 --keep failed $BUILD compilers $COMPILER
+
+  send_report $build_command
+elif [ "$build_command" == "glibcs" ] ; then
+  check_src
+
+  $SRC/glibc/scripts/build-many-glibcs.py -j12 --keep failed $BUILD   glibcs    $OTHER
+  $SRC/glibc/scripts/build-many-glibcs.py -j12 --keep failed $BUILD   glibcs    or1k-linux-gnu-soft
+
+  # If we support hardfloat toolchains define HARD_FLOAT to build them
+  if [ "$HARD_FLOAT" ]; then
+    $SRC/glibc/scripts/build-many-glibcs.py -j12 --keep failed $BUILD   glibcs    or1k-linux-gnu-hard
+  fi
+
+  send_report $build_command
+elif [ "$build_command" == "list" ] ; then
+  check_src
+
+  echo "## COMPILERS ##"
+  $SRC/glibc/scripts/build-many-glibcs.py $BUILD list-compilers
+  echo "## GLIBCS ##"
+  $SRC/glibc/scripts/build-many-glibcs.py $BUILD list-glibcs
+else
+  echo "Unknown command: $build_command"
+  usage
 fi
 
-if [ "$BUILD_MANY_COMPILERS" ] ; then
-  $SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD compilers $OTHER
-  $SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD compilers $COMPILER
-fi
 
-$SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD   glibcs    $OTHER
-$SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD   glibcs    or1k-linux-gnu-soft
-
-# If we support hardfloat toolchains define HARD_FLOAT to build them
-if [ "$HARD_FLOAT" ]; then
-  $SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD   glibcs    or1k-linux-gnu-hard
-  $SRC/glibc/scripts/build-many-glibcs.py --keep failed $BUILD   glibcs    or1k-linux-gnu-hard64
-fi
-
-if [ "$MAILTO" ] ; then
-  summary | mail -s "Build many report $(date +"%Y-%m-%d-%H:%M") - $(success_or_failure)" $MAILTO
-fi

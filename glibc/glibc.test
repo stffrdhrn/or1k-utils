@@ -110,6 +110,9 @@ summary() {
   echo
   echo    "# summary"
   grep : $file | cut -f1 -d: | sort | uniq -c
+  echo
+  echo    "# versions"
+  $DIR/versions
 }
 
 pushd $BUILDDIR/build-glibc

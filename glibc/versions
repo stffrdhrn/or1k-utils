@@ -4,21 +4,33 @@
 DIR=`dirname $0`
 source $DIR/glibc.config
 
-echo GCC version
-cat $BUILDDIR/gcc/gcc/BASE-VER
-git -C $BUILDDIR/gcc lo -n1
+if [ "${VERBOSE}" ] ; then
+    echo GCC version
+    cat $BUILDDIR/gcc/gcc/BASE-VER
+    git -C $BUILDDIR/gcc lo -n1
 
-echo binutils version
-grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' $BUILDDIR/binutils-gdb/bfd/version.m4
-git -C $BUILDDIR/binutils-gdb lo -n1
+    echo binutils version
+    grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' $BUILDDIR/binutils-gdb/bfd/version.m4
+    git -C $BUILDDIR/binutils-gdb lo -n1
 
-echo glibc version
-grep VERSION $BUILDDIR/glibc/version.h
-git -C $BUILDDIR/glibc lo -n1
+    echo glibc version
+    grep VERSION $BUILDDIR/glibc/version.h
+    git -C $BUILDDIR/glibc lo -n1
+fi
 
-echo Testing verisons $CROSS
-echo -n 'Compiler: ' ; $INSTALLDIR/bin/${CROSS}-gcc -v 2>&1 | tail -n1
-echo -n 'Binutils: ' ; $INSTALLDIR/bin/${CROSS}-as -v < /dev/null 2>&1
+echo    "Toolchain: $CROSS"
+echo -n 'Compiler:  ' ; $INSTALLDIR/bin/${CROSS}-gcc -v 2>&1 | tail -n1
+echo -n 'Binutils:  ' ; $INSTALLDIR/bin/${CROSS}-as -v < /dev/null 2>&1
 # This bit expects the qemu box to be up
-echo -n 'Linux: ' ; ssh localhost -p 2222 uname -a
-echo Tester: $USER
+if [ "$SSH" ] ; then
+    echo -n 'Linux:     ' ; ssh $SSH uname -a
+else
+    echo "Linux: unknown? define SSH"
+fi
+echo    "Tester:    $USER"
+
+# Find where our last master point is from.
+glibc_ref=`git -C $BUILDDIR/glibc merge-base origin/master HEAD`
+glibc_master=`git -C $BUILDDIR/glibc lo -n1 ${glibc_ref}`
+#glibc_head=`git -C $BUILDDIR/glibc log --oneline -n1`
+echo    "Glibc:     $glibc_master"
