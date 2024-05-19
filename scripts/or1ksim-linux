@@ -57,5 +57,5 @@ if [ "$START_NETWORK" == "Y" ] ; then
 fi
 
 # Start sim in the background
-run $OR1KSIM/sim -f $OPENRISC_OS/or1ksim.cfg $LINUX/vmlinux --nosrv $@
+run $OR1KSIM/sim -f $OPENRISC_OS/or1ksim.cfg $LINUX/vmlinux $@
 

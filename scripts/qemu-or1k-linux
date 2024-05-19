@@ -18,11 +18,13 @@ OSROOT=$HOME/work/openrisc/or1k-utils
 # Latest mainline
 LINUX=$HOME/work/linux/vmlinux
 
-INITRD_CPIO=$HOME/work/openrisc/buildroot/output/images/rootfs.cpio
+#INITRD_CPIO=$HOME/work/openrisc/buildroot/output/images/rootfs.cpio
 #INITRD_CPIO=$HOME/work/linux/initramfs.cpio.gz
 #INITRD_CPIO=$HOME/work/openrisc/or1k-utils/initramfs.cpio.gz
+#INITRD_CPIO=$HOME/work/linux/robl-initramfs.cpio.gz
 
-DISK=$HOME/work/or1k-rootfs.qcow2
+#DISK=$HOME/work/qemu-fs-or1k.qcow2
+DISK=$OSROOT/buildroot/output/qemu-fs-or1k.qcow2
 
 run() {
   echo "exec: $@"
@@ -53,6 +55,9 @@ DEBUG="-gdb tcp::10001"
 #TRACE="-d int,mmu"
 #TRACE="-D trace.txt -d int,exec,nochain"
 #TRACE="-D trace.txt -d int,exec,cpu,nochain -dfilter 0xc0005000..0xc0006000,0xc0009000..0xc0010000"
+# Tracing FPU signal handling and why exceptions are not throws on second run of
+# fpu instruction!
+#TRACE="-D trace.txt -d int,exec,in_asm,op_opt -dfilter 0x00000d00..0x00000daa,0x000025c8..0x00002644"
 #TRACE="-trace open_eth_reg_* -trace open_eth_desc_*"
 
 # Kernel Tracing
@@ -64,11 +69,13 @@ DEBUG="-gdb tcp::10001"
 SERIAL="-serial mon:stdio -nographic"
 
 #SMP="-smp cpus=4"
+# Enable SMP, Multi thread support
 SMP="-accel tcg,thread=multi -smp cpus=4"
 
 # Go big if running openadk + debug
 #RAM="-m 1024"
-RAM="-m 512"
+RAM="-m 768"
+#RAM="-m 512"
 #RAM="-m 128"
 #RAM="-m 64"
 
@@ -76,20 +83,10 @@ IPRANGE=10.9.0
 
 # https://wiki.qemu.org/Features/TCGPlugins
 #PLUGIN="-plugin $QEMU/tests/plugin/libtracewatch.so,arg=store,arg=addr,arg=0x30007478,arg=addr_mask,arg=0xf000ffff,arg=tracepath,arg=-"
-#PLUGIN="-plugin $QEMU/build/tests/plugin/libirqsampler.so,tracepath=-"
-#PLUGIN="-plugin $QEMU/build/tests/plugin/libmemsampler.so,tracepath=-"
+#PLUGIN="-plugin $QEMU/build/tests/plugin/libirqsampler.so,tracepath=irqs.txt"
 
 # Initrd not needed if we are using the rootfs partition
-#INITRD="-initrd $INITRD_CPIO"
-
-# Setup networking with the user mode IP tack, it doesn't appear to work for me.
-#NETWORK="-net nic -netdev user,id=or1k,net=$IPRANGE.0/24,host=$IPRANGE.100,dhcpstart=$IPRANGE.50,hostfwd=tcp::2323-:23"
-
-## Setup networking with a tap tunnel, this works.
-#if ip addr show tap0 | grep -q "UP" && ip addr show tap0 | grep -q "$IPRANGE.100"; then
-#  __NETWORK="-net nic -net tap,ifname=tap0,script=no,downscript=no"
-#fi
-#NETWORK=$__NETWORK
+# INITRD="-initrd $INITRD_CPIO"
 
 # Bios doesn't work on OpenRISC yet
 #BIOS="-bios ${BAREBOX}.bin"
@@ -102,13 +99,22 @@ if [ "$MACHINE" = "virt" ] ; then
   # Setup virt network using user mode
   # We can use: virtio-net-pci or virtio-net-device
   # pure virtio is a bit faster
-  NETWORK=" -device virtio-net-pci,netdev=user -netdev user,id=user,net=10.9.0.1/24,host=10.9.0.100"
-  NETWORK="$NETWORK,hostfwd=tcp::2222-:22"
+
+  # Setup networking with a tap tunnel or usermode, tap is needed for glibc testing,
+  # because of wrapper script doesnt like using port 2222.
+  if ip addr show tap0 | grep -q "UP" && ip addr show tap0 | grep -q "$IPRANGE.100"; then
+    echo "Using tap tunnel network, ssh on $IPRANGE.100:22"
+    NETWORK="-device virtio-net-pci,netdev=tap -netdev tap,id=tap,ifname=tap0,script=no,downscript=no"
+  else
+    echo "Using user mode network, ssh on localhost:2222"
+    NETWORK=" -device virtio-net-pci,netdev=user -netdev user,id=user,net=$IPRANGE.1/24,host=$IPRANGE.100"
+    NETWORK="$NETWORK,hostfwd=tcp::2222-:22"
+  fi
 
   # Allow persistence on virt
   DRIVE="-device virtio-blk-device,drive=d0 -drive file=${DISK},id=d0,if=none,format=qcow2"
   # Make the drive our root device
-  ROOT="-append 'rootwait -append root=/dev/vda2"
+  APPEND="rootwait root=/dev/vda2" # TONs of debug dynamic_debug.verbose=3 dyndbg=\"file kernel/* +plsfmt\" loglevel=10"
 else
   # Setup ethoc network using user mode
   NETWORK=" -nic user,net=10.9.0.0/24,host=10.9.0.100,dns=10.9.0.3"
@@ -123,4 +129,4 @@ run $PERF $QEMU/build/or1k-softmmu/qemu-system-or1k \
     -machine $MACHINE \
     -no-reboot $KERNEL $BIOS \
     $PLUGIN \
-    $INITRD $NETWORK $SERIAL $DRIVE $DEBUG $TRACE $SMP $RAM $ROOT "$@"
+    $INITRD $NETWORK $SERIAL $DRIVE $DEBUG $TRACE $SMP $RAM -append "$APPEND" "$@"

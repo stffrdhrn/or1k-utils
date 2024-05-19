@@ -16,6 +16,8 @@ OUTPUT=$WORK_HOME/or1k-utils/buildroot/output
 qcow_img=$OUTPUT/qemu-fs-or1k.qcow2
 extfs_img=$BUILDROOT/output/images/rootfs.ext2
 
+mkdir -p $OUTPUT
+
 if [ ! -f ${extfs_img} ] ; then
   echo "E2FS Image: $extfs_img doesn't exist.  Can't make image, make buidroot first."
   exit 1
