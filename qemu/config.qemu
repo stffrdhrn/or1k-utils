@@ -15,6 +15,6 @@ export CFLAGS="-Wno-maybe-uninitialized"
 	--disable-kvm \
 	--disable-xen \
 	--disable-xkbcommon \
-	--enable-profiler \
 	--enable-docs \
+	--enable-slirp \
 	--enable-debug-info $STATIC $@
