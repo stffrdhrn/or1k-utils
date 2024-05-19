@@ -1,13 +1,19 @@
 #! /bin/sh
 
+log() {
+#  echo $(date +"%Y-%m-%dT%H:%M:%S.000") " " $@
+   true
+}
+
+log "Mounting filesystems"
 mount -a
 
 # set hostname
-#echo "Setting hostname" &
+log "Setting hostname"
 hostname openrisc &
 
 #remount everything, read/write
-#echo "Remounting root" &
+log "Re-mounting read/write"
 mount -o remount,rw /
 
 # clear ethernet's IP
@@ -20,6 +26,7 @@ mount -o remount,rw /
 #/sbin/udhcpc -n -q -s /usr/share/udhcpc/default.script
 
 # create some dirs to avoid warning messages
+log "Making aux directories"
 mkdir -p /var/run && \
  mkdir -p /etc/network/if-up.d && \
  mkdir -p /etc/network/if-pre-up.d &
@@ -28,19 +35,22 @@ mkdir -p /var/run && \
 mkdir -p /root &
 
 # telnetd requires this
+log "Mounting /dev/pts"
 mkdir -p /dev/pts && \
  mount -t devpts none /dev/pts &
 
+log "Mounting /dev/shm"
 mkdir -p /dev/shm && \
  mount -t tmpfs none /dev/shm &
 
-echo "Configuring loopback device"
+log "Configuring loopback device"
 #ifconfig lo 127.0.0.1
 ifup lo &
-echo "Brining up eth0"
+log "Brining up eth0"
 ifconfig eth0 10.9.0.12 netmask 255.255.255.0
 route add default gw 10.9.0.100
 
 # inetd startup
+log "Launching inetd"
 inetd &
 

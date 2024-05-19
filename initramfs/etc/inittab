@@ -7,4 +7,3 @@
 # Stuff to do before rebooting
 ::ctrlaltdel:/sbin/reboot
 ::shutdown:/etc/shutdown
-
