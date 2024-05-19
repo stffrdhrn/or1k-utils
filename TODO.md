@@ -4,17 +4,25 @@ Keeping my todo list for everything openrisc related.
 
 ## TODO
 
- linux next 5.18
- - rseq
- - gcc machine instructions
+ linux
+  - rseq
+  - VDSO
+  - common-entry framework
+  - Virtually mapped stacks
+  - Update architecture logging to use pr_* instead of printk
+  - eBFD jit support
+  - Support for jump_label patching
+  - Huge TLB pages with ATB (16mb) - no hardware, probably no need
+  - Ftrace and perf support
+     * `_mcount`
+     * dynamic mcount
+     * CONFIG_FUNCTION_GRAPH_TRACER
 
- Glibc Test Results 2.35 - running...
-
- qeme patches (dts, initrd) get upstream
-
- marocchino upstream
- docs
- - fpcsr
+ KVM/virtio
+  - OpenRISC does not support virtualization (only two mode levels)
+  - However, we could think of getting qemu x86 KVM working with openrisc
+    translation. Not possible: https://stackoverflow.com/questions/69516247/how-to-instantiate-an-arm-based-vm-through-linux-kvm-api-on-x86
+  - This needs virtualization extensions(Hypervisor mode) added to OpenRISC
 
  gcc PRs
   - https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102584 - unsigned short
@@ -23,6 +31,29 @@ Keeping my todo list for everything openrisc related.
 ## DONE
 
 Items done moved down here!
+
+### Done 2024-05-19
+
+Linux v6.10 upstreamed
+  - Better FPU handling (patches on branch)
+
+Glibc FPU support upstream.
+
+### Done 2024-03-30
+
+These items were done a while back but moved to done now.
+
+linux next 5.18
+  - gcc machine instructions  (don't remember what this even was)
+
+ Glibc Test Results 2.35 - Upstreamed
+
+ qeme patches (dts, initrd) get upstream
+
+ marocchino upstream
+ docs
+ - fpcsr - is now writable in user mode!
+
 
 ### Done 2022-02-11
 
