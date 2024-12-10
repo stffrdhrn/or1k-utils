@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+
+DIR=`dirname $0`
+
+source $DIR/newlib.config
+
+mkdir -p $BUILDDIR/build-newlib
+rm -rf $BUILDDIR/build-newlib/*
+
+
+pushd $BUILDDIR/build-newlib
+
+    export CFLAGS_FOR_TARGET=$CFLAGS
+    if [ -n $RECONFIG ] ; then
+	$BUILDDIR/newlib/configure \
+	--target=$CROSS \
+	--prefix=$INSTALLDIR
+    fi
+
+    make -j${THREADS}
+    make install
+
+popd

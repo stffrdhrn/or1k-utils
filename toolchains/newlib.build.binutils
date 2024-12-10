@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+DIR=`dirname $0`
+source $DIR/newlib.config
+
+mkdir -p $BUILDDIR/build-binutils
+# Clear anything inside, but don't delete the directory incase its mounted
+# in our chroot.
+rm -rf $BUILDDIR/build-binutils/*
+
+pushd  $BUILDDIR/build-binutils
+
+    WITHOUT="--without-gprof --without-zlib"
+    $BUILDDIR/binutils-gdb/configure \
+     $WITHOUT \
+     --prefix=$INSTALLDIR \
+     --target=$CROSS &&
+    make -j${THREADS} &&
+    make install
+
+popd

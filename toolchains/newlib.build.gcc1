@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+DIR=`dirname $0`
+
+source $DIR/newlib.config
+
+mkdir -p $BUILDDIR/build-gcc
+rm -rf $BUILDDIR/build-gcc/*
+
+pushd $BUILDDIR/build-gcc
+
+    if [ -n $RECONFIG ] ; then
+	$BUILDDIR/gcc/configure \
+	--target=$CROSS \
+	--prefix=$INSTALLDIR \
+	--enable-languages=c \
+	--disable-libssp \
+	--disable-shared
+    fi
+
+    make -j${THREADS}
+    make install
+
+popd

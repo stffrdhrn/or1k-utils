@@ -1,0 +1,43 @@
+#!/bin/bash
+# Wrapper to run all builds in the right order
+
+DIR=`dirname $0`
+source $DIR/newlib.config
+
+start_time=`date -u +%s`
+build_log=$BUILDDIR/log/newlib-build.log
+
+mkdir -p $BUILDDIR/log
+
+success_or_failure() {
+  if grep newlib.build.done ${build_log} > /dev/null ; then
+    echo -n SUCCESS
+  else
+    echo -n FAILURE
+  fi
+}
+
+summary() {
+  echo
+  echo -n "# build finish:   "; date -Is
+  grep newlib.build ${build_log}
+  echo -n "# build time(m):  "; expr `date -u +%s` / 60 - $start_time / 60
+  echo
+}
+
+set -x
+# Clean any old artifacts that may impact our build
+rm -rf $INSTALLDIR/${CROSS}
+
+time (
+  $DIR/newlib.build.binutils &&
+  $DIR/newlib.build.gcc1 &&
+  $DIR/newlib.build.libc &&
+  $DIR/newlib.build.gcc2 &&
+  $DIR/newlib.build.done
+) > ${build_log} 2>&1
+set +x
+
+if [ "$MAILTO" ] ; then
+  summary | mail -s "Newlib build report $(date +"%Y-%m-%d-%H:%M") - $(success_or_failure)" $MAILTO
+fi
