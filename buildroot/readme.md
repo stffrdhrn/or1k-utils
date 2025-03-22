@@ -31,4 +31,6 @@ sudo dd if=output/images/rootfs.ext2 of=/dev/sdd3
 
 ### For QEMU Virt
 
-Build a qemu rootfs with swap.  Run mkqcow2.sh.
+Build using the `qemu_or1k_defconfig` config.
+
+Then build a qemu rootfs with swap.  Run `qemu-or1k-mkimg`.

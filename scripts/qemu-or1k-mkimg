@@ -13,7 +13,7 @@ QEMU=$WORK_HOME/qemu
 BUILDROOT=$WORK_HOME/buildroot
 OUTPUT=$WORK_HOME/or1k-utils/buildroot/output
 
-qcow_img=$OUTPUT/qemu-fs-or1k.qcow2
+qcow_img=$OUTPUT/qemu-fs-or1k-$(date +'%Y%m%d').qcow2
 extfs_img=$BUILDROOT/output/images/rootfs.ext2
 
 mkdir -p $OUTPUT
