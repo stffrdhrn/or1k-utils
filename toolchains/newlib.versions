@@ -19,18 +19,12 @@ if [ "${VERBOSE}" ] ; then
 fi
 
 echo    "Toolchain: $CROSS"
+echo    "PATH:      $INSTALLDIR/bin"
 echo -n 'Compiler:  ' ; $INSTALLDIR/bin/${CROSS}-gcc -v 2>&1 | tail -n1
 echo -n 'Binutils:  ' ; $INSTALLDIR/bin/${CROSS}-as -v < /dev/null 2>&1
-# This bit expects the qemu box to be up
-if [ "$SSH" ] ; then
-    echo -n 'Linux:     ' ; ssh $SSH uname -a
-else
-    echo "Linux: unknown? define SSH"
-fi
-echo    "Tester:    $USER"
-
+echo -n 'GDB:       ' ; $INSTALLDIR/bin/${CROSS}-gdb --version 2>&1 | head -n1
 # Find where our last master point is from.
 newlib_ref=`git -C $BUILDDIR/newlib merge-base upstream/master HEAD`
 newlib_master=`git -C $BUILDDIR/newlib lo -n1 ${newlib_ref}`
 #glibc_head=`git -C $BUILDDIR/glibc log --oneline -n1`
-echo    "Newlib:     $newlib_master"
+echo    "Newlib:    $newlib_master"

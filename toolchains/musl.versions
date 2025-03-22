@@ -1,0 +1,12 @@
+#!/bin/bash
+# Dumps versions of each repo
+
+DIR=`dirname $0`
+source $DIR/musl.config
+
+echo    "Toolchain: $CROSS"
+echo    "PATH:      $INSTALLDIR/bin"
+echo -n 'Compiler:  ' ; $INSTALLDIR/bin/${CROSS}-gcc -v 2>&1 | tail -n1
+echo -n 'Binutils:  ' ; $INSTALLDIR/bin/${CROSS}-as -v < /dev/null 2>&1
+echo -n 'GDB:       ' ; $INSTALLDIR/bin/${CROSS}-gdb --version 2>&1 | head -n1
+echo -n 'Musl:      ' ; $INSTALLDIR/${CROSS}/lib/libc.so 2>&1 | grep Version

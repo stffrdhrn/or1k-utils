@@ -2,6 +2,8 @@
 
 These are a bunch of build and test reporting scripts I put
 together for building and testing the openrisc glibc port.
+They were since adapted to also be used for newlib and musl
+builds.
 
 This will build the toolchain used for building other software.
 
@@ -11,7 +13,13 @@ TODO, download the glibc, gcc and binutils-gdb projects and put them
 into `$HOME/work/gnu-toolchain`, if you want to put them somewhere
 else update `glibc.config`.
 
-## Building the toolchain
+## Building the glibc toolchain
+
+```
+  git clone git://gcc.gnu.org/git/gcc.git gcc
+  git clone git://sourceware.org/git/binutils-gdb.git binutils-gdb
+  git clone git://sourceware.org/git/glibc.git glibc
+```
 
 To build run:
 
@@ -32,7 +40,27 @@ There are also build scripts for tools that will use the toolchain.
   ./glibc.build.binutils-native # build native gdb for host native debuggin'
 ```
 
-## Testing
+## Building the newlib toolchain
+
+```
+  git clone git://sourceware.org/git/newlib-cygwin.git newlib
+```
+
+```
+ ./newlib.build
+```
+
+## Building the musl toolchain
+
+```
+ git clone https://github.com/richfelker/musl-cross-make.git
+```
+
+```
+ ./musl.build
+```
+
+## Testing glibc
 
 There are also scripts for running the glibc test suite.  We have a few
 ways to test:
@@ -40,6 +68,10 @@ ways to test:
 - QEMU user mode - emulates openrisc code but syscalls run on your x86 linux kernel
 - QEMU user chroot - like usermode but runs in a chroot environment using binfmt
 - SSH remote - run tests via SSH on a qemu or real hardware target
+
+The recommended option is to use `SSH remote`, to do this you will need
+to have linux running on qemu or a FPGA.  The recommented rootfs to use
+for linux is buildroot setup as described in `or1k-utils/buildroot`.
 
 ```
   # Examples running on ssh

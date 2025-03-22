@@ -19,8 +19,11 @@ if [ "${VERBOSE}" ] ; then
 fi
 
 echo    "Toolchain: $CROSS"
+echo    "PATH:      $INSTALLDIR/bin"
+echo    "SYSROOT:   $SYSROOTDIR"
 echo -n 'Compiler:  ' ; $INSTALLDIR/bin/${CROSS}-gcc -v 2>&1 | tail -n1
 echo -n 'Binutils:  ' ; $INSTALLDIR/bin/${CROSS}-as -v < /dev/null 2>&1
+echo -n 'GDB:       ' ; $INSTALLDIR/bin/${CROSS}-gdb --version 2>&1 | head -n1
 # This bit expects the qemu box to be up
 if [ "$SSH" ] ; then
     echo -n 'Linux:     ' ; ssh $SSH uname -a
@@ -33,4 +36,5 @@ echo    "Tester:    $USER"
 glibc_ref=`git -C $BUILDDIR/glibc merge-base origin/master HEAD`
 glibc_master=`git -C $BUILDDIR/glibc lo -n1 ${glibc_ref}`
 #glibc_head=`git -C $BUILDDIR/glibc log --oneline -n1`
-echo    "Glibc:     $glibc_master"
+echo    "Glibc-git: $glibc_master"
+echo -n 'Glibc:     ' ; $SYSROOTDIR/lib/ld-linux-or1k.so.1 --version | head -n1

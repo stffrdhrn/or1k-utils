@@ -1,0 +1,20 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+source $DIR/musl.config
+
+# Only create hash files if needed, otherwise the download will always run again
+# 2.44 fails with missing Makefile.def
+if [ ! -f ${MCMDIR}/hashes/binutils-2.44.tar.xz.sha1 ] ; then
+  echo "c8c9f5ae46ab9e3722c71821982d2c270e267748  binutils-2.44.tar.xz" > ${MCMDIR}/hashes/binutils-2.44.tar.xz.sha1
+fi
+# 2.41 works, has the gotha patches needed by gcc 14
+if [ ! -f ${MCMDIR}/hashes/binutils-2.41.tar.xz.sha1 ] ; then
+  echo "0e008260a958bbd10182ee3384672ae0a310eece  binutils-2.41.tar.xz" > ${MCMDIR}/hashes/binutils-2.41.tar.xz.sha1
+fi
+
+make -C ${MCMDIR} -j${THREADS} TARGET=${CROSS} \
+  BINUTILS_VER=2.41 \
+  GCC_VER=14.2.0 \
+  LINUX_VER=5.8.5 \
+  OUTPUT=${INSTALLDIR} $@
