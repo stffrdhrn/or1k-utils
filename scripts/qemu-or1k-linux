@@ -4,7 +4,7 @@
 
 SCRIPT_PATH=`dirname $0`
 
-QEMU=$HOME/work/qemu
+QEMU=$HOME/work/openrisc/qemu
 BAREBOX=$HOME/work/openrisc/barebox/barebox
 OSROOT=$HOME/work/openrisc/or1k-utils
 
@@ -24,7 +24,7 @@ LINUX=$HOME/work/linux/vmlinux
 #INITRD_CPIO=$HOME/work/linux/robl-initramfs.cpio.gz
 
 #DISK=$HOME/work/qemu-fs-or1k.qcow2
-DISK=$OSROOT/buildroot/output/qemu-fs-or1k.qcow2
+DISK=$OSROOT/buildroot/output/qemu-fs-or1k-20250106.qcow2
 
 run() {
   echo "exec: $@"
@@ -68,7 +68,8 @@ DEBUG="-gdb tcp::10001"
 # With monitor 'ctrl+a c'
 SERIAL="-serial mon:stdio -nographic"
 
-#SMP="-smp cpus=4"
+# Enabled SMP, but one qemu thread
+#SMP="-smp cpus=1"
 # Enable SMP, Multi thread support
 SMP="-accel tcg,thread=multi -smp cpus=4"
 
@@ -114,17 +115,18 @@ if [ "$MACHINE" = "virt" ] ; then
   # Allow persistence on virt
   DRIVE="-device virtio-blk-device,drive=d0 -drive file=${DISK},id=d0,if=none,format=qcow2"
   # Make the drive our root device
-  APPEND="rootwait root=/dev/vda2" # TONs of debug dynamic_debug.verbose=3 dyndbg=\"file kernel/* +plsfmt\" loglevel=10"
+  APPEND="earlycon rootwait root=/dev/vda2" # TONs of debug dynamic_debug.verbose=3 dyndbg=\"file kernel/* +plsfmt\" loglevel=10"
 else
   # Setup ethoc network using user mode
   NETWORK=" -nic user,net=10.9.0.0/24,host=10.9.0.100,dns=10.9.0.3"
+  APPEND="earlycon"
 fi
 
 #PERF="${PERF:-perf record}"
 #PERF="perf stat -e instructions,branches,branch-misses "
 
 rm -f trace.txt
-run $PERF $QEMU/build/or1k-softmmu/qemu-system-or1k \
+run $PERF $QEMU/build/qemu-system-or1k \
     -cpu or1200 \
     -machine $MACHINE \
     -no-reboot $KERNEL $BIOS \
