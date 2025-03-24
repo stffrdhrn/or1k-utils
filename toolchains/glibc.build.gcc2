@@ -10,7 +10,7 @@ mkdir -p $BUILDDIR/build-gcc
 rm -rf $BUILDDIR/build-gcc/*
 
 pushd $BUILDDIR/build-gcc
-    $BUILDDIR/gcc/configure \
+    $GCC_SRC/configure \
     --with-gnu-ld \
     --with-gnu-as \
     --disable-nls \

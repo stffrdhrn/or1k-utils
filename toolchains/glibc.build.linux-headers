@@ -5,7 +5,7 @@ set -e
 DIR=`dirname $0`
 source $DIR/glibc.config
 
-pushd $LINUXDIR
+pushd $LINUX_SRC
 
   make ARCH=openrisc INSTALL_HDR_PATH=$SYSROOTDIR/usr headers_install
 

@@ -12,7 +12,7 @@ rm -rf $BUILDDIR/build-binutils/*
 
 pushd  $BUILDDIR/build-binutils
 
-    $BUILDDIR/binutils-gdb/configure \
+    $BINUTILS_SRC/configure \
      --prefix=$INSTALLDIR \
      --with-sysroot=$SYSROOTDIR \
      --target=$CROSS &&

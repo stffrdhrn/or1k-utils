@@ -10,7 +10,7 @@ rm -rf $BUILDDIR/build-binutils-native/*
 
 pushd  $BUILDDIR/build-binutils-native
 
-    $BUILDDIR/binutils-gdb/configure \
+    $BINUTILS_SRC/configure \
      --prefix=$SYSROOTDIR \
      --with-sysroot=$SYSROOTDIR \
      --host=$CROSS \

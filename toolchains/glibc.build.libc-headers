@@ -15,7 +15,7 @@ pushd $BUILDDIR/build-glibc
     echo "libc_cv_forced_unwind=yes" > config.cache
     echo "libc_cv_c_cleanup=yes" >> config.cache
 
-    $BUILDDIR/glibc/configure \
+    $GLIBC_SRC/configure \
     --host=$CROSS \
     --prefix=/usr \
     --with-headers=$SYSROOTDIR/usr/include \
