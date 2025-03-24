@@ -34,6 +34,7 @@ time (
   $DIR/newlib.build.gcc1 &&
   $DIR/newlib.build.libc &&
   $DIR/newlib.build.gcc2 &&
+  $DIR/newlib.build.gdb &&
   $DIR/newlib.build.done
 ) > ${build_log} 2>&1
 set +x

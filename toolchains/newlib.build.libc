@@ -14,7 +14,7 @@ pushd $BUILDDIR/build-newlib
 
     export CFLAGS_FOR_TARGET=$CFLAGS
     if [ -n $RECONFIG ] ; then
-	$BUILDDIR/newlib/configure \
+	$NEWLIB_SRC/configure \
 	--target=$CROSS \
 	--prefix=$INSTALLDIR
     fi

@@ -5,18 +5,19 @@ set -e
 DIR=`dirname $0`
 source $DIR/newlib.config
 
-mkdir -p $BUILDDIR/build-binutils
+mkdir -p $BUILDDIR/build-gdb
 # Clear anything inside, but don't delete the directory incase its mounted
 # in our chroot.
-rm -rf $BUILDDIR/build-binutils/*
+rm -rf $BUILDDIR/build-gdb/*
 
-pushd  $BUILDDIR/build-binutils
+pushd  $BUILDDIR/build-gdb
 
     WITHOUT="--without-gprof --without-zlib"
     $BINUTILS_SRC/configure \
      $WITHOUT \
-     --disable-sim \
-     --disable-gdb \
+     --disable-ld \
+     --disable-gas \
+     --disable-binutils \
      --prefix=$INSTALLDIR \
      --target=$CROSS &&
     make -j${THREADS} &&
