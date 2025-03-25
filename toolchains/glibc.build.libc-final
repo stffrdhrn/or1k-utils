@@ -29,7 +29,7 @@ pushd $BUILDDIR/build-glibc
 
       BUILD_CC="gcc" CC="${CROSS}-gcc ${mach_opts}" \
       AR="${CROSS}-ar" RANLIB="${CROSS}-ranlib" \
-      $BUILDDIR/glibc/configure \
+      $GLIBC_SRC/configure \
       --host=$CROSS \
       --prefix=/usr --libexecdir=/usr/lib/glibc \
       --with-binutils=${INSTALLDIR}/bin --with-headers=${SYSROOTDIR}/usr/include \
