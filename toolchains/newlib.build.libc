@@ -12,7 +12,11 @@ rm -rf $BUILDDIR/build-newlib/*
 
 pushd $BUILDDIR/build-newlib
 
-    export CFLAGS_FOR_TARGET=$CFLAGS
+    if [[ $CROSS = *-elfmc ]] ; then
+        export CFLAGS_FOR_TARGET="$CFLAGS -D__OR1K_MULTICORE__"
+    elif
+        export CFLAGS_FOR_TARGET=$CFLAGS
+    fi
     if [ -n $RECONFIG ] ; then
 	$NEWLIB_SRC/configure \
 	--target=$CROSS \
