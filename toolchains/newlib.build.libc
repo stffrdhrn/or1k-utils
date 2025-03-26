@@ -14,7 +14,7 @@ pushd $BUILDDIR/build-newlib
 
     if [[ $CROSS = *-elfmc ]] ; then
         export CFLAGS_FOR_TARGET="$CFLAGS -D__OR1K_MULTICORE__"
-    elif
+    else
         export CFLAGS_FOR_TARGET=$CFLAGS
     fi
     if [ -n $RECONFIG ] ; then
