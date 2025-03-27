@@ -37,8 +37,13 @@ time (
   $DIR/newlib.build.gdb &&
   $DIR/newlib.build.done
 ) > ${build_log} 2>&1
+status=$?
 set +x
 
 if [ "$MAILTO" ] ; then
   summary | mail -s "Newlib build report $(date +"%Y-%m-%d-%H:%M") - $(success_or_failure)" $MAILTO
+else
+  summary
 fi
+
+exit $status

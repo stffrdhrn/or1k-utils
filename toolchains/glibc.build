@@ -40,6 +40,7 @@ time (
   $DIR/glibc.build.libc-final &&
   $DIR/glibc.build.done
 ) > ${build_log} 2>&1
+status=$?
 set +x
 
 # Sync gcc runtime libs into sysroot
@@ -47,4 +48,8 @@ rsync -a $INSTALLDIR/${CROSS}/lib/  $SYSROOTDIR/lib
 
 if [ "$MAILTO" ] ; then
   summary | mail -s "Glibc build report $(date +"%Y-%m-%d-%H:%M") - $(success_or_failure)" $MAILTO
+else
+  summary
 fi
+
+exit $?
