@@ -12,7 +12,7 @@ rm -rf $BUILDDIR/build-newlib/*
 
 pushd $BUILDDIR/build-newlib
 
-    if [[ $CROSS = *-elfmc ]] ; then
+    if [[ $CROSS = *-*mc-* ]] ; then
         export CFLAGS_FOR_TARGET="$CFLAGS -D__OR1K_MULTICORE__"
     else
         export CFLAGS_FOR_TARGET=$CFLAGS

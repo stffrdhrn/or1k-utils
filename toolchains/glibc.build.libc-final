@@ -23,7 +23,7 @@ pushd $BUILDDIR/build-glibc
 
       # Generate glibc code with these features enabled (mor1kx)
       mach_opts="-mcmov -mror -mrori -msfimm -mshftimm -msext" # -mcmodel=large"
-      if [[ $CROSS = *-gnuhf ]] ; then
+      if [[ $CROSS = *-*hf-* ]] ; then
           mach_opts="$mach_opts -mhard-float"
       fi
 
