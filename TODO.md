@@ -5,7 +5,6 @@ Keeping my todo list for everything openrisc related.
 ## TODO
 
  linux
-  - rseq
   - VDSO
   - common-entry framework
   - Virtually mapped stacks
@@ -17,6 +16,7 @@ Keeping my todo list for everything openrisc related.
      * `_mcount`
      * dynamic mcount
      * CONFIG_FUNCTION_GRAPH_TRACER
+  - cacheinfo
 
  KVM/virtio
   - OpenRISC does not support virtualization (only two mode levels)
@@ -31,6 +31,13 @@ Keeping my todo list for everything openrisc related.
 ## DONE
 
 Items done moved down here!
+
+### Done 2025-01-20
+
+Linux v6.13 upstreamed
+ - Restartable Sequences (rseq)
+GLIbC 2.41 upstreamed
+ - Restartable Sequences (rseq)
 
 ### Done 2024-05-19
 
