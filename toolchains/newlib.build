@@ -5,7 +5,7 @@ DIR=`dirname $0`
 source $DIR/newlib.config
 
 start_time=`date -u +%s`
-build_log=$BUILDDIR/log/newlib-build.log
+build_log=$BUILDDIR/log/${CROSS}-build.log
 
 mkdir -p $BUILDDIR/log
 

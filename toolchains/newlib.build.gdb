@@ -12,9 +12,9 @@ rm -rf $BUILDDIR/build-gdb/*
 
 pushd  $BUILDDIR/build-gdb
 
-    WITHOUT="--without-gprof --without-zlib"
     $GDB_SRC/configure \
-     $WITHOUT \
+     --without-gprof \
+     --without-zlib \
      --disable-ld \
      --disable-gas \
      --disable-binutils \
