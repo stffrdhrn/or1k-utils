@@ -1,42 +1,47 @@
 # Busybox
 
-This directory contains some binaries and tools for building a
-[busybox](https://busybox.net) initramfs that can help boot an openrisc linux
-system.
+This directory contains tools for building a [busybox](https://busybox.net)
+initramfs that can help boot an openrisc linux system.
 
-Currently this contains binaries built with or1k-gcc 5.4.0 and:
- - BusyBox 1.26.0
- - musl libc 1.1.16
- - strace 4.13
+### Building
 
-### Re-Building
+Just run the `busybox.build` script.  The script will pull in a few
+resources to build the initramfs from.
 
-If you want to refresh the binaries under `initramfs/` you can rebuild
-from an existing busybox build.
+ - `CROSSTOOL`   - (default `or1k-buildroot-linux-musl-`) the toolchain prefix you use.
+                   see [openrisc/software](https://openrisc.io/software) or the `toolchain`
+                   directory for details on how to get a toolchain.
+ - `BUSYBOX_SRC` - (default: `$HOME/work/openrisc`) the location of your busybox source
 
-Just run the `build.sh` script.  The script will pull in a few
-resources to build the initramfs.
+For example:
 
- - `BUSYBOX` - the location of your prebuild static linked busybox install
- - `LIBC`    - the location of your libc binary
+```
+  # Assuming we have `or1k-utils` in $HOME/work/openrisc
+  # and the toolchaiin is already in your PATH
 
-Then inside linux config point your initramfs to this repo.
+  cd $HOME/work/openrisc
+  git clone git://busybox.net/busybox.git
+  export BUSYBOX_SRC=$HOME/work/openrisc/busybox
+
+  /path/to/or1k-utils/busybox.build
+```
 
 ### Using
 
 When building linux you can make using the following
 
 ```
-export OR1K_UTILS=../openrisc/or1k-utils
+export ROOTFS=$HOME/work/openrisc/busybox-rootfs
 
+# Configure with defconfig, see 'make ARCH=openrisc help' for other configs
+make ARCH=openrisc CROSS_COMPILE=or1k-linux- defconfig
+
+# Build the kernel
 make -j5 \
   ARCH=openrisc \
   CROSS_COMPILE=or1k-linux- \
-  CONFIG_INITRAMFS_SOURCE="$OR1K_UTILS/busybos/initramfs \
-    $OR1K_UTILS/busybox/initramfs.devnodes"
+  CONFIG_INITRAMFS_SOURCE="$ROOTFS/initramfs $ROOTFS/initramfs.devnodes"
 ```
 
-This tells the linux build to pull in the initramfs from the sources in
-the `or1k-utils` project.
-
-
+This tells the linux build to pull in the initramfs from the rootfs structure
+we built above.

@@ -1,0 +1,46 @@
+#!/bin/bash
+# Script for building busybox and the initramfs
+
+BINDIR=$(dirname $0)
+pushd $BINDIR; BINDIR=$PWD; popd
+. $BINDIR/busybox.config
+
+mkdir -p $OUTPUT_DIR
+rm -rf $OUTPUT_DIR/*
+
+make -C $BUSYBOX_SRC ARCH=openrisc CROSS_COMPILE=$CROSSTOOL defconfig
+make -C $BUSYBOX_SRC ARCH=openrisc CROSS_COMPILE=$CROSSTOOL
+make -C $BUSYBOX_SRC ARCH=openrisc CROSS_COMPILE=$CROSSTOOL CONFIG_PREFIX=$OUTPUT_DIR/initramfs install
+
+pushd $OUTPUT_DIR
+
+ echo "Installing or1k-utils rootfs overlay"
+ cp -a $BINDIR/initramfs* .
+
+ # Init just drops us to the shell
+ echo "Installing init"
+ ln -sf sbin/init initramfs/init
+
+ if [ -d $LIBC ] ; then
+   echo "Installing libc"
+   mkdir -p initramfs/lib
+   cp -a $LIBC/libc.so* initramfs/lib
+   cp -a $LIBC/libstdc++.so* initramfs/lib
+   cp -a $LIBC/libgcc_s.so* initramfs/lib
+
+   if [ -f initramfs/lib/libc.so ] ; then
+     # musl style
+     ln -sf libc.so initramfs/lib/ld-musl-or1k.so.1
+   else
+     # glibc style
+     cp -a $LIBC/libm.so* initramfs/lib
+     cp -a $LIBC/librt.so* initramfs/lib
+     cp -a $LIBC/ld-linux-or1k.so* initramfs/lib
+     cp -a $LIBC/libresolv.so* initramfs/lib
+     cp -a $LIBC/libnss_*.so* initramfs/lib
+   fi
+ else
+   echo "Cannot find libc at '$LIBC' install not completed"
+   exit 1
+ fi
+popd

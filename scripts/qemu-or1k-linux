@@ -119,7 +119,9 @@ if [ "$MACHINE" = "virt" ] ; then
 else
   # Setup ethoc network using user mode
   NETWORK=" -nic user,net=10.9.0.0/24,host=10.9.0.100,dns=10.9.0.3"
+  NETWORK="$NETWORK,hostfwd=tcp::2222-:22"
   APPEND="earlycon"
+  SMP="-smp cpus=1"
 fi
 
 #PERF="${PERF:-perf record}"

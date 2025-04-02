@@ -1,12 +1,13 @@
 #!/bin/bash
 
 or1k_utils=$HOME/work/openrisc/or1k-utils
+busybox=$HOME/work/openrisc/busybox-rootfs
 openadk=$HOME/work/openrisc/openadk
 hdmi2usb=$HOME/work/litex/HDMI2USB-litex-firmware
 litextftpd=$or1k_utils/litex/tftpd
 
 openadk_source="$openadk/target_qemu-or1k_uclibc-ng/qemu-or1k-uclibc-ng-initramfspiggyback_list"
-or1k_utils_source="$or1k_utils/initramfs $or1k_utils/initramfs.devnodes"
+busybox_source="$busybox/initramfs $busybox/initramfs.devnodes"
 
 #toolchain=or1k-elf-
 #toolchain=or1k-linux-musl-
@@ -15,8 +16,8 @@ toolchain=or1k-linux-
 
 # Select one of these to choose your preferred initramfs
 # we use for or1ksim, but no longer for qemu as for qemu we just
-# passin the initrd.
-#initramfs_source=$or1k_utils_source
+# pass in the qcow2 rootfs.
+#initramfs_source=$busybox_source
 #initramfs_source=$openadk_source
 
 run() {
