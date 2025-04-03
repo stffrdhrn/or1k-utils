@@ -15,10 +15,22 @@ We provide different configs:
 An example of how to get buildroot and build a rootfs can be found below.
 
 ```
-$ git clone https://gitlab.com/buildroot.org/buildroot.git buildroot
-$ cd buildroot
-$ make BR2_EXTERNAL=../or1k-utils/buildroot/ litex_mor1kx_defconfig
-$ make
+# Assuming we have `or1k-utils` in $HOME/work/openrisc
+
+cd $HOME/work/openrisc
+git clone https://gitlab.com/buildroot.org/buildroot.git buildroot
+
+./or1k-utils/buildroot/buildroot.build litex_mor1kx_defconfig
+./or1k-utils/buildroot/buildroot.build
+```
+
+When one we will have a rootfs saved to `$HOME/work/openrisc/buildroot-rootfs`. For example:
+
+```
+$ ./buildroot-rootfs/ -l
+total 62796
+-rw-r--r--. 1 oruser oruser 19048105 Apr  3 16:45 litex-mor1kx-rootfs-20250403.cpio.gz
+-rw-r--r--. 1 oruser oruser 62914560 Apr  3 16:45 litex-mor1kx-rootfs-20250403.ext2
 ```
 
 ## Building with a custom toolchain
@@ -43,13 +55,14 @@ directory has tools for starting the `tftpd` server.
 
 To copy the rootfs for the litex tftp boot do:
 
-
 ```
-or1k_utils=$HOME/work/openrisc/or1k-utils
+# Assuming we have `or1k-utils` in $HOME/work/openrisc
+
+cd $HOME/work/openrisc
 
 echo "Copying rootfs.cpio.gz to $or1k_utils/litex/tftpd/"
-ls -lh output/images/
-cp output/images/rootfs.cpio.gz $or1k_utils/litex/tftpd/
+ls -lh buildroot-rootfs/
+cp buildroot-rootfs/litex-mor1kx-rootfs-20250403.cpio.gz ./or1k-utils/litex/tftpd/
 ```
 
 ### For Litex SD-Card (recommended)
@@ -73,11 +86,30 @@ With the SD-Card plugged into your workstation, copy the rootfs to your SD-Card
 partition with:
 
 ```
-sudo dd if=output/images/rootfs.ext2 of=/dev/sdd3
+# Assuming we have `or1k-utils` in $HOME/work/openrisc
+
+echo "Copying rootfs.cpio.gz to $or1k_utils/litex/tftpd/"
+ls -lh buildroot-rootfs/
+sudo dd if=buildroot-rootfs/litex-mor1kx-rootfs-20250403.ext2 of=/dev/sdd3
 ```
 
 ### For QEMU Virt
 
-Build using the `qemu_or1k_defconfig` config.
+Build using the `qemu_or1k_defconfig` config to create an image that
+can be used with qemu.  You can then run linux with that image by using
+`qemu-or1k-linux`.
 
-Then build a qemu rootfs with swap.  Run `qemu-or1k-mkimg`.
+The build will create a qemu rootfs with swap by running `qemu-or1k-mkimg`.
+For example:
+
+```
+# Assuming we have `or1k-utils` in $HOME/work/openrisc
+
+cd $HOME/work/openrisc
+git clone https://gitlab.com/buildroot.org/buildroot.git buildroot
+
+# First clean in case we build litex_mor1kx_defconfig before
+./or1k-utils/buildroot/buildroot.build clean
+./or1k-utils/buildroot/buildroot.build qemu_or1k_defconfig
+./or1k-utils/buildroot/buildroot.build
+```

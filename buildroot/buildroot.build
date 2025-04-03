@@ -5,14 +5,22 @@ BINDIR=$(dirname $0)
 pushd $BINDIR; BINDIR=$PWD; popd
 . $BINDIR/buildroot.config
 
+make -C $BUILDROOT_SRC BR2_EXTERNAL=$BINDIR $@
+
+if [ ! -f $BUILDROOT_SRC/output/images/rootfs.cpio ]; then
+  echo "No rootfs available, skipping image installation."
+  exit 0
+fi
+
 mkdir -p $BUILDDIR/buildroot-rootfs/
-rm -rf $BUILDDIR/buildroot-rootfs/*
-
-make -C $BUILDROOT_SRC BR2_EXTERNAL=$BINDIR qemu_or1k_defconfig
-make -C $BUILDROOT_SRC
-
 pushd $BUILDDIR/buildroot-rootfs
-  export OUTPUT=$PWD
-  # Make the qemu qcow2 image
-  $BINDIR/../scripts/qemu-or1k-mkimg
+  if grep 'BR2_DEFCONFIG.*qemu_' $BUILDROOT_SRC/.config; then
+    export OUTPUT=$PWD
+    # Make the qemu qcow2 image
+    $BINDIR/../scripts/qemu-or1k-mkimg
+  else
+    litex_img=litex-mor1kx-rootfs-$(date +'%Y%m%d')
+    cp $BUILDROOT_SRC/output/images/rootfs.ext2 $litex_img.ext2
+    cp $BUILDROOT_SRC/output/images/rootfs.cpio.gz $litex_img.cpio.gz
+  fi
 popd
