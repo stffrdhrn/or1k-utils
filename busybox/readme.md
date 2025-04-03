@@ -8,10 +8,12 @@ initramfs that can help boot an openrisc linux system.
 Just run the `busybox.build` script.  The script will pull in a few
 resources to build the initramfs from.
 
+ - `BUILDDIR`    - (default `$HOME/work/openrisc`) the location where we find sources and output
+                   the rootfs artifacts to `busybox-rootfs`.
  - `CROSSTOOL`   - (default `or1k-buildroot-linux-musl-`) the toolchain prefix you use.
                    see [openrisc/software](https://openrisc.io/software) or the `toolchain`
                    directory for details on how to get a toolchain.
- - `BUSYBOX_SRC` - (default: `$HOME/work/openrisc`) the location of your busybox source
+ - `BUSYBOX_SRC` - (default: `$BUILDDIR/busybox`) the location of your busybox source
 
 For example:
 
@@ -21,9 +23,8 @@ For example:
 
   cd $HOME/work/openrisc
   git clone git://busybox.net/busybox.git
-  export BUSYBOX_SRC=$HOME/work/openrisc/busybox
 
-  /path/to/or1k-utils/busybox.build
+  ./or1k-utils/busybox/busybox.build
 ```
 
 ### Using

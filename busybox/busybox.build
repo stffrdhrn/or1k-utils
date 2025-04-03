@@ -5,14 +5,14 @@ BINDIR=$(dirname $0)
 pushd $BINDIR; BINDIR=$PWD; popd
 . $BINDIR/busybox.config
 
-mkdir -p $OUTPUT_DIR
-rm -rf $OUTPUT_DIR/*
+mkdir -p $BUILDDIR/busybox-rootfs/
+rm -rf $BUILDDIR/busybox-rootfs/*
 
 make -C $BUSYBOX_SRC ARCH=openrisc CROSS_COMPILE=$CROSSTOOL defconfig
 make -C $BUSYBOX_SRC ARCH=openrisc CROSS_COMPILE=$CROSSTOOL
-make -C $BUSYBOX_SRC ARCH=openrisc CROSS_COMPILE=$CROSSTOOL CONFIG_PREFIX=$OUTPUT_DIR/initramfs install
+make -C $BUSYBOX_SRC ARCH=openrisc CROSS_COMPILE=$CROSSTOOL CONFIG_PREFIX=$BUILDDIR/busybox-rootfs/initramfs install
 
-pushd $OUTPUT_DIR
+pushd $BUILDDIR/busybox-rootfs
 
  echo "Installing or1k-utils rootfs overlay"
  cp -a $BINDIR/initramfs* .
