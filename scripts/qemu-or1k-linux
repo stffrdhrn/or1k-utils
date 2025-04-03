@@ -4,9 +4,8 @@
 
 SCRIPT_PATH=`dirname $0`
 
-QEMU=$HOME/work/openrisc/qemu
-BAREBOX=$HOME/work/openrisc/barebox/barebox
-OSROOT=$HOME/work/openrisc/or1k-utils
+BUILDDIR=${BUILDDIR:-$HOME/work/openrisc}
+QEMU_SRC=${QEMU_SRC:-$BUILDDIR/qemu}
 
 # For regression testing
 # LINUX=$HOME/work/openrisc/or1k-linux-4.10
@@ -18,28 +17,14 @@ OSROOT=$HOME/work/openrisc/or1k-utils
 # Latest mainline
 LINUX=$HOME/work/linux/vmlinux
 
-#INITRD_CPIO=$HOME/work/openrisc/buildroot/output/images/rootfs.cpio
-#INITRD_CPIO=$HOME/work/linux/initramfs.cpio.gz
-#INITRD_CPIO=$HOME/work/openrisc/or1k-utils/initramfs.cpio.gz
-#INITRD_CPIO=$HOME/work/linux/robl-initramfs.cpio.gz
-
-#DISK=$HOME/work/qemu-fs-or1k.qcow2
-DISK=$OSROOT/buildroot/output/qemu-fs-or1k-20250106.qcow2
+# image created with qemu-or1k-mkimage
+DISK=${DIST:-$BUILDDIR/buildroot-rootfs/qemu-fs-or1k-20250403.qcow2}
 
 run() {
   echo "exec: $@"
   exec "$@"
 }
 
-# image created with
-# $QEMU/build/qemu-img create -f qcow2 qemu-snapshot.img 100M
-#if [ ! -f ${SCRIPT_PATH}/qemu-snapshot.img ] ; then
-#  $QEMU/build/qemu-img create -f qcow2 ${SCRIPT_PATH}/qemu-snapshot.img 100M
-#fi
-
-#if [ ! -f ${SCRIPT_PATH}/qemu-fs-or1k.qcow2 ] ; then
-#  $QEMU/build/qemu-img create -o size=8G -f qcow2 qemu-fs-or1k.qcow2
-#fi
 
 # For taking hibernation like snapshots of QEMU
 #DRIVE="-drive file=${SCRIPT_PATH}/qemu-snapshot.img,cache=writeback"
@@ -90,8 +75,6 @@ IPRANGE=10.9.0
 # INITRD="-initrd $INITRD_CPIO"
 
 # Bios doesn't work on OpenRISC yet
-#BIOS="-bios ${BAREBOX}.bin"
-#KERNEL="-kernel $BAREBOX"
 KERNEL="-kernel $LINUX"
 
 MACHINE=${MACHINE:-virt}
@@ -128,7 +111,7 @@ fi
 #PERF="perf stat -e instructions,branches,branch-misses "
 
 rm -f trace.txt
-run $PERF $QEMU/build/qemu-system-or1k \
+run $PERF $QEMU_SRC/build/qemu-system-or1k \
     -cpu or1200 \
     -machine $MACHINE \
     -no-reboot $KERNEL $BIOS \
