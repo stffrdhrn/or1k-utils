@@ -12,9 +12,14 @@ fi
 if [ ! -f ${MCMDIR}/hashes/binutils-2.41.tar.xz.sha1 ] ; then
   echo "0e008260a958bbd10182ee3384672ae0a310eece  binutils-2.41.tar.xz" > ${MCMDIR}/hashes/binutils-2.41.tar.xz.sha1
 fi
+# 6.12.21 kernel, long term support
+if [ ! -f ${MCMDIR}/hashes/linux-6.12.21.tar.xz.sha1 ] ; then
+  echo "242e2bcd0c8ac04aa9651748e55e8c1d3bfb06b4  linux-6.12.21.tar.xz" > ${MCMDIR}/hashes/linux-6.12.21.tar.xz.sha1
+fi
+
 
 make -C ${MCMDIR} -j${THREADS} TARGET=${CROSS} \
   BINUTILS_VER=2.41 \
   GCC_VER=14.2.0 \
-  LINUX_VER=5.8.5 \
-  OUTPUT=${INSTALLDIR} $@
+  LINUX_VER=6.12.21 \
+  $@
