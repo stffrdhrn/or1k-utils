@@ -21,7 +21,21 @@ pushd $BUILDDIR/busybox-rootfs
  echo "Installing init"
  ln -sf sbin/init initramfs/init
 
- if [ -d $LIBC ] ; then
+ # Find the libc binaries to allow dynamic linked tools
+ crosstool_target=${CROSSTOOL:0:-1}
+ crosstool_bin=$(dirname $(which ${CROSSTOOL}gcc))
+ crosstool_prefix=$(dirname $crosstool_bin)
+ for clue in sysroot/lib/libgcc_s.so lib/libgcc_s.so; do
+   clue_path=${crosstool_prefix}/${crosstool_target}/$clue
+   echo "Looking for sysroot in: $clue_path"
+   if [ -f $clue_path ] ; then
+     LIBC=$(dirname $clue_path)
+     echo "Found libc sysroot under: $LIBC"
+     break
+   fi
+ done
+
+ if [ -d "$LIBC" ] ; then
    echo "Installing libc"
    mkdir -p initramfs/lib
    cp -a $LIBC/libc.so* initramfs/lib
@@ -40,7 +54,7 @@ pushd $BUILDDIR/busybox-rootfs
      cp -a $LIBC/libnss_*.so* initramfs/lib
    fi
  else
-   echo "Cannot find libc at '$LIBC' install not completed"
+   echo "Cannot find libc binaries under '$crosstool_prefix' install not completed"
    exit 1
  fi
 popd
