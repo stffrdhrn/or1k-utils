@@ -5,7 +5,10 @@ BINDIR=$(dirname $0)
 pushd $BINDIR; BINDIR=$PWD; popd
 . $BINDIR/buildroot.config
 
-make -C $BUILDROOT_SRC BR2_EXTERNAL=$BINDIR $@
+if ! make -C $BUILDROOT_SRC BR2_EXTERNAL=$BINDIR $@; then
+  echo "buildroot build failed, exiting."
+  exit 1
+fi
 
 if [ ! -f $BUILDROOT_SRC/output/images/rootfs.cpio ]; then
   echo "No rootfs available, skipping image installation."
