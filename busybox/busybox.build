@@ -8,12 +8,13 @@ pushd $BINDIR; BINDIR=$PWD; popd
 mkdir -p $BUILDDIR/busybox-rootfs/
 rm -rf $BUILDDIR/busybox-rootfs/*
 
+make -C $BUSYBOX_SRC ARCH=openrisc CROSS_COMPILE=$CROSSTOOL defconfig busybox
 if ! make -C $BUSYBOX_SRC \
   ARCH=openrisc \
   CROSS_COMPILE=$CROSSTOOL \
   CONFIG_PREFIX=$BUILDDIR/busybox-rootfs/initramfs \
-  defconfig busybox install; then
-  echo "busybox moke failed! exiting"
+  install; then
+  echo "busybox install failed! exiting"
   exit 1
 fi
 
