@@ -12,7 +12,7 @@ if ! make -C $BUSYBOX_SRC \
   ARCH=openrisc \
   CROSS_COMPILE=$CROSSTOOL \
   CONFIG_PREFIX=$BUILDDIR/busybox-rootfs/initramfs \
-  defconfig install; then
+  defconfig busybox install; then
   echo "busybox moke failed! exiting"
   exit 1
 fi
