@@ -13,7 +13,7 @@ BUILDROOT_SRC=${BUILDROOT_SRC:-$BUILDDIR/buildroot}
 QEMU_SRC=${QEMU_SRC:-$BUILDDIR/qemu}
 OUTPUT=${OUTPUT:-$BUILDDIR/buildroot-rootfs}
 
-qcow_img=$OUTPUT/qemu-fs-or1k-$(date +'%Y%m%d').qcow2
+qcow_img=$OUTPUT/qemu-or1k-rootfs.qcow2
 extfs_img=$BUILDROOT_SRC/output/images/rootfs.ext2
 
 mkdir -p $OUTPUT
@@ -26,7 +26,7 @@ fi
 if [ ! -f ${qcow_img} ] ; then
   $QEMU_SRC/build/qemu-img create -o size=8G -f qcow2 $qcow_img
 
-  # Mound image as device
+  # Mount image as device
   sudo modprobe nbd
   sudo qemu-nbd -c /dev/nbd0  $qcow_img
 

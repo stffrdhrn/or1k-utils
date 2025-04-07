@@ -24,13 +24,13 @@ git clone https://gitlab.com/buildroot.org/buildroot.git buildroot
 ./or1k-utils/buildroot/buildroot.build
 ```
 
-When one we will have a rootfs saved to `$HOME/work/openrisc/buildroot-rootfs`. For example:
+When done we will have a rootfs saved to `$HOME/work/openrisc/buildroot-rootfs`. For example:
 
 ```
-$ ./buildroot-rootfs/ -l
+$ ls -l ./buildroot-rootfs/
 total 62796
--rw-r--r--. 1 oruser oruser 19048105 Apr  3 16:45 litex-mor1kx-rootfs-20250403.cpio.gz
--rw-r--r--. 1 oruser oruser 62914560 Apr  3 16:45 litex-mor1kx-rootfs-20250403.ext2
+-rw-r--r--. 1 oruser oruser 19048105 Apr  3 16:45 litex-mor1kx-rootfs.cpio.gz
+-rw-r--r--. 1 oruser oruser 62914560 Apr  3 16:45 litex-mor1kx-rootfs.ext2
 ```
 
 ## Building with a custom toolchain
@@ -62,7 +62,7 @@ cd $HOME/work/openrisc
 
 echo "Copying rootfs.cpio.gz to $or1k_utils/litex/tftpd/"
 ls -lh buildroot-rootfs/
-cp buildroot-rootfs/litex-mor1kx-rootfs-20250403.cpio.gz ./or1k-utils/litex/tftpd/
+cp buildroot-rootfs/litex-mor1kx-rootfs.cpio.gz ./or1k-utils/litex/tftpd/
 ```
 
 ### For Litex SD-Card (recommended)
@@ -90,7 +90,7 @@ partition with:
 
 echo "Copying rootfs.cpio.gz to $or1k_utils/litex/tftpd/"
 ls -lh buildroot-rootfs/
-sudo dd if=buildroot-rootfs/litex-mor1kx-rootfs-20250403.ext2 of=/dev/sdd3
+sudo dd if=buildroot-rootfs/litex-mor1kx-rootfs.ext2 of=/dev/sdd3
 ```
 
 ### For QEMU Virt

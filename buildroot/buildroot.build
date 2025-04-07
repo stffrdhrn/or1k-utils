@@ -19,7 +19,10 @@ pushd $BUILDDIR/buildroot-rootfs
     # Make the qemu qcow2 image
     $BINDIR/../scripts/qemu-or1k-mkimg
   else
-    litex_img=litex-mor1kx-rootfs-$(date +'%Y%m%d')
+    # we kind of assume this is the litex build, but in the
+    # future it may be something else, if so then change
+    # this to derive the image name from BR2_DEFCONFIG
+    litex_img=litex-mor1kx-rootfs
     cp $BUILDROOT_SRC/output/images/rootfs.ext2 $litex_img.ext2
     cp $BUILDROOT_SRC/output/images/rootfs.cpio.gz $litex_img.cpio.gz
   fi

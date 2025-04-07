@@ -18,7 +18,7 @@ QEMU_SRC=${QEMU_SRC:-$BUILDDIR/qemu}
 LINUX=$HOME/work/linux/vmlinux
 
 # image created with qemu-or1k-mkimage
-DISK=${DIST:-$BUILDDIR/buildroot-rootfs/qemu-fs-or1k-20250403.qcow2}
+DISK=${DIST:-$BUILDDIR/buildroot-rootfs/qemu-or1k-rootfs.qcow2}
 
 run() {
   echo "exec: $@"
