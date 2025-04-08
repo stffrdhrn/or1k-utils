@@ -27,8 +27,10 @@ if [ ! -f ${qcow_img} ] ; then
   $QEMU_SRC/build/qemu-img create -o size=8G -f qcow2 $qcow_img
 
   # Mount image as device
-  sudo modprobe nbd
-  sudo qemu-nbd -c /dev/nbd0  $qcow_img
+  if [ ! -b /dev/nbd0 ]; then
+    sudo modprobe nbd
+  fi
+  sudo $QEMU_SRC/build/qemu-nbd -c /dev/nbd0  $qcow_img
 
   # use FDISK to partition
   sudo sfdisk /dev/nbd0 < $SCRIPT_PATH/qemu-or1k-img.part
@@ -42,7 +44,7 @@ if [ ! -f ${qcow_img} ] ; then
 
   # Unmount image
   sync
-  sudo qemu-nbd -d /dev/nbd0
+  sudo $QEMU_SRC/build/qemu-nbd -d /dev/nbd0
 else
   echo "Image: $qcow_img already exists, doing nothing."
   exit 1
