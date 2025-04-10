@@ -11,40 +11,58 @@ SCRIPT_PATH=`dirname $0`
 BUILDDIR=${BUILDDIR:-$HOME/work/openrisc}
 BUILDROOT_SRC=${BUILDROOT_SRC:-$BUILDDIR/buildroot}
 QEMU_SRC=${QEMU_SRC:-$BUILDDIR/qemu}
+QCOW2FUSE_SRC=${QCOW2FUSE_SRC:-$BUILDDIR/qcow2fuse}
 OUTPUT=${OUTPUT:-$BUILDDIR/buildroot-rootfs}
-
-qcow_img=$OUTPUT/qemu-or1k-rootfs.qcow2
-extfs_img=$BUILDROOT_SRC/output/images/rootfs.ext2
-
-mkdir -p $OUTPUT
+MNT=${MNT:-$BUILDDIR/mnt}
 
 if [ ! -f ${extfs_img} ] ; then
   echo "E2FS Image: $extfs_img doesn't exist.  Can't make image, make buidroot first."
   exit 1
 fi
 
+if [ ! -d $QCOW2FUSE_SRC ]; then
+  echo "qcow2fuse not found, at $QCOW2FUSE_SRC, get it with: git clone https://github.com/jrwwallis/qcow2fuse.git"
+  exit 1
+fi
+
+qcow_img=$OUTPUT/qemu-or1k-rootfs.qcow2
+extfs_img=$BUILDROOT_SRC/output/images/rootfs.ext2
+
 if [ ! -f ${qcow_img} ] ; then
+  # Tell qcow2fuse where qemu-nbd is
+  export QEMU_NBD=$QEMU_SRC/build/qemu-nbd
+  # Tell qcow2fuse where to store tmp files
+  if [ -z "$XDG_RUNTIME_DIR" ]; then
+    export XDG_RUNTIME_DIR=$BUILDDIR/tmp
+    mkdir -p $XDG_RUNTIME_DIR
+  fi
+  mkdir -p $OUTPUT
+  mkdir -p $MNT
+
   $QEMU_SRC/build/qemu-img create -o size=8G -f qcow2 $qcow_img
 
-  # Mount image as device
-  if [ ! -b /dev/nbd0 ]; then
-    sudo modprobe nbd
+  # Image manipulation using fuse user space driver
+  if [ ! -r /dev/fuse ]; then
+    sudo modprobe fuse
   fi
-  sudo $QEMU_SRC/build/qemu-nbd -c /dev/nbd0  $qcow_img
 
   # use FDISK to partition
-  sudo sfdisk /dev/nbd0 < $SCRIPT_PATH/qemu-or1k-img.part
+  $QCOW2FUSE_SRC/qcow2fuse.bash -o rawnbd $qcow_img $MNT
+  sfdisk $MNT/nbd < $SCRIPT_PATH/qemu-or1k-img.part
+  $QCOW2FUSE_SRC/qcow2fuse.bash -u $MNT
 
   # Make swap image
-  sudo mkswap /dev/nbd0p1
+  $QCOW2FUSE_SRC/qcow2fuse.bash -o rawnbd -p 1 $qcow_img $MNT
+  mkswap $MNT/nbd
+  sync
+  $QCOW2FUSE_SRC/qcow2fuse.bash -u $MNT
 
   # Write ext4 image
-  sudo dd if=$extfs_img of=/dev/nbd0p2
-  sudo resize2fs /dev/nbd0p2
-
-  # Unmount image
+  $QCOW2FUSE_SRC/qcow2fuse.bash -o rawnbd -p 2 $qcow_img $MNT
+  dd if=$extfs_img of=$MNT/nbd
+  resize2fs $MNT/nbd
   sync
-  sudo $QEMU_SRC/build/qemu-nbd -d /dev/nbd0
+  $QCOW2FUSE_SRC/qcow2fuse.bash -u $MNT
 else
   echo "Image: $qcow_img already exists, doing nothing."
   exit 1
