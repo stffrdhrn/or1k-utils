@@ -1,24 +1,22 @@
 #!/bin/bash
 
-or1k_utils=$HOME/work/openrisc/or1k-utils
-busybox=$HOME/work/openrisc/busybox-rootfs
-openadk=$HOME/work/openrisc/openadk
-hdmi2usb=$HOME/work/litex/HDMI2USB-litex-firmware
-litextftpd=$or1k_utils/litex/tftpd
+TOOLCHAIN=${TOOLCHAIN:-or1k-linux-}
+LINUX_SRC=${LINUX_SRC:-$HOME/work/linux}
 
-openadk_source="$openadk/target_qemu-or1k_uclibc-ng/qemu-or1k-uclibc-ng-initramfspiggyback_list"
-busybox_source="$busybox/initramfs $busybox/initramfs.devnodes"
+BUILDDIR=${BUILDDIR:-$HOME/work/openrisc}
+OR1K_UTILS=${OR1K_UTILS:-$BUILDDIR/or1k-utils}
+BUSYBOX=${BUSYBOX:-$BUILDDIR/busybox-rootfs}
+OPENADK=${OPENADK:-$BUILDDIR/openadk}
 
-#toolchain=or1k-elf-
-#toolchain=or1k-linux-musl-
-toolchain=or1k-linux-
-#toolchain=or1k-smh-linux-gnu-
+litextftpd=$OR1K_UTILS/litex/tftpd
+openadk_source="$OPENADK/target_qemu-or1k_uclibc-ng/qemu-or1k-uclibc-ng-initramfspiggyback_list"
+busybox_source="$BUSYBOX/initramfs $BUSYBOX/initramfs.devnodes"
 
 # Select one of these to choose your preferred initramfs
 # we use for or1ksim, but no longer for qemu as for qemu we just
 # pass in the qcow2 rootfs.
-#initramfs_source=$busybox_source
-#initramfs_source=$openadk_source
+#INITRAMFS_SOURCE=$busybox_source
+#INITRAMFS_SOURCE=$openadk_source
 
 run() {
   echo "exec: $@"
@@ -29,10 +27,10 @@ run() {
   # Getting a bunch of perl warnings with en_US.utf8
   export LC_ALL=en_US.UTF-8
 
-  cd $HOME/work/linux
+  cd $LINUX_SRC
   run make -j12 LC_ALL=en_US.UTF-8 ARCH=openrisc \
-     CROSS_COMPILE=${toolchain} \
-     CONFIG_INITRAMFS_SOURCE="$initramfs_source" \
+     CROSS_COMPILE=${TOOLCHAIN} \
+     CONFIG_INITRAMFS_SOURCE="$INITRAMFS_SOURCE" \
      $@
 
   if [ -f arch/openrisc/boot/vmlinux.bin ] && grep -q 'CONFIG_LITEX=y' .config ; then
@@ -44,6 +42,4 @@ run() {
 )
 
 
-#run mkdir -p $hdmi2usb/build/arty_net_or1k/software/linux
-#run cp arch/openrisc/boot/vmlinux.bin $hdmi2usb/build/arty_net_or1k/software/linux/firmware.bin
 # make ARCH=openrisc INSTALL_HDR_PATH=/opt/shorne/software/or1k-linux headers_install

@@ -6,6 +6,7 @@ SCRIPT_PATH=`dirname $0`
 
 BUILDDIR=${BUILDDIR:-$HOME/work/openrisc}
 QEMU_SRC=${QEMU_SRC:-$BUILDDIR/qemu}
+LINUX_SRC=${LINUX_SRC:-$HOME/work/linux}
 
 # For regression testing
 # LINUX=$HOME/work/openrisc/or1k-linux-4.10
@@ -15,16 +16,15 @@ QEMU_SRC=${QEMU_SRC:-$BUILDDIR/qemu}
 #LINUX=$HOME/work/linux/vmlinux-wireguard-minimal
 
 # Latest mainline
-LINUX=$HOME/work/linux/vmlinux
+LINUX=$LINUX_SRC/vmlinux
 
 # image created with qemu-or1k-mkimage
-DISK=${DIST:-$BUILDDIR/buildroot-rootfs/qemu-or1k-rootfs.qcow2}
+DISK=${DISK:-$BUILDDIR/buildroot-rootfs/qemu-or1k-rootfs.qcow2}
 
 run() {
   echo "exec: $@"
   exec "$@"
 }
-
 
 # For taking hibernation like snapshots of QEMU
 #DRIVE="-drive file=${SCRIPT_PATH}/qemu-snapshot.img,cache=writeback"
