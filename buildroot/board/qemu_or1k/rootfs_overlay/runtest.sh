@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Run a glibc test with all the right parameters
 
@@ -7,7 +7,7 @@
 # - support coredump - path setup in S50setup.sh
 # - support more args
 
-GNU_ROOT=/home/shorne/work/gnu-toolchain
+GNU_ROOT=$HOME/work/gnu-toolchain
 BUILD_GLIBC=$GNU_ROOT/build-glibc
 
 LIBRARY_PATH="$BUILD_GLIBC"
