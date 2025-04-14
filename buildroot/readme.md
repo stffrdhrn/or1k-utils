@@ -7,8 +7,10 @@ embedded systems, it will contain a runtime such as glibc or musl and
 
 We provide different configs:
 
- - litex_mor1kx_defconfig - for [litex](https://github.com/enjoy-digital/litex) SoCs running on FPGA boards
+ - litex_mor1kx_defconfig - for [litex](https://github.com/enjoy-digital/litex) SoCs running on FPGA boards, uses musl libc
  - qemu_or1k_defconfig - for the QEMU virt machine, which we use for glibc testing
+ - qemu_or1k_shorne_defconfig - for the QEMU virt machine, which I use with glibc testing setting up my user
+                                for sharing and NFS drive with my host machine
 
 ## Building
 
@@ -32,6 +34,33 @@ total 62796
 -rw-r--r--. 1 oruser oruser 19048105 Apr  3 16:45 litex-mor1kx-rootfs.cpio.gz
 -rw-r--r--. 1 oruser oruser 62914560 Apr  3 16:45 litex-mor1kx-rootfs.ext2
 ```
+
+## Using
+
+Once you get in there are some defaults:
+
+### Defaults for the qemu rootfs
+
+| Config   | Value                         | Comment |
+| -------- | ----------------------------- | ------- |
+| Admin    | user: `root`, password: none  |       |
+| IP       | `10.9.0.15`                   | For qemu userspace networking |
+| Netmask  | `255.255.255.0`               |       |
+| Gateway  | `10.9.0.100`                  |       |
+| DNS      | `10.9.0.3`                    |       |
+
+### Defaults for the litex rootfs
+
+The arty a7 board plugs into a switch on my workstation subnet
+and is setup with the following.
+
+| Config   | Value                         | Comment |
+| -------- | ----------------------------- | ------- |
+| Admin    | user: `root`, password: none  |       |
+| IP       | `10.0.0.5` | Example from my lan subnet see: [stffrdhrn/hostconfig](https://github.com/stffrdhrn/hostconfig/blob/master/raspian/setup.md#routing) |
+| Netmask  | `255.255.255.0` |       |
+| Gateway  | `10.0.0.31` | My raspberry pi |
+| DNS      | `192.168.1.1` | DNS in other subnet |
 
 ## Building with a custom toolchain
 
