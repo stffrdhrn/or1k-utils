@@ -18,6 +18,7 @@ pushd $BUILDDIR/build-gcc
 	--with-gnu-ld \
 	--with-gnu-as \
 	--disable-nls \
+	--disable-lto \
 	--disable-libssp \
 	--disable-shared \
 	--with-multilib-list=mcmov \

@@ -17,6 +17,7 @@ pushd $BUILDDIR/build-gcc
 	--prefix=$INSTALLDIR \
 	--enable-languages=c \
 	--disable-libssp \
+	--disable-lto \
 	--disable-shared
     fi
 

@@ -21,6 +21,7 @@ pushd $BUILDDIR/build-gcc
         --disable-multilib \
 	--disable-libssp \
 	--disable-nls \
+	--disable-lto \
 	--disable-shared
     fi
 

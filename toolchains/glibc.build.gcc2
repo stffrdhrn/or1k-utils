@@ -15,6 +15,7 @@ pushd $BUILDDIR/build-gcc
     --with-gnu-as \
     --disable-nls \
     --disable-libssp \
+    --disable-lto \
     --with-multilib-list=mcmov,mhard-float \
     --enable-languages=c,c++ \
     --target=$CROSS \
