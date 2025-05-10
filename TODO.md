@@ -5,9 +5,9 @@ Keeping my todo list for everything openrisc related.
 ## TODO
 
  linux
-  - VDSO
+  - [VDSO](https://man7.org/linux/man-pages/man7/vdso.7.html)
   - common-entry framework
-  - Virtually mapped stacks
+  - [Virtually mapped stacks](https://www.youtube.com/watch?v=kmMGdSVDVuQ)
   - Update architecture logging to use pr_* instead of printk
   - eBFD jit support
   - Support for jump_label patching
@@ -16,7 +16,6 @@ Keeping my todo list for everything openrisc related.
      * `_mcount`
      * dynamic mcount
      * CONFIG_FUNCTION_GRAPH_TRACER
-  - cacheinfo
 
  KVM/virtio
   - OpenRISC does not support virtualization (only two mode levels)
@@ -25,12 +24,18 @@ Keeping my todo list for everything openrisc related.
   - This needs virtualization extensions(Hypervisor mode) added to OpenRISC
 
  gcc PRs
+  - Large code model does support normal long jumps, linux `allyesconfig`
   - https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102584 - unsigned short
   - https://gcc.gnu.org/bugzilla/show_bug.cgi?id=28036  - exec stack no note
 
 ## DONE
 
 Items done moved down here!
+
+### Done 2025-03-29
+
+Linux v6.15
+  - cacheinfo https://lwn.net/Articles/1015845/
 
 ### Done 2025-01-20
 
