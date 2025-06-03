@@ -13,6 +13,7 @@ Here you can find:
     busybox linux initramfs, see usage in [or1k-rootfs-build](https://github.com/stffrdhrn/or1k-rootfs-build).
  - [buildroot](buildroot) - configs and rootfs overlays for building an OpenRISC
     rootfs that can run on QEMU or a Litex SoC FGPA board, see usage in `or1k-rootfs-build`.
+ - [qemu](qemu) - scripts for building the qemu system simulator.
  - [toolchains](toolchains) - scripts for building `newlib`, `glibc` and `musl`
    toolcchains.  See usage in `or1k-toolchain-build`.
  - [litex](litex) - tools and scripts for building and booting [litex](https://github.com/litex-hub) SoC FPGA
@@ -41,6 +42,9 @@ make check
 
 # or to just run a single test
 make check RUNTESTFLAGS='gdb.xml/tdesc-regs.exp'
+
+# or in GCC run
+make check-gcc RUNTESTFLAGS='or1k.exp'
 ```
 
 ## See also
