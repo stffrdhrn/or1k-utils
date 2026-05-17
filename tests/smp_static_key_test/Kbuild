@@ -1,0 +1,2 @@
+
+obj-m += smp_static_key_test.o

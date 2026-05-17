@@ -1,0 +1,3 @@
+Build with
+
+../make-or1k-linux -C patches/smp_static_key_test KDIR=$PWD
