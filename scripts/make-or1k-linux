@@ -12,11 +12,14 @@ litextftpd=$OR1K_UTILS/litex/tftpd
 openadk_source="$OPENADK/target_qemu-or1k_uclibc-ng/qemu-or1k-uclibc-ng-initramfspiggyback_list"
 busybox_source="$BUSYBOX/initramfs $BUSYBOX/initramfs.devnodes"
 
-# Select one of these to choose your preferred initramfs
-# we use for or1ksim, but no longer for qemu as for qemu we just
-# pass in the qcow2 rootfs.
-#INITRAMFS_SOURCE=$busybox_source
-#INITRAMFS_SOURCE=$openadk_source
+# Select one of these to choose your preferred initramfs we use for de0nano and
+# or1ksim, but no longer for qemu as for qemu we just pass in the qcow2 rootfs.
+# Also on litex we have an sdcard for the rootfs.
+if ! grep -q '^CONFIG_\(LITEX\|VIRT\)_' $LINUX_SRC/.config; then
+  #INITRAMFS_SOURCE=$openadk_source
+  INITRAMFS_SOURCE=$busybox_source
+  echo "Enabling INITRAMFS_SOURCE=$INITRAMFS_SOURCE for non litex/virt build"
+fi
 
 run() {
   echo "exec: $@"
