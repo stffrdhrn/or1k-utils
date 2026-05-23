@@ -1,3 +1,39 @@
-Build with
+SMP Static Key Test
+-------------------
 
-../make-or1k-linux -C patches/smp_static_key_test KDIR=$PWD
+This is a kernel module which is used to test SMP remote core
+syncing after jump_label/static_key code patching is done.
+
+The test module will:
+
+ - Set up 128 (number of OpenRISC cache lines) simple static_key
+   functions e.g. { return (static_branch_unlikely(&test_static_key)) ? 1 : 0 }
+   in memory to cover all cache lines.
+
+ - Start 2 kthreads
+   Writer - Core 0
+    - Toggles test_static_key enabled/disabled every 1 second
+   Reader - Core 1
+    - Runs a tight loop for 900ms watching a static_key in a cache line.
+      When it is signalled that the static key has changed, it checks
+      that the value is as expected, if not report FAILURE.
+    - After 900ms, moves to next cache line
+      sleep 100ms to avoid RCU timeouts
+
+Example Log
+-----------
+
+[  111.680000] SMP_TEST: CPU 0 toggling key to: ENABLED
+[  111.690000] SMP_TEST: Failure detected CPU 1 static key value[48] 0
+[  112.230000] SMP_TEST: CPU 1 static key value[48] 1
+..
+[  124.160000] SMP_TEST: CPU 0 toggling key to: ENABLED
+[  124.170000] SMP_TEST: Failure detected CPU 1 static key value[60] 0
+[  124.350000] SMP_TEST: CPU 1 static key value[60] 1
+[  125.200000] SMP_TEST: CPU 0 toggling key to: DISABLED
+
+Build with
+----------
+
+cd $LINUX_SRC
+$OR1K_UTILS/scripts/make-or1k-linux -C $OR1K_UTILS/tests/smp_static_key_test KDIR=$PWD
