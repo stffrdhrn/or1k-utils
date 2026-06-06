@@ -20,6 +20,7 @@ pushd $BUILDDIR/build-gcc
 	--disable-threads \
         --disable-multilib \
 	--disable-libssp \
+	--disable-libatomic \
 	--disable-nls \
 	--disable-lto \
 	--disable-shared
