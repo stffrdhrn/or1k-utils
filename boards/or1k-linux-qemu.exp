@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2018
+# Copyright (C) 2026
 
 # Contributor Stafford Horne  <shorne@gmail.com>
 
@@ -20,7 +20,7 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # This is a list of toolchains that are supported on this board.
-set_board_info target_install {or1k-linux-musl}
+set_board_info target_install {or1k-none-linux-gnu or1k-none-linux-musl}
 
 # Load the basics, we inherit from sim
 load_generic_config "sim"
@@ -28,8 +28,12 @@ load_generic_config "sim"
 set_board_info is_simulator 1
 set_board_info sim "qemu-or1k"
 
-# Set sysroot for musl libs when running qemu-or1k
-set_board_info sim,options "-L /opt/crossbuild/output/or1k-linux-musl/or1k-linux-musl"
+# Set sysroot for linux when running qemu-or1k
+if {[string match "or1k-*-linux-musl" $target_triplet ]} {
+  set_board_info sim,options "-L /opt/crossbuild/output/${target_triplet}/${target_triplet}"
+} else {
+  set_board_info sim,options "-L /opt/crossbuild/output/${target_triplet}/${target_triplet}/sysroot"
+}
 
 # No multilib options needed by default.
 process_multilib_options ""

@@ -22,8 +22,14 @@ case "$target_triplet" in {
 	set target_triplet "or1k-unknown-elf"
         set target_list { "or1k-elf-sim" }
     }
+    { "or1k-*-linux-*" } {
+        # it looks alright do not rewrite
+        # e.g. or1k-nonehf-linux-gnu, or1k-none-linux-musl,
+        #      or1k-smh-linux-gnu
+        set target_list { "or1k-linux-qemu" }
+    }
     { "or1k-*linux*" } {
-	set target_triplet "or1k-unknown-gnu-linux"
+	set target_triplet "or1k-unknown-linux-gnu"
         set target_list { "or1k-linux-qemu" }
     }
   }
